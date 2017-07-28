@@ -1,0 +1,18 @@
+alias ls='ls -F --color=auto'
+alias ll='ls -al'
+alias la='ls -A'
+
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+alias fix='stty sane;exec zsh;tput reset'
+
+alias ec='emacsclient -c -t'
+
+alias coin-toss='echo -n "Heads\nTails" | shuf | head -n 1'
+
+alias wisdom='fortune -a | cowsay -f turkey'
+alias dadjoke='curl -sS https://icanhazdadjoke.com | cowsay -f stegosaurus'
+alias rain='cmatrix -abou 1 -C blue'
+alias pipes='pipes -r 0'

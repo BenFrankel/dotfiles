@@ -1,0 +1,75 @@
+zstyle ':completion:*' completer _complete _ignored _correct _approximate
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' rehash true
+zstyle :compinstall filename '~/.zshrc'
+
+# oh-my-zsh: General
+ZSH=/usr/share/oh-my-zsh/
+ZSH_CACHE_DIR="${HOME}/.cache/oh-my-zsh"
+if [ ! -d $ZSH_CACHE_DIR ]; then
+    mkdir -p $ZSH_CACHE_DIR
+fi
+
+# oh-my-zsh: Configuration
+ZSH_THEME=
+HYPHEN_INSENSITIVE='true'
+export UPDATE_ZSH_DAYS=14
+COMPLETION_WAITING_DOTS='false'
+
+# oh-my-zsh: Plugins
+plugins=(git z)
+# Consider:
+#
+# gitignore
+# git-extras
+# git-prompt
+# taskwarrior
+# 
+
+# oh-my-zsh: Setup
+source $ZSH/oh-my-zsh.sh
+
+# Completion
+autoload -Uz compinit
+compinit
+
+# History
+HISTFILE=~/.histfile
+HISTSIZE=2048
+SAVEHIST=4096
+
+# Beeps should notify
+setopt beep notify
+
+# Emacs key bindings / editor
+bindkey -e
+export EDITOR='ec'
+
+# Aliases
+source "${HOME}/.aliases"
+
+# Navigation
+setopt autopushd
+DIRSTACKSIZE=128
+cdUndoKey() { dirs -v | grep -q '^1' && popd -q && zle reset-prompt }
+cdParentKey() { [ "$(pwd)" != "/" ] && pushd -q .. && zle reset-prompt }
+zle -N cdUndoKey
+zle -N cdParentKey
+bindkey '[D' cdUndoKey
+bindkey '[A' cdParentKey
+
+# PATH
+PATH="${HOME}/bin:${PATH}"
+PATH="${HOME}/.config/i3/bin:${PATH}"
+export PATH
+
+# Prompt
+PROMPT='%(?..[%F{1}%B%?%b%f] )%B%F{10}%n%f@%F{10}%m%f%b:%F{14}%(3~;%-1~/…/%1~;%~)%f%B%(!.#.$)%b '
+RPROMPT='%(?..:()'
+
+# Syntax highlighting
+# In zsh
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# In less
+export LESSOPEN="|${HOME}/.lessfilter %s"
+export LESS='-R'

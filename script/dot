@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+set -eu
+# set -x
+
+usage() {
+    printf 'Usage: dot <command> [arguments]
+
+Description: Dotfile manager
+
+Available commands:
+
+    pull              Update dotfiles
+    push [message]    Push updated dotfiles
+    link              Set up links to dotfiles
+    get               Install / update dotfiles
+
+    pack-list         Display package list
+    pack-get          Install from package list
+    pack-save         Save installed packages to list
+'
+    exit 1
+}
+
+[ $# -ge 1 ] || usage
+
+
+pack-list() {
+    cat ../config/pacman_packages
+    cat ../config/aur_packages
+}
+
+pack-get() {
+    pacman -S --needed - < ../config/pacman_packages
+    yaourt -S --needed $(cat ../config/aur_packages)
+}
+
+pack-save() {
+    pacman -Qqen > ../config/pacman_packages
+    pacman -Qqem > ../config/aur_packages
+}
+
+push() {
+    git add .
+    git commit -m "$1"
+    git push origin master
+}
+
+pull() {
+    git pull origin master
+}
+
+link() {
+}
+
+get() {
+    echo "Cloning..."
+    if [ ! -d ~/.dotfiles/.git/ ]; then
+        git clone https://github.com/BenFrankel/dotfiles ~/.dotfiles
+    else
+        cd ~/.dotfiles
+        git pull origin master
+    fi
+    
+    echo "Installing packages..."
+    pack-get
+
+    echo "Generating links..."
+    link
+}
+
+
+case $1 in
+    pack-list)
+        [ $# -eq 1 ] || usage
+        pack-list
+        ;;
+    pack-get)
+        [ $# -eq 1 ] || usage
+        pack-get
+        ;;
+    pack-save)
+        [ $# -eq 1 ] || usage
+        pack-save
+        ;;
+    pull)
+        [ $# -eq 1 ] || usage
+        pull
+        ;;
+    push)
+        push "${@:2}"
+        ;;
+    link)
+        [ $# -eq 1 ] || usage
+        link
+        ;;
+    get)
+        [ $# -eq 1 ] || usage
+        get
+        ;;
+    uninstall)
+        ;;
+    *)
+        usage
+esac

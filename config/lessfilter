@@ -1,0 +1,45 @@
+#!/bin/sh
+
+
+# List directory
+if [ -d "$1" ]; then
+    ls -hl --group-directories-first --color "$1" | tail -n +2
+    ls -1dAhl --group-directories-first --color "$1"* | tail -n +3
+    exit 0
+fi
+
+
+# Styles that look nice:
+#
+# manni
+# perldoc
+# rrt
+# paraiso-dark
+# native
+# fruity
+# lovelace
+#
+#
+# Greyscale:
+#
+# algol
+# algol_nu
+#
+STYLE=native
+
+case "$1" in
+    *.md)
+        extension-handler "$1"
+        pandoc -s -f markdown -t man "$1" | groff -T utf8 -man -
+        ;;
+    *)
+        FILENAME=$(basename "$1")
+        LEXER=$(pygmentize -N "${FILENAME}")
+        if [ "Z${LEXER}" != "Ztext" ]; then
+            pygmentize -f 256 -O style=$STYLE -l $LEXER $1
+        else
+            pygmentize -f 256 -O style=$STYLE -g $1
+        fi
+esac
+
+exit 0
