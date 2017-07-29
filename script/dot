@@ -244,18 +244,10 @@ case $1 in
         # TODO: Restore backup config packs
         pack-restore
         ;;
-    push)
-        progress "Saving installed packages"
-        pack-save
-        echo
-        
-        progress "Pushing to repository"
-        push-repo "${@:2}"
-        ;;
-    pack-save)
+    save)
         pack-save
         ;;
-    pack-diff)
+    diff)
         progress "Comparing your packages to the list"
         pack-save ".tmp"
         diff="$(comm -3 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.tmp")"
@@ -269,8 +261,16 @@ case $1 in
             info "Your packages are already synced"
         fi
         ;;
-    pack-sync)
+    sync)
         pack-sync
+        ;;
+    push)
+        progress "Saving installed packages"
+        pack-save
+        echo
+        
+        progress "Pushing to repository"
+        push-repo "${@:2}"
         ;;
     *) usage
 esac
