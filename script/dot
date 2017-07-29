@@ -59,9 +59,9 @@ pack-install() {
     [ -n "${unlisted}" ] && sudo pacman -Rns $unlisted
 
     progress "Installing listed packages that are not installed"
-    listed="$(comm -23 "${CONFIG_DIR}/pack_pacman" "${BACKUP_DIR}/pack_pacman")"
+    listed="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
     [ -n "${listed}" ] && sudo pacman -S $listed
-    listed="$(comm -23 "${CONFIG_DIR}/pack_aur" "${BACKUP_DIR}/pack_aur")"
+    listed="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
     [ -n "${listed}" ] && yaourt -S $listed
     
     return 0
@@ -69,7 +69,7 @@ pack-install() {
 
 get-repo() {
     progress "Getting latest repository"
-    if [ ! -d .git ]; then
+    if [ ! -d "${DOT_DIR}/.git" ]; then
         git clone https://github.com/BenFrankel/dotfiles "${DOT_DIR}"
         mkdir -p "${BACKUP_DIR}" "${PACK_DIR}"
     else
@@ -80,6 +80,7 @@ get-repo() {
 
 push() {
     progress "Pushing to repository"
+    cd "${DOT_DIR}"
     git add .
     git commit -m "$1"
     git push origin master
