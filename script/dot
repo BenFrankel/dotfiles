@@ -30,9 +30,17 @@ PACK_DIR="${DOT_DIR}/pack"
 
 
 progress() {
-    echo "$(tput bold)$1$(tput sgr0)..."
+    echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $(tput bold)$1$(tput sgr0)..."
 }
 
+info() {
+    echo "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0)"
+}
+
+prompt() {
+    read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0)" choice
+    return $choice
+}
 
 pack-load() {
     [ $# -eq 1 ] && ext="$1" || ext=''
@@ -49,20 +57,52 @@ pack-save() {
 pack-install() {
     progress "Backing up installed packages"
     pack-save ".old"
+    echo
 
     progress "Refreshing pacman database"
     sudo pacman -Sy
+    echo
 
-    progress "Removing installed packages that are unlisted"
+    progress "Finding unlisted packages to remove"
     unlisted="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
     unlisted+="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    [ -n "${unlisted}" ] && sudo pacman -Rns $unlisted
+    if [ -n "${unlisted}" ]; then
+        echo
+        echo $unlisted
+        echo
+        case $(prompt "Remove packages? [Y/n] ") in
+            [nN][oO]|[nN])
+                info "No packages removed"
+                ;;
+            *)
+                sudo pacman -Rns --noconfirm $unlisted
+                ;;
+        esac
+    else
+        info "No packages need to be removed"
+    fi
+    echo
 
-    progress "Installing listed packages that are not installed"
+    progress "Finding listed packages to install"
     listed="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    [ -n "${listed}" ] && sudo pacman -S $listed
-    listed="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    [ -n "${listed}" ] && yaourt -S $listed
+    listed_aur="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    if [ -n "${listed}" -o -n "${listed_aur}" ]; then
+        echo
+        echo $listed
+        echo $listed_aur
+        case $(prompt "$(tput bold)Install packages? [Y/n] ") in
+            [nN][oO]|[nN])
+                info "No packages installed"
+                ;;
+            *)
+                [ -n "${listed}" ] && sudo pacman -S --noconfirm $listed
+                [ -n "${listed_aur}" ] && yaourt -S --noconfirm $listed_aur
+                ;;
+        esac
+                
+    else
+        info "No packages need to be installed"
+    fi
     
     return 0
 }
@@ -130,9 +170,7 @@ case $1 in
     pack-save)
         pack-save
         ;;
-    *)
-        usage
-        ;;
+    *) usage
 esac
 
 exit 0
