@@ -17,14 +17,16 @@ export UPDATE_ZSH_DAYS=14
 COMPLETION_WAITING_DOTS='false'
 
 # oh-my-zsh: Plugins
-plugins=(git z)
+plugins=(git z you-should-use)
 # Consider:
 #
 # gitignore
 # git-extras
 # git-prompt
 # taskwarrior
-# 
+#
+
+export YSU_MODE=ALL
 
 # oh-my-zsh: Setup
 source $ZSH/oh-my-zsh.sh

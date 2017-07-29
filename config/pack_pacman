@@ -67,6 +67,7 @@ mlocate
 nano
 ncdu
 netctl
+ntfs-3g
 os-prober
 pacman
 patch
@@ -85,11 +86,11 @@ reiserfsprogs
 ripgrep
 rofi
 rxvt-unicode
-s-nail
 scrot
 sed
 shadow
 sl
+s-nail
 sudo
 supertuxkart
 sysfsutils
@@ -109,6 +110,7 @@ util-linux
 vim
 vlc
 which
+wine
 wpa_supplicant
 xautolock
 xf86-video-intel

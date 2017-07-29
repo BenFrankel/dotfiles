@@ -19,36 +19,37 @@ This repository is based on the following packages:
 
 ### System
 
-- *Operating System*: [Arch Linux](archlinux.org)
-- *Display Manager*: [LightDM](freedesktop.org/wiki/Software/LightDM)
-    - *Greeter*: [LightDM GTK+ Greeter](launchpad.net/lightdm-gtk-greeter)
-- *Window Manager*: [i3-gaps](github.com/Airblader/i3) (tiling)
-- *Info Bar*: [i3bar](i3wm.org/i3bar) with [i3blocks](vivien.github.io/i3blocks)
-- *Screen Locker*: script using a fork of [i3lock](
-    - *Inactivity Locker*: [xautolock](freecode.com/projects/xautolock)
-- *Compositor*: [compton](github.com/chjj/compton)
-- *Notification Daemon*: [dunst](dunst-project.org)
-- *Application Launcher*: [rofi](davedavenport.github.io/rofi)
+- **Operating System**: [Arch Linux](archlinux.org)
+- **Display Manager**: [LightDM](freedesktop.org/wiki/Software/LightDM)
+    - **Greeter**: [LightDM GTK+ Greeter](launchpad.net/lightdm-gtk-greeter)
+- **Window Manager**: [i3-gaps](github.com/Airblader/i3) (tiling)
+- **Info Bar**: [i3bar](i3wm.org/i3bar) with [i3blocks](vivien.github.io/i3blocks)
+- **Screen Locker**: script using a fork of [i3lock](
+    - **Inactivity Locker**: [xautolock](freecode.com/projects/xautolock)
+- **Compositor**: [compton](github.com/chjj/compton)
+- **Notification Daemon**: [dunst](dunst-project.org)
+- **Application Launcher**: [rofi](davedavenport.github.io/rofi)
 
 
 ### Applications
 
-- *Terminal*: [urxvt](rxvt.sourceforge.net)
-    - *Shell*: [zsh](zsh.sourceforge.net)
-- *Text Editor*: [Emacs](gnu.org/software/emacs)
-- *IDEs*:
-    - *Python*: [Pycharm Community Edition](jetbrains.com/pycharm)
-- *Web Browser*: [Firefox Nightly](mozilla.org/en-US/firefox/channel/desktop)
-- *File Manager*: [Thunar](git.xfce.org/xfe/thunar)
-- *Multimedia Viewer*: [VLC](videolan.org/vlc)
-- *Image Editor*: [GIMP](gimp.org)
-- *Drawing*: [krita](krita.org)
-- *Partition Manager*: [GParted](gparted.org)
+- **Terminal**: [urxvt](rxvt.sourceforge.net)
+    - **Shell**: [zsh](zsh.sourceforge.net)
+- **Text Editor**: [Emacs](gnu.org/software/emacs)
+- **IDEs**:
+    - **Python**: [Pycharm Community Edition](jetbrains.com/pycharm)
+- **Web Browser**: [Firefox Nightly](mozilla.org/en-US/firefox/channel/desktop)
+- **File Manager**: [Thunar](git.xfce.org/xfe/thunar)
+- **Multimedia Viewer**: [VLC](videolan.org/vlc)
+- **Image Editor**: [GIMP](gimp.org)
+- **Drawing**: [krita](krita.org)
+- **Partition Manager**: [GParted](gparted.org)
 
 Plus anything else I have installed.
 
 
-## Usage
+## Installation
+
 
 ### Prerequisites
 
@@ -57,13 +58,11 @@ Plus anything else I have installed.
 - git
 
 
-### Installation
-
-#### Download
+### Download
 
 Navigate to your home directory and clone the repository with `git clone https://github.com/BenFrankel/dotfiles`.
 
-#### Packages
+### Packages
 
 Install all packages from the official Arch repositories with `pacman -S - < .pacman_packages`.
 
@@ -71,11 +70,11 @@ A handful of repositories come from AUR. Those packages can be installed with `y
 
 Alternatively, you can use the script `~/bin/package` to list, install, or save installed packages.
 
-#### Zsh
+### Zsh
 
 Set zsh as your default shell with `chsh -s $(which zsh)`
 
-#### Wallpaper
+### Wallpaper
 
 To set your wallpaper, download an image (probably to ~/Pictures/Wallpapers, but not necessarily) and make a link to it with `ln -s /path/to/image ~/.wallpaper`. The wallpaper will be dislayed when you reload i3 (Mod-space then r).
 
@@ -98,10 +97,10 @@ The mod key is set to super key.
 
 Default keybindings that were removed:
 
-- *Start dmenu*: Mod-d -> Mod-/ or Mod-. or Mod-,
-- *Layout stacking*: Mod-s -> <removed>
-- *Scratchpad show*: Mod-minus -> Mod-+
-- *Toggle focus tiling/floating*: Mod-space -> <removed>
+- **Start dmenu**: Mod-d -> Mod-/ or Mod-. or Mod-,
+- **Layout stacking**: Mod-s -> <removed>
+- **Scratchpad show**: Mod-minus -> Mod-+
+- **Toggle focus tiling/floating**: Mod-space -> <removed>
 
 Ergonomic keybindings for default commands:
 

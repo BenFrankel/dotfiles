@@ -6,100 +6,128 @@ set -eu
 usage() {
     printf 'Usage: dot <command> [arguments]
 
-Description: Dotfile manager
+Description: Dotfile manager; run `dot install` to get started.
 
 Available commands:
 
-    pull              Update dotfiles
-    push [message]    Push updated dotfiles
-    link              Set up links to dotfiles
-    get               Install / update dotfiles
-
-    pack-list         Display package list
-    pack-get          Install from package list
-    pack-save         Save installed packages to list
+    get               Install latest config
+    push [message]    Push config to repo
+    restore           Restore backed up config
+    pack-save         Save installed packages
 '
     exit 1
 }
 
-[ $# -ge 1 ] || usage
+DOT_DIR="${HOME}/.dotfiles"
+CONFIG_DIR="${DOT_DIR}/config"
+SCRIPT_DIR="${DOT_DIR}/script"
+BACKUP_DIR="${DOT_DIR}/backup"
+
+[ $# -ge 1  ] || usage
+[ $# -eq 1 -o "$1" == "push" ] || usage
+mkdir -p "${BACKUP_DIR}"
+
+
+progress() {
+    echo "$(tput bold)$1$(tput sgr0)..."
+}
 
 
 pack-list() {
-    cat ../config/pacman_packages
-    cat ../config/aur_packages
-}
-
-pack-get() {
-    pacman -S --needed - < ../config/pacman_packages
-    yaourt -S --needed $(cat ../config/aur_packages)
+    cat "${CONFIG_DIR}/pack_pacman"
+    cat "${CONFIG_DIR}/pack_aur"
 }
 
 pack-save() {
-    pacman -Qqen > ../config/pacman_packages
-    pacman -Qqem > ../config/aur_packages
+    dir="${CONFIG_DIR}"
+    progress "Saving list of installed packages to ${CONFIG_DIR}"
+    [ $# -eq 1 ] && dir="$1"
+    pacman -Qqen | sort > "${dir}/pack_pacman"
+    pacman -Qqem | sort > "${dir}/pack_aur"
+}
+
+pack-install() {
+    progress "Backing up installed packages"
+    pack-save "${BACKUP_DIR}"
+
+    progress "Refreshing pacman database"
+    sudo pacman -Sy
+
+    progress "Removing installed packages that are unlisted"
+    unlisted="$(comm -13 "${CONFIG_DIR}/pack_pacman" "${BACKUP_DIR}/pack_pacman")"
+    unlisted+="$(comm -13 "${CONFIG_DIR}/pack_aur" "${BACKUP_DIR}/pack_aur")"
+    [ -n "${unlisted}" ] && sudo pacman -Rns $unlisted
+
+    progress "Installing listed packages that are not installed"
+    listed="$(comm -23 "${CONFIG_DIR}/pack_pacman" "${BACKUP_DIR}/pack_pacman")"
+    [ -n "${listed}" ] && sudo pacman -S $listed
+    listed="$(comm -23 "${CONFIG_DIR}/pack_aur" "${BACKUP_DIR}/pack_aur")"
+    [ -n "${listed}" ] && yaourt -S $listed
+    
+    return 0
+}
+
+get-repo() {
+    progress "Getting latest repository"
+    cd "${DOT_DIR}"
+    if [ ! -d .git ]; then
+        git clone https://github.com/BenFrankel/dotfiles "${DOT_DIR}"
+    else
+        git pull origin master
+    fi
 }
 
 push() {
+    progress "Pushing to repository"
     git add .
     git commit -m "$1"
     git push origin master
 }
 
-pull() {
-    git pull origin master
-}
+setup() {
+    progress "Setting up links to dotfiles"
+    for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
+        filename=$(basename "${path}")
+        if [ -f "${HOME}/.${filename}" -a ! -h "${HOME}/.${filename}" ]; then
+            cp "${HOME}/.${filename}" "${BACKUP_DIR}/${filename}"
+        fi
+        ln -sf "${path}" "${HOME}/.${filename}"
+    done
 
-link() {
-}
+    progress "Setting up links to scripts"
+    mkdir -p "${HOME}/bin"
+    ln -sf "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
 
-get() {
-    echo "Cloning..."
-    if [ ! -d ~/.dotfiles/.git/ ]; then
-        git clone https://github.com/BenFrankel/dotfiles ~/.dotfiles
-    else
-        cd ~/.dotfiles
-        git pull origin master
-    fi
-    
-    echo "Installing packages..."
-    pack-get
-
-    echo "Generating links..."
-    link
+    progress "Setting up package configurations"
+    for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
+        eval "${package}/setup"
+    done
 }
 
 
 case $1 in
-    pack-list)
-        [ $# -eq 1 ] || usage
-        pack-list
-        ;;
-    pack-get)
-        [ $# -eq 1 ] || usage
-        pack-get
-        ;;
-    pack-save)
-        [ $# -eq 1 ] || usage
-        pack-save
-        ;;
-    pull)
-        [ $# -eq 1 ] || usage
-        pull
+    get)
+        get-repo
+        echo
+        setup
+        echo
+        pack-install
         ;;
     push)
+        pack-save
         push "${@:2}"
         ;;
-    link)
-        [ $# -eq 1 ] || usage
-        link
+    restore)
+        progress "Restoring backups"
+        
+        progress "Removing installed packages"
         ;;
-    get)
-        [ $# -eq 1 ] || usage
-        get
-        ;;
-    uninstall)
+    pack-save)
+        pack-save
         ;;
     *)
         usage
+        ;;
 esac
+
+exit 0
