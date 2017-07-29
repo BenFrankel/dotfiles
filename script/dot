@@ -17,6 +17,7 @@ Administrative:
 
     push [message]    Push local configs to repo
     pack-save         Save installed packages to list
+    pack-diff         Compare installed packages to list
 '
     exit 1
 }
@@ -177,8 +178,7 @@ get-repo() {
     fi
 }
 
-push() {
-    progress "Pushing to repository"
+push-repo() {
     cd "${DOT_DIR}"
     git add .
     git commit -m "$1"
@@ -234,12 +234,12 @@ case $1 in
         pack-install
         echo
         
-        progress "Setting Zsh as default shell"
+        progress "Setting Zsh as the default shell"
         chsh -s $(which zsh)
         ;;
     restore)
-        # Restore backup configs
-        # Restore backup config packs
+        # TODO: Restore backup configs
+        # TODO: Restore backup config packs
         pack-restore
         ;;
     push)
@@ -247,11 +247,25 @@ case $1 in
         pack-save
         echo
         
-        progress "Pushing to origin"
-        push "${@:2}"
+        progress "Pushing to repository"
+        push-repo "${@:2}"
         ;;
     pack-save)
         pack-save
+        ;;
+    pack-diff)
+        progress "Comparing your packages to the list"
+        pack-save ".tmp"
+        diff="$(comm -3 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.tmp")"
+        diff+="$(comm -3 "${PACK_DIR}/aur" "${PACK_DIR}/aur.tmp")"
+
+        if [ -n "${diff}" ]; then
+            echo
+            echo -e "$(tput bold)Missing\tLocal$(tput sgr0)"
+            echo "${diff}"
+        else
+            info "Your packages are already synced"
+        fi
         ;;
     *) usage
 esac
