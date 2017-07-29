@@ -18,14 +18,15 @@ Available commands:
     exit 1
 }
 
+[ $# -ge 1  ] || usage
+[ $# -eq 1 -o "$1" == "push" ] || usage
+
+
 DOT_DIR="${HOME}/.dotfiles"
 CONFIG_DIR="${DOT_DIR}/config"
 SCRIPT_DIR="${DOT_DIR}/script"
 BACKUP_DIR="${DOT_DIR}/backup"
-
-[ $# -ge 1  ] || usage
-[ $# -eq 1 -o "$1" == "push" ] || usage
-mkdir -p "${BACKUP_DIR}"
+PACK_DIR="${DOT_DIR}/pack"
 
 
 progress() {
@@ -33,29 +34,28 @@ progress() {
 }
 
 
-pack-list() {
-    cat "${CONFIG_DIR}/pack_pacman"
-    cat "${CONFIG_DIR}/pack_aur"
+pack-load() {
+    [ $# -eq 1 ] && ext="$1" || ext=''
+    cat "${PACK_DIR}/pacman${ext}"
+    cat "${PACK_DIR}/aur${ext}"
 }
 
 pack-save() {
-    dir="${CONFIG_DIR}"
-    progress "Saving list of installed packages to ${CONFIG_DIR}"
-    [ $# -eq 1 ] && dir="$1"
-    pacman -Qqen | sort > "${dir}/pack_pacman"
-    pacman -Qqem | sort > "${dir}/pack_aur"
+    [ $# -eq 1 ] && ext="$1" || ext=''
+    pacman -Qqen | sort > "${PACK_DIR}/pacman${ext}"
+    pacman -Qqem | sort > "${PACK_DIR}/aur${ext}"
 }
 
 pack-install() {
     progress "Backing up installed packages"
-    pack-save "${BACKUP_DIR}"
+    pack-save ".old"
 
     progress "Refreshing pacman database"
     sudo pacman -Sy
 
     progress "Removing installed packages that are unlisted"
-    unlisted="$(comm -13 "${CONFIG_DIR}/pack_pacman" "${BACKUP_DIR}/pack_pacman")"
-    unlisted+="$(comm -13 "${CONFIG_DIR}/pack_aur" "${BACKUP_DIR}/pack_aur")"
+    unlisted="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
+    unlisted+="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
     [ -n "${unlisted}" ] && sudo pacman -Rns $unlisted
 
     progress "Installing listed packages that are not installed"
@@ -69,10 +69,11 @@ pack-install() {
 
 get-repo() {
     progress "Getting latest repository"
-    cd "${DOT_DIR}"
     if [ ! -d .git ]; then
         git clone https://github.com/BenFrankel/dotfiles "${DOT_DIR}"
+        mkdir -p "${BACKUP_DIR}" "${PACK_DIR}"
     else
+        cd "${DOT_DIR}"
         git pull origin master
     fi
 }
@@ -96,7 +97,10 @@ setup() {
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
-    ln -sf "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
+    for path in $(find "${SCRIPT_DIR}" -maxdepth 1 -type f); do
+        filename=$(basename "${path}")
+        ln -sf "${path}" "${HOME}/bin/{filename}"
+    done
 
     progress "Setting up package configurations"
     for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
