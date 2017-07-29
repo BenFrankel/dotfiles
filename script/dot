@@ -13,11 +13,13 @@ Available commands:
     get               Install latest configs
     restore           Restore backup configs
 
+    diff              Compare local packages to list
+    sync              Install missing & remove local
+    save              Save local packages to list
+
 Administrative:
 
-    push [message]    Push local configs to repo
-    pack-save         Save installed packages to list
-    pack-diff         Compare installed packages to list
+    push <message>    Push local configs
 '
     exit 1
 }
@@ -63,7 +65,7 @@ pack-save() {
     pacman -Qqem | sort > "${PACK_DIR}/aur${ext}"
 }
 
-pack-install() {
+pack-sync() {
     progress "Backing up installed packages"
     pack-save ".old"
     echo
@@ -231,7 +233,7 @@ case $1 in
         setup
         echo
         
-        pack-install
+        pack-sync
         echo
         
         progress "Setting Zsh as the default shell"
@@ -266,6 +268,9 @@ case $1 in
         else
             info "Your packages are already synced"
         fi
+        ;;
+    pack-sync)
+        pack-sync
         ;;
     *) usage
 esac

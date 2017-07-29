@@ -5,9 +5,9 @@ This repository contains my Linux dotfiles (configuration files) along with some
 The purpose of this, for me, is:
 
 - To quickly set up and configure a new system
-- To share my configuration with other people and allow them to easily try it out
-- To keep multiple systems syncronized
-- To serve as a backup in case of fire or flood
+- To share my configuration with other people
+- To keep multiple systems synchronized
+- To serve as a backup in case of flood
 
 See [here](dotfiles.github.io) for more information about dotfile repositories.
 
@@ -19,31 +19,31 @@ This repository is based on the following packages:
 
 ### System
 
-- **Operating System**: [Arch Linux](archlinux.org)
-- **Display Manager**: [LightDM](freedesktop.org/wiki/Software/LightDM)
-    - **Greeter**: [LightDM GTK+ Greeter](launchpad.net/lightdm-gtk-greeter)
-- **Window Manager**: [i3-gaps](github.com/Airblader/i3) (tiling)
-- **Info Bar**: [i3bar](i3wm.org/i3bar) with [i3blocks](vivien.github.io/i3blocks)
-- **Screen Locker**: script using a fork of [i3lock](
-    - **Inactivity Locker**: [xautolock](freecode.com/projects/xautolock)
-- **Compositor**: [compton](github.com/chjj/compton)
-- **Notification Daemon**: [dunst](dunst-project.org)
-- **Application Launcher**: [rofi](davedavenport.github.io/rofi)
+- **Operating System** - [Arch Linux](archlinux.org)
+- **Display Manager** - [LightDM](freedesktop.org/wiki/Software/LightDM)
+    - **Greeter** - [LightDM GTK+ Greeter](launchpad.net/lightdm-gtk-greeter)
+- **Window Manager** - [i3-gaps](github.com/Airblader/i3) (tiling)
+- **Info Bar** - [i3bar](i3wm.org/i3bar) with [i3blocks](vivien.github.io/i3blocks)
+- **Screen Locker** - script using a fork of [i3lock](
+    - **Inactivity Locker** - [xautolock](freecode.com/projects/xautolock)
+- **Compositor** - [compton](github.com/chjj/compton)
+- **Notification Daemon** - [dunst](dunst-project.org)
+- **Application Launcher** - [rofi](davedavenport.github.io/rofi)
 
 
 ### Applications
 
-- **Terminal**: [urxvt](rxvt.sourceforge.net)
-    - **Shell**: [zsh](zsh.sourceforge.net)
-- **Text Editor**: [Emacs](gnu.org/software/emacs)
-- **IDEs**:
-    - **Python**: [Pycharm Community Edition](jetbrains.com/pycharm)
-- **Web Browser**: [Firefox Nightly](mozilla.org/en-US/firefox/channel/desktop)
-- **File Manager**: [Thunar](git.xfce.org/xfe/thunar)
-- **Multimedia Viewer**: [VLC](videolan.org/vlc)
-- **Image Editor**: [GIMP](gimp.org)
-- **Drawing**: [krita](krita.org)
-- **Partition Manager**: [GParted](gparted.org)
+- **Terminal** - [urxvt](rxvt.sourceforge.net)
+    - **Shell** - [Zsh](zsh.sourceforge.net)
+- **Text Editor** - [Emacs](gnu.org/software/emacs)
+- **IDEs**
+    - **Python** - [Pycharm Community Edition](jetbrains.com/pycharm)
+- **Web Browser** - [Firefox Nightly](mozilla.org/en-US/firefox/channel/desktop)
+- **File Manager** - [Thunar](git.xfce.org/xfe/thunar)
+- **Multimedia Player** - [VLC](videolan.org/vlc)
+- **Image Editor** - [GIMP](gimp.org)
+- **Drawing** - [krita](krita.org)
+- **Partition Manager** - [GParted](gparted.org)
 
 Plus anything else I have installed.
 
@@ -62,7 +62,7 @@ Plus anything else I have installed.
 
 Clone the repository with `git clone https://github.com/BenFrankel/dotfiles ~/.dotfiles`.
 
-### Install
+### Setup
 
 Run the command `~/.dotfiles/script/dot get`.
 
@@ -76,9 +76,9 @@ This will automatically do the following:
     - Remove packages not found on the list
 - Change your default (login) shell to Zsh
 
-The command also saves anything it would overwrite in the directory `~/.dotfiles/backup`. Use `dot restore` to restore from backup.
+The command also saves any files it would overwrite in `~/.dotfiles/backup/`, and a list of your installed packages pre-install in `~/.dotfiles/pack/`. Use `dot restore` to restore from backup.
 
-You can also use `dot get` to sync your dotfiles with any updates to the repository.
+You can also use `dot get` to update to the newest version.
 
 ### Wallpaper
 
@@ -92,7 +92,7 @@ Customized key bindings should mostly be backwards compatible with the defaults,
 
 ### Emacs
 
-TODO
+This section isn't written yet.
 
 
 ### i3
@@ -110,10 +110,10 @@ Default keybindings that were removed:
 
 Ergonomic keybindings for default commands:
 
-- TODO
+This section isn't written yet.
 
 Keybindings for non-default commands:
 
-- TODO
+This section isn't written yet.
 
 
