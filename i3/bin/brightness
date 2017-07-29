@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -eu
+# set -x
+
+
+DIR='/sys/class/backlight/intel_backlight'
+
+MAX_BRIGHTNESS=$(cat "${DIR}/max_brightness")
+MIN_BRIGHTNESS=1
+BRIGHTNESS=$(cat "${DIR}/brightness")
+
+USAGE="Usage: brightness [on | off | set {} | (up|down) [more | {}]]"
+
+
+if [ $# -ge 1 ]; then
+    if [ "$1" = "on" ]; then
+	if [ -f "${DIR}/brightness.tmp" ]; then
+	    BRIGHTNESS=$(cat "${DIR}/brightness.tmp")
+        fi
+	rm -f "${DIR}/brightness.tmp"
+    else
+	rm -f "${DIR}/brightness.tmp"
+	
+	if [ "$1" = "off" ]; then
+	    echo "echo '${BRIGHTNESS}' > '${DIR}/brightness.tmp'" | sudo bash
+	    BRIGHTNESS=0
+	elif [ "$1" = "set" ]; then
+	    if [ $# -lt 2 ]; then
+		echo "${USAGE}"
+		exit 1
+	    fi
+	    
+	    BRIGHTNESS="$2"
+	    BRIGHTNESS=$((BRIGHTNESS>MAX_BRIGHTNESS?MAX_BRIGHTNESS:BRIGHTNESS))
+	    BRIGHTNESS=$((BRIGHTNESS<MIN_BRIGHTNESS?MIN_BRIGHTNESS:BRIGHTNESS))
+	else
+	    DELTA_BRIGHTNESS=$((10 + BRIGHTNESS / 40))
+	    if [ $# -ge 2 ]; then
+		if [ "$2" = "more" ]; then
+		    DELTA_BRIGHTNESS=$((DELTA_BRIGHTNESS * 4))
+		else
+		    DELTA_BRIGHTNESS="$2"
+		fi
+	    fi
+	    
+	    if [ "$1" = "up" ]; then
+		BRIGHTNESS=$((BRIGHTNESS + DELTA_BRIGHTNESS))
+		BRIGHTNESS=$((BRIGHTNESS>MAX_BRIGHTNESS?MAX_BRIGHTNESS:BRIGHTNESS))
+	    elif [ "$1" = "down" ]; then
+		BRIGHTNESS=$((BRIGHTNESS - DELTA_BRIGHTNESS))
+		BRIGHTNESS=$((BRIGHTNESS<MIN_BRIGHTNESS?MIN_BRIGHTNESS:BRIGHTNESS))
+	    else
+		echo "${USAGE}"
+		exit 1
+	    fi
+	fi
+    fi
+    
+    echo "${BRIGHTNESS}" | sudo tee "/sys/class/backlight/intel_backlight/brightness"
+else
+    echo "${BRIGHTNESS}/${MAX_BRIGHTNESS}"
+fi
+
+exit 0
+

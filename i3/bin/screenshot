@@ -1,0 +1,28 @@
+#!/bin/sh
+
+
+set -eu
+# set -x
+
+
+SCROT='scrot %F_%s_$wx$h.png'
+NOTIFY='notify-send --urgency=low -t 1'
+
+if [ $# -ge 1 ] && [ "$1" = "select" ]; then
+    SCROT="${SCROT} --select"
+    NOTIFY="${NOTIFY}"' "Screenshot: " "Saved to ~/Pictures/Screenshots/'
+else
+    NOTIFY="${NOTIFY}"' "Screenshot: " "Saved to ~/Pictures/Screenshots/'
+fi
+
+FILENAME="$($SCROT --exec 'echo $f; mv $f '"${HOME}"'/Pictures/Screenshots')"
+paplay "${HOME}/.config/i3/resources/screenshot.oga"
+
+if ([ $# -eq 1 ] && [ "$1" = "upload" ]) || ([ $# -eq 2 ] && [ "$2" = "upload" ]); then
+    imgur ~/Pictures/Screenshots/"${FILENAME}" | xclip -selection c
+    NOTIFY="${NOTIFY}"'\nShareable link copied to clipboard"'
+else
+    NOTIFY="${NOTIFY}"'"'
+fi
+
+echo $NOTIFY | sh

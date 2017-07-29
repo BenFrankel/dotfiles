@@ -6,14 +6,17 @@ set -eu
 usage() {
     printf 'Usage: dot <command> [arguments]
 
-Description: Dotfile manager; run `dot install` to get started.
+Description: Dotfile manager; run `dot get` to get started.
 
 Available commands:
 
-    get               Install latest config
-    push [message]    Push config to repo
-    restore           Restore backed up config
-    pack-save         Save installed packages
+    get               Install latest configs
+    restore           Restore backup configs
+
+Administrative:
+
+    push [message]    Push local configs to repo
+    pack-save         Save installed packages to list
 '
     exit 1
 }
@@ -38,14 +41,19 @@ info() {
 }
 
 prompt() {
-    read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0)" choice
-    return $choice
+    read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0) [Y/n] " choice
+    case $choice in
+        [nN][oO]|[nN])
+            return 0
+            ;;
+        *)
+            return 1
+    esac
 }
 
 pack-load() {
     [ $# -eq 1 ] && ext="$1" || ext=''
-    cat "${PACK_DIR}/pacman${ext}"
-    cat "${PACK_DIR}/aur${ext}"
+    cat "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/aur${ext}"
 }
 
 pack-save() {
@@ -59,23 +67,23 @@ pack-install() {
     pack-save ".old"
     echo
 
-    progress "Refreshing pacman database"
+    progress "Refreshing package databases"
     sudo pacman -Sy
     echo
 
     progress "Finding unlisted packages to remove"
-    unlisted="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    unlisted+="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    if [ -n "${unlisted}" ]; then
+    packages="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
+    packages+="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    if [ -n "${packages}" ]; then
         echo
-        echo $unlisted
+        echo $packages
         echo
-        case $(prompt "Remove packages? [Y/n] ") in
-            [nN][oO]|[nN])
+        case $(prompt "Remove packages?") in
+            0)
                 info "No packages removed"
                 ;;
             *)
-                sudo pacman -Rns --noconfirm $unlisted
+                sudo pacman -Rns --noconfirm $packages
                 ;;
         esac
     else
@@ -84,19 +92,20 @@ pack-install() {
     echo
 
     progress "Finding listed packages to install"
-    listed="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    listed_aur="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    if [ -n "${listed}" -o -n "${listed_aur}" ]; then
+    packages="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
+    packages_aur="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    if [ -n "${packages}" -o -n "${packages_aur}" ]; then
         echo
-        echo $listed
-        echo $listed_aur
-        case $(prompt "$(tput bold)Install packages? [Y/n] ") in
-            [nN][oO]|[nN])
+        [ -n "${packages}" ] && echo $packages
+        [ -n "${packages_aur}" ] && echo $packages_aur
+        echo
+        case $(prompt "Install packages?") in
+            0)
                 info "No packages installed"
                 ;;
             *)
-                [ -n "${listed}" ] && sudo pacman -S --noconfirm $listed
-                [ -n "${listed_aur}" ] && yaourt -S --noconfirm $listed_aur
+                [ -n "${packages}" ] && sudo pacman -S --noconfirm $packages
+                [ -n "${packages_aur}" ] && yaourt -S --noconfirm $packages_aur
                 ;;
         esac
                 
@@ -105,6 +114,56 @@ pack-install() {
     fi
     
     return 0
+}
+
+pack-restore() {
+    progress "Restoring packages"
+    if [ ! -f "${PACK_DIR}/pacman.old" -a ! -f "${PACK_DIR}/aur.old" ]; then
+        info "No list of packages to restore"
+        return 0
+    fi
+    
+    progress "Refreshing package databases"
+    sudo pacman -Sy
+    echo
+
+    progress "Finding packages to reinstall"
+    packages="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
+    if [ -n "${packages}" ]; then
+        info "Installing with pacman:"
+        echo
+        echo $packages
+        echo
+        sudo pacman -S --noconfirm $packages
+    else
+        info "No packages to install from pacman"
+    fi
+    packages="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    if [ -n "${packages}" ]; then
+        info "Installing with yaourt:"
+        echo
+        echo $packages
+        echo
+        yaourt -S --noconfirm $packages
+    else
+        info "No packages to install from yaourt"
+    fi
+    echo
+
+    progress "Finding packages to remove"
+    packages="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
+    packages+="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    if [ -n "${packages}" ]; then
+        info "Removing packages:"
+        echo
+        echo $packages
+        echo
+        sudo pacman -Rns --noconfirm $packages
+    else
+        info "No packages to remove"
+    fi
+
+    rm -f "${PACK_DIR}/pacman.old" "${PACK_DIR}/aur.old"
 }
 
 get-repo() {
@@ -126,21 +185,35 @@ push() {
     git push origin master
 }
 
+link() {
+    # Fail if not given exactly 2 arguments
+    [ $# -eq 2 ] || return 1
+    
+    # Get absolute path of target
+    target=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
+    
+    # Do nothing if the link already exists
+    [ -h "${target}" ] && [ "$(realpath ${target})" -ef "$1" ] && return 0
+
+    # Back up an existing file
+    [ -f "${target}" ] && cp --parents "${target}" "${BACKUP_DIR}"
+    
+    # Make the link
+    ln -sf "$1" "${target}"
+}
+
 setup() {
     progress "Setting up links to dotfiles"
     for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
         filename=$(basename "${path}")
-        if [ -f "${HOME}/.${filename}" -a ! -h "${HOME}/.${filename}" ]; then
-            cp "${HOME}/.${filename}" "${BACKUP_DIR}/${filename}"
-        fi
-        ln -sf "${path}" "${HOME}/.${filename}"
+        link "${path}" "${HOME}/.${filename}"
     done
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
     for path in $(find "${SCRIPT_DIR}" -maxdepth 1 -type f); do
         filename=$(basename "${path}")
-        ln -sf "${path}" "${HOME}/bin/{filename}"
+        link "${path}" "${HOME}/bin/{filename}"
     done
 
     progress "Setting up package configurations"
@@ -154,18 +227,28 @@ case $1 in
     get)
         get-repo
         echo
+        
         setup
         echo
+        
         pack-install
-        ;;
-    push)
-        pack-save
-        push "${@:2}"
+        echo
+        
+        progress "Setting Zsh as default shell"
+        chsh -s $(which zsh)
         ;;
     restore)
-        progress "Restoring backups"
+        # Restore backup configs
+        # Restore backup config packs
+        pack-restore
+        ;;
+    push)
+        progress "Saving installed packages"
+        pack-save
+        echo
         
-        progress "Removing installed packages"
+        progress "Pushing to origin"
+        push "${@:2}"
         ;;
     pack-save)
         pack-save

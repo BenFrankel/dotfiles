@@ -1,0 +1,595 @@
+###############
+## i3 CONFIG ##
+###############
+
+# Should you change your keyboard layout some time, delete
+# this file and re-run i3-config-wizard(1).
+
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+
+############
+# PROGRAMS #
+############
+
+set $FILE-MANAGER thunar
+set $IMAGE-EDITOR gimp
+set $PAINT krita
+set $TERMINAL urxvtc
+set $TEXT-EDITOR emacsclient -c
+set $VIDEO-PLAYER vlc
+set $WEB-BROWSER firefox-nightly
+
+
+#############
+## STARTUP ##
+#############
+#  DAEMONS  #
+# Dunst for notifications
+exec --no-startup-id dunst
+# Emacs for text editing
+exec --no-startup-id emacs --daemon
+# Urxvtd for terminals
+exec --no-startup-id urxvtd -f -o
+# Xautolock to lock screen after inactivity
+exec --no-startup-id xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -secure -detectsleep
+# Compton for transparency and transitions
+exec --no-startup-id compton -b
+# Syndaemon to prevent keyboard/touchpad interference
+#exec --no-startup-id syndaemon -KRd -i 1 -m 50
+
+# Start up music in the background
+for_window [class="^(Spotify|Rhythmbox)$"] move scratchpad
+#exec --no-startup-id spotify
+
+# Set desktop background
+exec_always --no-startup-id ~/.fehbg
+
+# Use caps lock as additional super key
+exec --no-startup-id setxkbmap -option caps:super
+
+
+################
+## APPEARANCE ##
+################
+
+# COLORS
+# Unfocused
+set $C-BG   #000000
+set $C-FG   #ffffff
+
+# Focused & inactive
+set $CI-BG  #aa4400
+set $CI-FG  #ffffff
+
+# Focused & active
+set $CF-BG  #ffaa00
+set $CF-FG  #000000
+
+# Urgent
+set $CU-BG  #b01122
+set $CU-FG  #ffffff
+
+# Font for window titles
+font pango:FontAwesome, Ubuntu Sans 8
+
+# Gaps around containers
+gaps inner 10
+gaps outer -2
+smart_gaps on
+
+# Borders around containers
+for_window [class="^.*"] border pixel 3
+smart_borders on
+
+
+#####################
+# TITLE BAR SYMBOLS #
+# ----------------- #
+# General window    #
+for_window [class="^.*$"] title_format "   %title"
+# Web browser	    #
+for_window [class="^Firefox$"] title_format "   %title"
+for_window [class="^Google-chrome$"] title_format "   %title"
+# Terminal          #
+for_window [class="^(Gnome-terminal|URxvt)$"] title_format "   %title"
+# Music player      #
+for_window [class="^Spotify$"] title_format "   %title"
+# File manager      #
+for_window [class="^(Nemo|Nautilus|Thunar)$"] title_format "   %title"
+# Torrent client    #
+for_window [class="^Transmission-gtk$"] title_format "   %title"
+# Image editor      #
+for_window [class="^(Gimp|krita)$"] title_format "   %title"
+# Image viewer      #
+for_window [class="^(feh|Eog)$"] title_format "   %title"
+# Document viewer   #
+for_window [class="^(Evince|Okular)$"] title_format "   %title"
+# Text editor       #
+for_window [class="^(Emacs|Gedit)$"] title_format "   %title"
+# Development tool  #
+for_window [class="^jetbrains-.*$"] title_format "   %title"
+# Messaging client  #
+for_window [class="^(discord|Hexchat|Riot)$"] title_format "   %title"
+for_window [class="^skypeforlinux$"] title_format "   %title"
+# Games             #
+for_window [class="^(supertux2|SuperTuxKart|Gnome-(mahjongg|mines|sudoku))$"] title_format "   %title"
+# Calculators       #
+for_window [class="^Gnome-calculator$"] title_format "   %title"
+# System monitor    #
+for_window [class="^Gnome-system-monitor$"] title_format "   %title"
+# Settings          #
+for_window [class="^Lxappearance$"] title_format "   %title"
+# Store             #
+for_window [class="^Gnome-software$"] title_format "   %title"
+#####################
+
+# Workspace names
+set $WORKSPACE-1 "1: etc"
+set $WORKSPACE-2 "2: web"
+set $WORKSPACE-3 "3: msg"
+set $WORKSPACE-4 "4: pad"
+set $WORKSPACE-5 "5: dev"
+set $WORKSPACE-6 "6: uni"
+set $WORKSPACE-7 "7: try"
+set $WORKSPACE-8 "8: art"
+set $WORKSPACE-9 "9: cup"
+set $WORKSPACE-10 "10: tmp"
+
+# Window colors          BORDER      BACKGROUND  TEXT        INDICATOR    CHILD-BORDER
+client.focused           $CF-BG      $CF-BG      $CF-FG      $CF-BG       $CF-BG
+client.focused_inactive  $CI-BG      $CI-BG      $CI-FG      $CI-BG       $C-BG
+client.unfocused 	 $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+client.urgent		 $CU-BG      $CU-BG      $CU-FG      $CU-BG       $CU-BG
+client.placeholder	 $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+
+client.background 	 $C-BG     
+
+# Start i3bar to display a workspace bar
+bar
+{
+	colors {
+	       background          $C-BG     
+	       focused_background  $C-BG     
+	       
+	       statusline          $C-BG    
+	       focused_statusline  $CF-BG    
+	       
+	       separator           $C-BG    
+	       focused_separator   $CF-BG    
+
+	       # CLASS             BORDER       BG           TEXT
+	       focused_workspace   $CF-BG       $CF-BG       $CF-FG  
+	       active_workspace    $CF-BG       $CF-BG       $CF-FG  
+	       inactive_workspace  $C-BG        $C-BG        $C-FG  
+	       urgent_workspace    $CU-BG       $CU-BG       $CU-FG  
+	       binding_mode        $CU-BG       $CU-BG       $CU-FG  
+	}
+	
+	font pango:FontAwesome, Ubuntu Mono 11
+
+	position bottom
+	workspace_buttons yes
+	strip_workspace_numbers yes
+	binding_mode_indicator yes
+
+        status_command i3blocks
+        tray_output none
+	separator_symbol " "
+}
+
+# Configure rofi
+set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#a0000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-normal \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-urgent \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-active \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
+
+
+##############
+## BEHAVIOR ##
+##############
+
+# Open feh as floating
+for_window [class="^feh$"] floating enable
+floating_maximum_size 1860 x 1020
+
+# Workspace-specific applications
+assign [class="^(discord|Hexchat)$"] workspace $WORKSPACE-3
+
+
+# Sound volume commands
+set $SOUND-VOLUME-INC-MINOR exec --no-startup-id volume up && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-DEC-MINOR exec --no-startup-id volume down && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-INC-MAJOR exec --no-startup-id volume up more && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-DEC-MAJOR exec --no-startup-id volume down more && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-MUTE-TOGGLE exec --no-startup-id volume toggle && [ -n "$(volume | grep 'off')" ] && notify-send --urgency=low -t 1 'Volume: ' 'Now off' || notify-send --urgency=low -t 1 'Volume: ' "Now $(volume)%"
+
+# Microphone commands
+set $MIC-TOGGLE exec --no-startup-id "amixer -D pulse set Capture toggle && notify-send --urgency=low -t 1 \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo Microphone: ; else echo Microphone: ; fi)\\" \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo \\"Now $(amixer -D pulse get Capture | grep -Eom 1 '\[[[:digit:]]+%\]' | tr -d '[]')\\"; else echo Now off; fi)\\""
+
+# Brightness commands
+set $BRIGHTNESS-INC-MINOR exec --no-startup-id brightness up && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
+set $BRIGHTNESS-DEC-MINOR exec --no-startup-id brightness down &&  notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
+set $BRIGHTNESS-INC-MAJOR exec --no-startup-id brightness up more && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
+set $BRIGHTNESS-DEC-MAJOR exec --no-startup-id brightness down more && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
+
+# Screenshot commands
+set $SCREENSHOT-FULL exec --no-startup-id screenshot
+set $SCREENSHOT-SELECT exec --no-startup-id screenshot select
+set $SCREENSHOT-FULL-SHARE exec --no-startup-id screenshot upload
+set $SCREENSHOT-SELECT-SHARE exec --no-startup-id screenshot select upload
+
+
+##################
+## KEY BINDINGS ##
+##################
+
+# Unused $mod ergonomic bindings
+# - Mid row: gh
+# - Bot row: xbn
+#
+# Miscellaneous unused keys:
+# - Right Ctrl
+# - Right Alt
+# - Esc
+# - F7 through F12
+# - Calc, Lock, Globe, Folder
+
+# Use super key
+set $mod Mod4
+
+###################
+# GLOBAL BINDINGS #
+# --------------- #
+#     SPEAKER     #
+bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+#   MICROPHONE    #
+bindsym XF86AudioMicMute $MIC-TOGGLE
+bindsym $mod+F4 $MIC-TOGGLE
+#   BRIGHTNESS    #
+bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+#   SCREENSHOTS   #
+bindsym --release Print $SCREENSHOT-FULL
+bindsym --release Shift+Print $SCREENSHOT-SELECT
+bindsym --release $mod+Print $SCREENSHOT-FULL-SHARE
+bindsym --release $mod+Shift+Print $SCREENSHOT-SELECT-SHARE
+###################
+
+
+# Debugging:
+#bindsym $mod+x exec --no-startup-id echo "$(env)" > ~/.i3-debug
+
+
+# Non-conflicting default keybindings for backwards compatibility:
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+Shift+space floating toggle
+# These ones are hanging on a thread
+bindsym $mod+h split h
+bindsym $mod+a focus parent
+
+# Kill focused container
+bindsym $mod+q kill
+bindsym $mod+BackSpace kill
+
+# Launch terminal
+bindsym $mod+Return exec $TERMINAL
+
+# Rofi exec
+bindsym $mod+slash exec --no-startup-id "$ROFI run"
+
+# Rofi start
+bindsym $mod+period exec --no-startup-id "$ROFI drun"
+
+# Rofi jump
+bindsym $mod+comma exec --no-startup-id "$ROFI window"
+
+# Change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# Arrow key alternatives
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Ergonomic alternatives
+bindsym $mod+u move left
+bindsym $mod+i move down
+bindsym $mod+o move up
+bindsym $mod+p move right
+
+# Focus parent
+bindsym $mod+bracketleft focus parent
+
+# Focus child
+bindsym $mod+bracketright focus child
+
+# Change layout (tabbed, split)
+# I don't like stacking, so it doesn't get a binding
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+c split h
+bindsym $mod+v split v
+
+# Toggle fullscreen
+bindsym $mod+f fullscreen toggle
+
+# Toggle focus floating / tiling mode
+bindsym $mod+m focus mode_toggle
+
+# Toggle floating / tiling mode
+bindsym $mod+Shift+m sticky disable; floating toggle
+bindsym --whole-window $mod+button2 sticky disable; floating toggle
+
+# Raise container from workspace
+bindsym $mod+Shift+s sticky enable; floating enable
+
+# Lower container into workspace
+bindsym $mod+s sticky disable; floating disable
+
+# Toggle bar mode
+bindsym $mod+d bar mode toggle
+
+# Drag to move or resize floating containers
+floating_modifier $mod
+
+# Move focused window to sratchpad
+bindsym $mod+minus move scratchpad
+
+# Pop scratchpad
+bindsym $mod+plus scratchpad show
+
+# Switch workspace
+bindsym $mod+1 workspace $WORKSPACE-1
+bindsym $mod+2 workspace $WORKSPACE-2
+bindsym $mod+3 workspace $WORKSPACE-3
+bindsym $mod+4 workspace $WORKSPACE-4
+bindsym $mod+5 workspace $WORKSPACE-5
+bindsym $mod+6 workspace $WORKSPACE-6
+bindsym $mod+7 workspace $WORKSPACE-7
+bindsym $mod+8 workspace $WORKSPACE-8
+bindsym $mod+9 workspace $WORKSPACE-9
+bindsym $mod+0 workspace $WORKSPACE-10
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $WORKSPACE-1
+bindsym $mod+Shift+2 move container to workspace $WORKSPACE-2
+bindsym $mod+Shift+3 move container to workspace $WORKSPACE-3
+bindsym $mod+Shift+4 move container to workspace $WORKSPACE-4
+bindsym $mod+Shift+5 move container to workspace $WORKSPACE-5
+bindsym $mod+Shift+6 move container to workspace $WORKSPACE-6
+bindsym $mod+Shift+7 move container to workspace $WORKSPACE-7
+bindsym $mod+Shift+8 move container to workspace $WORKSPACE-8
+bindsym $mod+Shift+9 move container to workspace $WORKSPACE-9
+bindsym $mod+Shift+0 move container to workspace $WORKSPACE-10
+
+# Switch to previous workspace
+bindsym $mod+z workspace back_and_forth
+
+# Pause / play music
+bindsym $mod+t exec --no-startup-id playerctl play-pause && pkill -SIGRTMIN+10 i3blocks
+
+# Next song
+bindsym $mod+y exec --no-startup-id playerctl next && sleep 0.02 && pkill -SIGRTMIN+10 i3blocks && sleep 0.06 && pkill -SIGRTMIN+10 i3blocks
+
+# Change keyboard layout
+bindsym $mod+backslash exec --no-startup-id (setxkbmap -query | grep -Eq 'layout:\s+us') && setxkbmap il || setxkbmap us
+
+
+###########
+## MODES ##
+###########
+
+# Window resizing mode
+set $MODE-RESIZE "RESIZE"
+bindsym $mod+r mode $MODE-RESIZE
+
+# System control mode
+set $MODE-SYSTEM "SYSTEM: config - hide - lock - reset - suspend - CLOSE - HIBERNATE - LOGOUT - REBOOT - SHUTDOWN"
+bindsym $mod+space mode $MODE-SYSTEM
+
+# Application launch mode
+set $MODE-OPEN "OPEN: file - image - paint - shell - text - video - web"
+bindsym $mod+apostrophe mode $MODE-OPEN
+
+
+#########################
+## MODE IMPLEMENTATION ##
+#########################
+
+# Window resizing mode
+mode $MODE-RESIZE
+{
+	# Resize with directional keys
+        bindsym j resize shrink width 10 px or 4 ppt
+        bindsym k resize grow height 10 px or 4 ppt
+        bindsym l resize shrink height 10 px or 4 ppt
+        bindsym semicolon resize grow width 10 px or 4 ppt
+	
+        bindsym Left resize shrink width 10 px or 4 ppt
+        bindsym Down resize grow height 10 px or 4 ppt
+        bindsym Up resize shrink height 10 px or 4 ppt
+        bindsym Right resize grow width 10 px or 4 ppt
+
+	# Use shift to resize faster
+	bindsym $mod+j resize shrink width 50 px or 20 ppt
+	bindsym $mod+k resize grow height 50 px or 20 ppt
+	bindsym $mod+l resize shrink height 50 px or 20 ppt
+	bindsym $mod+semicolon resize grow width 50 px or 20 ppt
+
+	bindsym $mod+Left resize shrink width 50 px or 20 ppt
+	bindsym $mod+Down resize grow height 50 px or 20 ppt
+	bindsym $mod+Up resize shrink height 50 px or 20 ppt
+	bindsym $mod+Right resize grow width 50 px or 20 ppt
+
+	# Exit mode with Enter or Escape or space
+	# or use mode command again to toggle out
+        bindsym Return mode "default"
+        bindsym $mod+Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+Escape mode "default"
+	bindsym space mode "default"
+	bindsym $mod+space mode "default"
+        bindsym $mod+r mode "default"
+	
+        # Due to i3 config limitations, the following must be copied into every mode
+        # in order to achieve global key binding behavior:
+	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+	bindsym XF86AudioMicMute $MIC-TOGGLE
+	bindsym $mod+F4 $MIC-TOGGLE
+	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+	bindsym --release Print $SCREENSHOT-FULL
+	bindsym --release Shift+Print $SCREENSHOT-SELECT
+}
+
+# System control mode
+mode $MODE-SYSTEM
+{
+	# Reload i3 configuration
+	bindsym c mode "default"; reload
+
+	# Close i3
+	bindsym Shift+c mode "default"; exec --no-startup-id speak Closing i3.; exit
+
+	# Hide screen
+	bindsym h mode "default"; exec --no-startup-id xbacklight -set 0
+
+	# Hibernate
+	bindsym Shift+h mode "default"; exec --no-startup-id speak Highbur nating.; exec --no-startup-id systemctl hibernate
+
+	# Lock
+	bindsym l mode "default"; exec --no-startup-id lock
+
+	# Log out
+	bindsym Shift+l mode "default"; exec --no-startup-id speak Logging out.; exit
+
+	# Restart i3
+	bindsym r mode "default"; restart
+
+	# Reboot
+	bindsym Shift+r mode "default"; exec --no-startup-id speak Rebooting.; exec --no-startup-id systemctl reboot
+
+	# Suspend
+	bindsym s mode "default"; exec --no-startup-id systemctl suspend
+
+	# Shutdown
+	bindsym Shift+s mode "default"; exec --no-startup-id speak Shutting down.; exec --no-startup-id systemctl poweroff
+
+	# Exit mode with Enter or Escape or space
+	# or use mode command again to toggle out
+        bindsym Return mode "default"
+        bindsym $mod+Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+Escape mode "default"
+	bindsym space mode "default"
+	bindsym $mod+space mode "default"
+	
+        # Due to i3 config limitations, the following must be copied into every mode
+        # in order to achieve global key binding behavior:
+	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+	bindsym XF86AudioMicMute $MIC-TOGGLE
+	bindsym $mod+F4 $MIC-TOGGLE
+	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+	bindsym --release Print $SCREENSHOT-FULL
+	bindsym --release Shift+Print $SCREENSHOT-SELECT
+}
+
+# Application launch mode
+mode $MODE-OPEN
+{
+	# File browser
+	bindsym $mod+f exec $FILE-MANAGER
+	bindsym f mode "default"; exec $FILE-MANAGER
+
+	# Image manipulator
+	bindsym $mod+i exec $IMAGE-EDITOR
+	bindsym i mode "default"; exec $IMAGE-EDITOR
+
+        # Paint
+        bindsym $mod+p exec $PAINT
+        bindsym p mode "default"; exec $PAINT
+
+	# Shell
+	bindsym $mod+s exec $TERMINAL
+	bindsym s mode "default"; exec $TERMINAL
+
+	# Text editor
+	bindsym $mod+t exec $TEXT-EDITOR
+	bindsym t mode "default"; exec $TEXT-EDITOR
+
+	# Video player
+	bindsym $mod+v exec $VIDEO-PLAYER
+	bindsym v mode "default"; exec $VIDEO-PLAYER
+
+	# Web browser
+	bindsym $mod+w exec $WEB-BROWSER
+	bindsym w mode "default"; exec $WEB-BROWSER
+
+	# For convenience, kill focused window
+	bindsym $mod+BackSpace kill
+	bindsym BackSpace kill
+	bindsym $mod+q kill
+
+	# Exit mode with Enter or Escape or space
+	# or use mode command again to toggle out
+        bindsym Return mode "default"
+        bindsym $mod+Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+Escape mode "default"
+	bindsym space mode "default"
+	bindsym $mod+space mode "default"
+        bindsym $mod+apostrophe mode "default"
+	
+        # Due to i3 config limitations, the following must be copied into every mode
+        # in order to achieve global key binding behavior:
+	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+	bindsym XF86AudioMicMute $MIC-TOGGLE
+	bindsym $mod+F4 $MIC-TOGGLE
+	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+	bindsym --release Print $SCREENSHOT-FULL
+	bindsym --release Shift+Print $SCREENSHOT-SELECT
+}

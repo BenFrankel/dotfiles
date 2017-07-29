@@ -60,23 +60,29 @@ Plus anything else I have installed.
 
 ### Download
 
-Navigate to your home directory and clone the repository with `git clone https://github.com/BenFrankel/dotfiles`.
+Clone the repository with `git clone https://github.com/BenFrankel/dotfiles ~/.dotfiles`.
 
-### Packages
+### Install
 
-Install all packages from the official Arch repositories with `pacman -S - < .pacman_packages`.
+Run the command `~/.dotfiles/script/dot get`.
 
-A handful of repositories come from AUR. Those packages can be installed with `yaourt -S - < .aur_packages`.
+This will automatically do the following:
 
-Alternatively, you can use the script `~/bin/package` to list, install, or save installed packages.
+- Get the most recent version of this repository
+- Set up links in your filesystem to activate the configuration files
+- Put links to any dotfile scripts in your `~/bin` directory
+- Sync your system's packages with the package list
+    - Install missing packages from the list
+    - Remove packages not found on the list
+- Change your default (login) shell to Zsh
 
-### Zsh
+The command also saves anything it would overwrite in the directory `~/.dotfiles/backup`. Use `dot restore` to restore from backup.
 
-Set zsh as your default shell with `chsh -s $(which zsh)`
+You can also use `dot get` to sync your dotfiles with any updates to the repository.
 
 ### Wallpaper
 
-To set your wallpaper, download an image (probably to ~/Pictures/Wallpapers, but not necessarily) and make a link to it with `ln -s /path/to/image ~/.wallpaper`. The wallpaper will be dislayed when you reload i3 (Mod-space then r).
+To set your wallpaper, download an image (probably to `~/Pictures/Wallpapers/`, but not necessarily) and make a link to it with `ln -s /path/to/image ~/.wallpaper`. The wallpaper will be dislayed when you reload i3 (Mod-space then r).
 
 
 ## Key Bindings
