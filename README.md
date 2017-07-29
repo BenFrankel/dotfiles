@@ -9,7 +9,7 @@ The purpose of this, for me, is:
 - To keep multiple systems synchronized
 - To serve as a backup in case of flood
 
-See [here](dotfiles.github.io) for more information about dotfile repositories.
+See [here](https://dotfiles.github.io) for more information about dotfile repositories.
 
 
 ## Packages
@@ -19,31 +19,31 @@ This repository is based on the following packages:
 
 ### System
 
-- **Operating System** - [Arch Linux](archlinux.org)
-- **Display Manager** - [LightDM](freedesktop.org/wiki/Software/LightDM)
-    - **Greeter** - [LightDM GTK+ Greeter](launchpad.net/lightdm-gtk-greeter)
-- **Window Manager** - [i3-gaps](github.com/Airblader/i3) (tiling)
-- **Info Bar** - [i3bar](i3wm.org/i3bar) with [i3blocks](vivien.github.io/i3blocks)
-- **Screen Locker** - script using a fork of [i3lock](
-    - **Inactivity Locker** - [xautolock](freecode.com/projects/xautolock)
-- **Compositor** - [compton](github.com/chjj/compton)
-- **Notification Daemon** - [dunst](dunst-project.org)
-- **Application Launcher** - [rofi](davedavenport.github.io/rofi)
+- **Operating System** - [Arch Linux](https://archlinux.org)
+- **Display Manager** - [LightDM](https://freedesktop.org/wiki/Software/LightDM)
+    - **Greeter** - [LightDM GTK+ Greeter](https://launchpad.net/lightdm-gtk-greeter)
+- **Window Manager** - [i3-gaps](https://github.com/Airblader/i3) (tiling)
+- **Info Bar** - [i3bar](https://i3wm.org/i3bar) with [i3blocks](https://vivien.github.io/i3blocks)
+- **Screen Locker** - script using a fork of [i3lock](https://
+    - **Inactivity Locker** - [xautolock](https://freecode.com/projects/xautolock)
+- **Compositor** - [compton](https://github.com/chjj/compton)
+- **Notification Daemon** - [dunst](https://dunst-project.org)
+- **Application Launcher** - [rofi](https://davedavenport.github.io/rofi)
 
 
 ### Applications
 
-- **Terminal** - [urxvt](rxvt.sourceforge.net)
-    - **Shell** - [Zsh](zsh.sourceforge.net)
-- **Text Editor** - [Emacs](gnu.org/software/emacs)
+- **Terminal** - [urxvt](https://rxvt.sourceforge.net)
+    - **Shell** - [Zsh](https://zsh.sourceforge.net)
+- **Text Editor** - [Emacs](https://gnu.org/software/emacs)
 - **IDEs**
-    - **Python** - [Pycharm Community Edition](jetbrains.com/pycharm)
-- **Web Browser** - [Firefox Nightly](mozilla.org/en-US/firefox/channel/desktop)
-- **File Manager** - [Thunar](git.xfce.org/xfe/thunar)
-- **Multimedia Player** - [VLC](videolan.org/vlc)
-- **Image Editor** - [GIMP](gimp.org)
-- **Drawing** - [krita](krita.org)
-- **Partition Manager** - [GParted](gparted.org)
+    - **Python** - [Pycharm Community Edition](https://jetbrains.com/pycharm)
+- **Web Browser** - [Firefox Nightly](https://mozilla.org/en-US/firefox/channel/desktop)
+- **File Manager** - [Thunar](https://git.xfce.org/xfe/thunar)
+- **Multimedia Player** - [VLC](https://videolan.org/vlc)
+- **Image Editor** - [GIMP](https://gimp.org)
+- **Drawing** - [krita](https://krita.org)
+- **Partition Manager** - [GParted](https://gparted.org)
 
 Plus anything else I have installed.
 
