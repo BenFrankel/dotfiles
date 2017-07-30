@@ -9,7 +9,7 @@ The purpose of this, for me, is:
 - To keep multiple systems synchronized
 - To serve as a backup in case of flood
 
-See [here](https://dotfiles.github.io) for more information about dotfile repositories.
+See [here](https://dotfiles.github.io) for more information on dotfile repositories.
 
 
 ## Packages
@@ -22,18 +22,18 @@ This repository is based on the following packages:
 - **Operating System** - [Arch Linux](https://archlinux.org)
 - **Display Manager** - [LightDM](https://freedesktop.org/wiki/Software/LightDM)
     - **Greeter** - [LightDM GTK+ Greeter](https://launchpad.net/lightdm-gtk-greeter)
-- **Window Manager** - [i3-gaps](https://github.com/Airblader/i3) (tiling)
+- **Window Manager** - [i3-gaps](https://github.com/Airblader/i3)
 - **Info Bar** - [i3bar](https://i3wm.org/i3bar) with [i3blocks](https://vivien.github.io/i3blocks)
-- **Screen Locker** - script using a fork of [i3lock](https://
+- **Screen Locker** - Script using a fork of [i3lock]()
     - **Inactivity Locker** - [xautolock](https://freecode.com/projects/xautolock)
-- **Compositor** - [compton](https://github.com/chjj/compton)
-- **Notification Daemon** - [dunst](https://dunst-project.org)
-- **Application Launcher** - [rofi](https://davedavenport.github.io/rofi)
+- **Compositor** - [Compton](https://github.com/chjj/compton)
+- **Notification Daemon** - [Dunst](https://dunst-project.org)
+- **Application Launcher** - [Rofi](https://davedavenport.github.io/rofi)
 
 
 ### Applications
 
-- **Terminal** - [urxvt](https://rxvt.sourceforge.net)
+- **Terminal** - [rxvt](http://rxvt.sourceforge.net)
     - **Shell** - [Zsh](https://zsh.sourceforge.net)
 - **Text Editor** - [Emacs](https://gnu.org/software/emacs)
 - **IDEs**
@@ -42,7 +42,7 @@ This repository is based on the following packages:
 - **File Manager** - [Thunar](https://git.xfce.org/xfe/thunar)
 - **Multimedia Player** - [VLC](https://videolan.org/vlc)
 - **Image Editor** - [GIMP](https://gimp.org)
-- **Drawing** - [krita](https://krita.org)
+- **Drawing** - [Krita](https://krita.org)
 - **Partition Manager** - [GParted](https://gparted.org)
 
 Plus anything else I have installed.
@@ -55,7 +55,7 @@ Plus anything else I have installed.
 
 - Arch Linux
 - Internet connection
-- git
+- [git](https://git-scm.com)
 
 
 ### Download
@@ -69,14 +69,16 @@ Run the command `~/.dotfiles/script/dot get`.
 This will automatically do the following:
 
 - Get the most recent version of this repository
+- **NOT DONE**: Set LightDM as your display manager and greeter
+- **NOT DONE**: Set i3-gaps as your default window manager
 - Set up links in your filesystem to activate the configuration files
-- Put links to any dotfile scripts in your `~/bin` directory
+- Put the `dot` script in your `~/bin/` directory
 - Sync your system's packages with the package list
     - Install missing packages from the list
     - Remove packages not found on the list
 - Change your default (login) shell to Zsh
 
-The command also saves any files it would overwrite in `~/.dotfiles/backup/`, and a list of your installed packages pre-install in `~/.dotfiles/pack/`. Use `dot restore` to restore from backup.
+The command also saves any files it replaces in `~/.dotfiles/backup/`, and a list of your packages pre-install in `~/.dotfiles/pack/`. Use `dot restore` to restore from backup.
 
 You can also use `dot get` to update to the newest version.
 

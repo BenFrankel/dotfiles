@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo . "${HOME}/.config/i3"
+echo "$(find bin -type f -exec echo '{}' '/usr/local/{}' \;)"

@@ -1,0 +1,91 @@
+# i3blocks config file
+#
+# align
+# color
+# command
+# full_text
+# instance
+# interval
+# label
+# min_width
+# name
+# separator
+# separator_block_width
+# short_text
+# signal
+# urgent
+
+# Global properties
+command=~/.config/i3blocks/blocks/$BLOCK_NAME
+separator=false
+separator_block_width=12
+markup=none
+interval=30
+color=#262626
+
+[date]
+label=
+interval=60
+
+[separator]
+full_text=
+
+[time]
+label=
+interval=1
+
+[separator]
+full_text=
+
+[wifi]
+instance=wlp3s0
+interval=2
+
+[separator]
+full_text=
+
+[cpu_usage]
+label=
+interval=5
+
+[separator]
+full_text=
+
+[battery]
+signal=11
+interval=60
+
+[separator]
+full_text=
+
+[mediaplayer]
+instance=spotify
+signal=10
+
+[separator]
+full_text=
+
+[volume]
+instance=Master
+interval=once
+signal=10
+
+[separator]
+full_text= 
+
+# Key indicators
+#
+# Add the following bindings to i3 config file:
+#
+# bindsym --release Caps_Lock exec pkill -SIGRTMIN+12 i3blocks
+# bindsym --release Num_Lock  exec pkill -SIGRTMIN+12 i3blocks
+
+#[keyindicator]
+#instance=CAPS
+#interval=once
+#signal=12
+
+#[keyindicator]
+#instance=NUM
+#interval=once
+#signal=12

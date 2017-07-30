@@ -10,11 +10,14 @@ Description: Dotfile manager; run `dot get` to get started.
 
 Available commands:
 
-    get               Install latest configs
-    restore           Restore backup configs
+    get               Install latest configs & packages
+    restore           Restore backup configs & packages
+
+    activate          Activate local configs
+    deactivate        Restore backup configs
 
     diff              Compare local packages to list
-    sync              Install missing & remove local
+    sync              Sync local packages with list
     save              Save local packages to list
 
 Administrative:
@@ -35,14 +38,17 @@ BACKUP_DIR="${DOT_DIR}/backup"
 PACK_DIR="${DOT_DIR}/pack"
 
 
+# Print progress
 progress() {
     echo "$(tput bold)$(tput setaf 2)*$(tput sgr0) $(tput bold)$1$(tput sgr0)..."
 }
 
+# Print info
 info() {
     echo "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0)"
 }
 
+# Ask for yes / no confirmation
 prompt() {
     read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0) [Y/n] " choice
     case $choice in
@@ -54,29 +60,36 @@ prompt() {
     esac
 }
 
-pack-load() {
+# Load package lists
+load() {
     [ $# -eq 1 ] && ext="$1" || ext=''
     cat "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/aur${ext}"
 }
 
-pack-save() {
+# Save packages to lists
+save() {
     [ $# -eq 1 ] && ext="$1" || ext=''
     pacman -Qqen | sort > "${PACK_DIR}/pacman${ext}"
     pacman -Qqem | sort > "${PACK_DIR}/aur${ext}"
 }
 
-pack-sync() {
+# Sync with local package lists
+sync() {
+    [ $# -ge 1 ] && ext="$1" || ext=''
+    [ $# -eq 2 ] && old="$2" || old='.old'
+    
+    if [ ! -f "${PACK_DIR}/pacman${ext}" -a ! -f "${PACK_DIR}/aur${ext}" ]; then
+        info "No pacman${ext} or aur${ext} in ${PACK_DIR} to sync with"
+        return 0
+    fi
+    
     progress "Backing up installed packages"
-    pack-save ".old"
+    save "${old}"
     echo
 
-    progress "Refreshing package databases"
-    sudo pacman -Sy
-    echo
-
-    progress "Finding unlisted packages to remove"
-    packages="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    packages+="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    progress "Finding local packages to remove"
+    packages="$(comm -13 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
+    packages+="$(comm -13 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
     if [ -n "${packages}" ]; then
         echo
         echo $packages
@@ -94,9 +107,9 @@ pack-sync() {
     fi
     echo
 
-    progress "Finding listed packages to install"
-    packages="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    packages_aur="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
+    progress "Finding missing packages to install"
+    packages="$(comm -23 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
+    packages_aur="$(comm -23 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
     if [ -n "${packages}" -o -n "${packages_aur}" ]; then
         echo
         [ -n "${packages}" ] && echo $packages
@@ -119,56 +132,7 @@ pack-sync() {
     return 0
 }
 
-pack-restore() {
-    progress "Restoring packages"
-    if [ ! -f "${PACK_DIR}/pacman.old" -a ! -f "${PACK_DIR}/aur.old" ]; then
-        info "No list of packages to restore"
-        return 0
-    fi
-    
-    progress "Refreshing package databases"
-    sudo pacman -Sy
-    echo
-
-    progress "Finding packages to reinstall"
-    packages="$(comm -13 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    if [ -n "${packages}" ]; then
-        info "Installing with pacman:"
-        echo
-        echo $packages
-        echo
-        sudo pacman -S --noconfirm $packages
-    else
-        info "No packages to install from pacman"
-    fi
-    packages="$(comm -13 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    if [ -n "${packages}" ]; then
-        info "Installing with yaourt:"
-        echo
-        echo $packages
-        echo
-        yaourt -S --noconfirm $packages
-    else
-        info "No packages to install from yaourt"
-    fi
-    echo
-
-    progress "Finding packages to remove"
-    packages="$(comm -23 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.old")"
-    packages+="$(comm -23 "${PACK_DIR}/aur" "${PACK_DIR}/aur.old")"
-    if [ -n "${packages}" ]; then
-        info "Removing packages:"
-        echo
-        echo $packages
-        echo
-        sudo pacman -Rns --noconfirm $packages
-    else
-        info "No packages to remove"
-    fi
-
-    rm -f "${PACK_DIR}/pacman.old" "${PACK_DIR}/aur.old"
-}
-
+# Get latest version of repository
 get-repo() {
     progress "Getting latest repository"
     if [ ! -d "${DOT_DIR}/.git" ]; then
@@ -187,86 +151,139 @@ push-repo() {
     git push origin master
 }
 
-link() {
+# Create link with backup
+glue() {
     # Fail if not given exactly 2 arguments
     [ $# -eq 2 ] || return 1
-    
-    # Get absolute path of target
-    target=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
+
+    # Get absolute path of arguments
+    target=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
+    dest=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
     
     # Do nothing if the link already exists
-    [ -h "${target}" ] && [ "$(realpath ${target})" -ef "$1" ] && return 0
+    [ -h "${dest}" ] && [ "$(realpath -m ${dest})" -ef "$1" ] && return 0
 
-    # Back up an existing file
-    [ -f "${target}" ] && cp --parents "${target}" "${BACKUP_DIR}"
+    # Back up an existing file or directory
+    if [ -e "${dest}" ]; then
+        rm -rf "${BACKUP_DIR}/${dest}"
+        sudo cp -rP --parents "${dest}" "${BACKUP_DIR}"
+    fi
+
+    # Remove destination
+    sudo rm -rf "${dest}"
     
     # Make the link
-    ln -sf "$1" "${target}"
+    sudo ln -s "${target}" "${dest}"
 }
 
-setup() {
+# Set up all the necessary links to local configuration
+activate() {
     progress "Setting up links to dotfiles"
     for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
         filename=$(basename "${path}")
-        link "${path}" "${HOME}/.${filename}"
+        glue "${path}" "${HOME}/.${filename}"
     done
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
-    for path in $(find "${SCRIPT_DIR}" -maxdepth 1 -type f); do
-        filename=$(basename "${path}")
-        link "${path}" "${HOME}/bin/{filename}"
-    done
+    glue "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
 
-    progress "Setting up package configurations"
+    progress "Activating package configurations"
     for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
-        eval "${package}/setup"
+        info "$(basename "${package}")"
+        cd "${package}"
+        eval ./dot-glue | while read line; do
+            glue ${line}
+        done
     done
 }
 
+# Remove links to local configuration and restore backups
+deactivate() {
+    cd "${BACKUP_DIR}"
+    for file in "$(find . -type f)"; do
+        sudo cp --remove-destination "${file}" "${file:1}"
+    done
+    rm -rf "${BACKUP_DIR}/*"
+}
 
+
+# Main dispatch
 case $1 in
     get)
         get-repo
         echo
         
-        setup
+        activate
         echo
         
-        pack-sync
+        sync
+        echo
+
+        progress "Setting LightDM as the display manager"
+        info "Not yet implemented"
+        echo
+
+        progress "Setting i3-gaps as the window manager"
+        info "Not yet implemented"
         echo
         
         progress "Setting Zsh as the default shell"
         chsh -s $(which zsh)
         ;;
     restore)
-        # TODO: Restore backup configs
-        # TODO: Restore backup config packs
-        pack-restore
+        progress "Restoring replaced files"
+        deactivate
+        echo
+
+        progress "Restoring packages"
+        sync '.old' '.tmp'
+        ;;
+    activate)
+        progress "Activating configuration"
+        activate
+        ;;
+    deactivate)
+        progress "Deactivating configuration"
+        deactivate
         ;;
     save)
-        pack-save
+        progress "Saving local packages to list"
+        save
         ;;
     diff)
+        progress "Finding your backup configuration files"
+        cd "${BACKUP_DIR}"
+        if [ -z "$(find .)" ]; then
+            info "You have no backed up configuration files"
+        else
+            echo
+            tree -aC --matchdirs -I '.git' | head -n -2
+            echo
+        fi
+        
         progress "Comparing your packages to the list"
-        pack-save ".tmp"
-        diff="$(comm -3 "${PACK_DIR}/pacman" "${PACK_DIR}/pacman.tmp")"
-        diff+="$(comm -3 "${PACK_DIR}/aur" "${PACK_DIR}/aur.tmp")"
+        
+        save ".tmp"
+        diff="$(comm -3 "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/pacman")"
+        diff+="$(comm -3 "${PACK_DIR}/aur.tmp" "${PACK_DIR}/aur")"
+        rm "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/aur.tmp"
 
         if [ -n "${diff}" ]; then
             echo
-            echo -e "$(tput bold)Missing\tLocal$(tput sgr0)"
+            echo -e "$(tput bold)Local\tMissing$(tput sgr0)"
             echo "${diff}"
         else
-            info "Your packages are already synced"
+            info "Your packages are all synced"
         fi
+        echo
         ;;
     sync)
-        pack-sync
+        sync
         ;;
     push)
         progress "Saving installed packages"
-        pack-save
+        save
         echo
         
         progress "Pushing to repository"

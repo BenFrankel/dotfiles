@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+# Copyright 2014 Pierre Mavro <deimos@deimos.fr>
+# Copyright 2014 Vivien Didelot <vivien@didelot.org>
+#
+# Licensed under the terms of the GNU GPL v3, or any later version.
+#
+# This script is meant to use with i3blocks. It parses the output of the "acpi"
+# command (often provided by a package of the same name) to read the status of
+# the battery, and eventually its remaining time (to full charge or discharge).
+#
+# The color will gradually change for a percentage below 85%, and the urgency
+# (exit code 33) is set if there is less that 5% remaining.
+
+use strict;
+use warnings;
+use utf8;
+
+
+my $acpi;
+my $status;
+my $percent;
+my $full_text;
+my $short_text;
+my $color = "#00FF00";
+my $bat_number = $ENV{BLOCK_INSTANCE} || 0;
+my $urgent = 0;
+my $prev_path = $ENV{HOME} . "/.config/i3blocks/state/prev_battery";
+my $prev_percent;
+my $prev_status;
+
+
+# Read previous state
+open (my $fh, '<:encoding(UTF-8)', $prev_path) or die;
+$prev_percent = <$fh>;
+chomp $prev_percent;
+$prev_status = <$fh>;
+chomp $prev_status;
+close($fh);
+
+# Read current state via acpi
+open (ACPI, "acpi -b | grep 'Battery $bat_number' |") or die;
+$acpi = <ACPI>;
+close(ACPI);
+
+# Fail on unexpected output
+if ($acpi !~ /: (\w+), (\d+)%/) {
+	die "$acpi\n";
+}
+
+$status = $1;
+$percent = $2;
+
+if ($percent >= 99) {
+	$short_text = "";
+} elsif ($percent >= 80) {
+	$short_text = "";
+} elsif ($percent >= 60) {
+	$short_text = "";
+	$color = "#AFFF00";
+} elsif ($percent >= 40) {
+	$short_text = "";
+	$color = "#FFF600";
+} elsif ($percent >= 15) {
+	$short_text = "";
+	$color = "#FFAF00";
+} else { 
+	$short_text = "";
+	$color = "#FF0000";
+}
+
+if ($status eq 'Discharging') {
+	$short_text .= '';
+        if ($percent <= 2) {
+                system("systemctl hibernate");
+        } elsif ($percent <= 5) {
+                if ($prev_percent > 5 or $prev_status ne 'Discharging') {
+                        system("notify-send --urgency=critical 'Battery: ' 'Battery is critical! ($percent%)\nAuto hibernate at 2%'");
+                }
+                $short_text .= '';
+                $urgent = 1;
+        } elsif ($percent <= 10 and ($prev_percent > 10 or ($prev_percent > 5 and $prev_status ne 'Discharging'))) {
+		system("notify-send --urgency=critical 'Battery: ' 'Battery is very low! ($percent%)\nAuto hibernate at 2%'");
+	}
+} elsif ($status eq 'Charging') {
+        $short_text .= '';
+}
+
+if ($acpi =~ /(\d\d:\d\d):/) {
+	$full_text = $short_text . " $percent% ($1)";
+} else {
+	$full_text = $short_text . " $percent%";
+}
+
+# Print block
+print "$full_text\n$short_text\n$color\n";
+
+# Save state
+open ($fh, '>', $prev_path) or die;
+print $fh "$percent\n$status";
+close($fh);
+
+if ($urgent) {
+	exit(33);
+}
+
+exit(0);

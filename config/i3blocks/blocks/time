@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+
+FORMAT_PATH="${HOME}/.config/i3blocks/state/time_format"
+
+format="$(cat "${FORMAT_PATH}")"
+if [ "${BLOCK_BUTTON}" = "1" ]; then
+    if [ "${format:0:1}" == "1" ]; then
+	format=0${format:1:1}
+    else
+	format=1${format:1:1}
+    fi
+    echo $format | tee "${FORMAT_PATH}" &> /dev/null
+elif [ "${BLOCK_BUTTON}" = "3" ]; then
+    if [ "${format:1:1}" == "1" ]; then
+	format=${format:0:1}0
+    else
+	format=${format:0:1}1
+    fi
+    echo $format | tee "${FORMAT_PATH}" &> /dev/null
+fi
+
+
+if [ "$format" = 00 ]; then
+    date_format="%k:%M"
+elif [ "$format" = 01 ]; then
+    date_format="%k:%M:%S"
+elif [ "$format" = 10 ]; then
+    date_format="%l:%M %p"
+else
+    date_format="%l:%M:%S %p"
+fi
+
+
+echo $(date "+$date_format")
+echo $(date "+$date_format")
+echo "#FFFFFF"
+
