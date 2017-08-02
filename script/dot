@@ -151,6 +151,7 @@ push-repo() {
     git push origin master
 }
 
+# TODO:  Keep a list of glued files & dirs to restore properly
 # Create link with backup
 glue() {
     # Fail if not given exactly 2 arguments
@@ -202,7 +203,7 @@ activate() {
 deactivate() {
     cd "${BACKUP_DIR}"
     for file in "$(find . -type f)"; do
-        sudo cp --remove-destination "${file}" "${file:1}"
+        sudo cp -P --remove-destination "${file}" "${file:1}"
     done
     rm -rf "${BACKUP_DIR}/*"
 }
@@ -219,6 +220,14 @@ case $1 in
         
         sync
         echo
+
+	# TODO:
+	#
+	# Download and install font awesome if necessary
+	# Clone and compile fork of i3lock if necessary
+	# Add LightDM service to systemd if necessary
+	# Activate xinitrc
+	# 
 
         progress "Setting LightDM as the display manager"
         info "Not yet implemented"
