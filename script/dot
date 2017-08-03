@@ -10,19 +10,27 @@ Description: Dotfile manager; run `dot get` to get started.
 
 Available commands:
 
-    get               Install latest configs & packages
-    restore           Restore backup configs & packages
+    get
+      + Install latest configs & packages
+    restore
+      + Restore backup configs & packages
 
-    activate          Activate local configs
-    deactivate        Restore backup configs
+    activate
+      + Activate local configs
+    deactivate
+      + Restore backup configs
 
-    diff              Compare local packages to list
-    sync              Sync local packages with list
-    save              Save local packages to list
+    diff
+      + Compare local packages to list
+    sync
+      + Sync local packages with list
+    save
+      + Save local packages to list
 
 Administrative:
 
-    push <message>    Push local configs
+    push <message>
+      + Push local configs
 '
     exit 1
 }
@@ -35,6 +43,7 @@ DOT_DIR="${HOME}/.dotfiles"
 CONFIG_DIR="${DOT_DIR}/config"
 SCRIPT_DIR="${DOT_DIR}/script"
 BACKUP_DIR="${DOT_DIR}/backup"
+BACKUP_FILES_DIR="${BACKUP_DIR}/files"
 PACK_DIR="${DOT_DIR}/pack"
 
 
@@ -137,7 +146,7 @@ get-repo() {
     progress "Getting latest repository"
     if [ ! -d "${DOT_DIR}/.git" ]; then
         git clone https://github.com/BenFrankel/dotfiles "${DOT_DIR}"
-        mkdir -p "${BACKUP_DIR}" "${PACK_DIR}"
+        mkdir -p "${BACKUP_FILES_DIR}" "${PACK_DIR}"
     else
         cd "${DOT_DIR}"
         git pull origin master
@@ -151,61 +160,31 @@ push-repo() {
     git push origin master
 }
 
-# TODO:  Keep a list of glued files & dirs to restore properly
-# Create link with backup
-glue() {
-    # Fail if not given exactly 2 arguments
-    [ $# -eq 2 ] || return 1
-
-    # Get absolute path of arguments
-    target=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
-    dest=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
-    
-    # Do nothing if the link already exists
-    [ -h "${dest}" ] && [ "$(realpath -m ${dest})" -ef "$1" ] && return 0
-
-    # Back up an existing file or directory
-    if [ -e "${dest}" ]; then
-        rm -rf "${BACKUP_DIR}/${dest}"
-        sudo cp -rP --parents "${dest}" "${BACKUP_DIR}"
-    fi
-
-    # Remove destination
-    sudo rm -rf "${dest}"
-    
-    # Make the link
-    sudo ln -s "${target}" "${dest}"
-}
-
-# Set up all the necessary links to local configuration
+# Set up all the necessary glue
 activate() {
+    ./glue init
+    
     progress "Setting up links to dotfiles"
     for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
         filename=$(basename "${path}")
-        glue "${path}" "${HOME}/.${filename}"
+        ./glue activate "${path}" "${HOME}/.${filename}"
     done
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
-    glue "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
+    ./glue activate "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
 
     progress "Activating package configurations"
     for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "${package}")"
         cd "${package}"
-        eval ./dot-glue | while read line; do
-            glue ${line}
+        for line in "$(eval ./dot-glue)"; do
+            ./glue activate ${line}
         done
     done
-}
 
-# Remove links to local configuration and restore backups
-deactivate() {
-    cd "${BACKUP_DIR}"
-    for file in "$(find . -type f)"; do
-        sudo cp -P --remove-destination "${file}" "${file:1}"
-    done
-    rm -rf "${BACKUP_DIR}/*"
+    progress "Activating xinitrc"
+    error "Not yet implemented"
 }
 
 
@@ -227,14 +206,22 @@ case $1 in
 	# Clone and compile fork of i3lock if necessary
 	# Add LightDM service to systemd if necessary
 	# Activate xinitrc
+	#
+	# Configurations:
+	#
+	# LightDM
+	# compton
+	# dunst
+	# emacs
+	# pacman
 	# 
 
         progress "Setting LightDM as the display manager"
-        info "Not yet implemented"
+        error "Not yet implemented"
         echo
 
         progress "Setting i3-gaps as the window manager"
-        info "Not yet implemented"
+        error "Not yet implemented"
         echo
         
         progress "Setting Zsh as the default shell"
@@ -242,7 +229,7 @@ case $1 in
         ;;
     restore)
         progress "Restoring replaced files"
-        deactivate
+        ./glue restore
         echo
 
         progress "Restoring packages"
@@ -254,20 +241,20 @@ case $1 in
         ;;
     deactivate)
         progress "Deactivating configuration"
-        deactivate
+        ./glue restore
         ;;
     save)
         progress "Saving local packages to list"
         save
         ;;
     diff)
-        progress "Finding your backup configuration files"
-        cd "${BACKUP_DIR}"
+        progress "Finding your backup configuration"
+        cd "${BACKUP_FILES_DIR}"
         if [ -z "$(find .)" ]; then
-            info "You have no backed up configuration files"
+            info "You have no backup configuration"
         else
             echo
-            tree -aC --matchdirs -I '.git' | head -n -2
+	    ./glue list
             echo
         fi
         

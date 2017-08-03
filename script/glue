@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+BACKUP_DIR="${HOME}/.dotfiles/backup"
+BACKUP_FILES_DIR="${BACKUP_DIR}/files"
+BACKUP_LIST="${BACKUP_DIR}/list"
+
+
+usage() {
+    printf 'Usage: glue <command> [arguments]
+
+Description: Activate a dotfile symlink safely
+
+Available commands:
+
+    init
+      + Initialize files and directories
+    activate <dotfile> <location>
+      + Activate a symlink
+    list
+      + List glued locations
+    restore
+      + Restore backups
+'
+    exit 1
+}
+
+
+# Prepare files and directories
+init() {
+    mkdir -p "${BACKUP_DIR}" "${BACKUP_FILES_DIR}"
+    touch "${BACKUP_LIST}"
+}
+
+
+# Make symlink with backup
+glue() {
+    # Fail if not given exactly 2 arguments
+    [ $# -eq 2 ] || return 1
+
+    # Get absolute path of arguments
+    dotfile=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
+    location=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
+    
+    # Do nothing if location already points to dotfile
+    [ -h "${location}" ] && [ "$(realpath -m ${location})" -ef "${dotfile}" ] && return 0
+
+    # Back up an existing file or directory at location
+    if [ -e "${location}" ]; then
+        rm -rf "${BACKUP_FILES_DIR}/${location}"
+        sudo cp -rP --parents "${location}" "${BACKUP_FILES_DIR}"
+    fi
+
+    # Make room for dotfile at location
+    sudo rm -rf "${location}"
+    
+    # Link location to dotfile
+    sudo ln -rs "${dotfile}" "${location}"
+
+    # Append new location to backup list
+    echo "${location}" >> "${BACKUP_LIST}"
+}
+
+
+list() {
+    cat "${BACKUP_LIST}"
+}
+
+
+# Restore one backup to its previous location
+unglue() {
+    location=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
+    backup="${BACKUP_FILES_DIR}/${location}"
+    
+    sudo cp -P --remove-destination "${backup}" "${location}"
+}
+
+
+restore() {
+    # Unglue all backups
+    for file in "$(cat "${BACKUP_LIST}")"; do
+	unglue file
+    done
+
+    # Remove backups
+    sudo rm -rf "${BACKUP_DIR}/*"
+
+    # Clear backup list
+    echo -n > "${BACKUP_LIST}"
+}
+
+
+# Dispatch
+case "$1" in
+    glue)
+	[ $# -eq 3 ] || usage
+	glue "$1" "$2"
+	;;
+    restore)
+	[ $# -eq 1 ] || usage
+	restore
+	;;
+    list)
+	[ $# -eq 1 ] || usage
+	list
+	;;
+    init)
+	[ $# -eq 1 ] || usage
+	init
+	;;
+    *)
+	usage
+esac
+
+exit 0
