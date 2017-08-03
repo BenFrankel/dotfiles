@@ -4,9 +4,9 @@ set -eu
 # set -x
 
 usage() {
-    printf 'Usage: dot <command> [arguments]
+    printf "Usage: $0 <command> [arguments]
 
-Description: Dotfile manager; run `dot get` to get started.
+Description: Dotfile manager; run "\`"dot get"\`" to get started.
 
 Available commands:
 
@@ -31,7 +31,7 @@ Administrative:
 
     push <message>
       + Push local configs
-'
+"
     exit 1
 }
 
@@ -45,6 +45,7 @@ SCRIPT_DIR="${DOT_DIR}/script"
 BACKUP_DIR="${DOT_DIR}/backup"
 BACKUP_FILES_DIR="${BACKUP_DIR}/files"
 PACK_DIR="${DOT_DIR}/pack"
+DOT_GLUE="${SCRIPT_DIR}/dot-glue"
 
 
 # Print progress
@@ -54,7 +55,11 @@ progress() {
 
 # Print info
 info() {
-    echo "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0)"
+    echo "$(tput bold)$(tput setaf 6) --$(tput sgr0) $(tput bold)$1$(tput sgr0)"
+}
+
+error() {
+    echo "$(tput bold)$(tput setaf 1) >> Error:$(tput sgr0)$(tput bold) $1$(tput sgr0)"
 }
 
 # Ask for yes / no confirmation
@@ -162,33 +167,37 @@ push-repo() {
 
 # Set up all the necessary glue
 activate() {
-    ./glue init
-    
-    progress "Setting up links to dotfiles"
-    for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
-        filename=$(basename "${path}")
-        ./glue activate "${path}" "${HOME}/.${filename}"
-    done
+    eval "${DOT_GLUE}" init
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
-    ./glue activate "${SCRIPT_DIR}/dot" "${HOME}/bin/dot"
+    for path in $(find "${SCRIPT_DIR}" -mindepth 1 -type f); do
+	info "$(basename ${path})"
+	eval "${DOT_GLUE}" activate "${path}" "${HOME}/bin/$(basename ${path})"
+    done
+    echo
+    
+    progress "Setting up links to dotfiles"
+    for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
+        eval "${DOT_GLUE}" activate "${path}" "${HOME}/.$(basename "${path}")"
+    done
+    echo
 
     progress "Activating package configurations"
     for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "${package}")"
         cd "${package}"
-        for line in "$(eval ./dot-glue)"; do
-            ./glue activate ${line}
-        done
+	./dot-activate
     done
+    echo
 
     progress "Activating xinitrc"
     error "Not yet implemented"
 }
 
 
-# Main dispatch
+echo $1
+# Dispatch
 case $1 in
     get)
         get-repo
@@ -229,7 +238,7 @@ case $1 in
         ;;
     restore)
         progress "Restoring replaced files"
-        ./glue restore
+        eval "${DOT_GLUE}" restore
         echo
 
         progress "Restoring packages"
@@ -241,7 +250,7 @@ case $1 in
         ;;
     deactivate)
         progress "Deactivating configuration"
-        ./glue restore
+        eval "${DOT_GLUE}" restore
         ;;
     save)
         progress "Saving local packages to list"
@@ -254,7 +263,7 @@ case $1 in
             info "You have no backup configuration"
         else
             echo
-	    ./glue list
+	    eval "${DOT_GLUE}" list
             echo
         fi
         
@@ -285,7 +294,8 @@ case $1 in
         progress "Pushing to repository"
         push-repo "${@:2}"
         ;;
-    *) usage
+    *)
+	usage
 esac
 
 exit 0

@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-BACKUP_DIR="${HOME}/.dotfiles/backup"
-BACKUP_FILES_DIR="${BACKUP_DIR}/files"
-BACKUP_LIST="${BACKUP_DIR}/list"
-
+set -eu
+# set -x
 
 usage() {
-    printf 'Usage: glue <command> [arguments]
+    printf "Usage: "$0" <command> [arguments]
 
 Description: Activate a dotfile symlink safely
 
@@ -20,9 +18,16 @@ Available commands:
       + List glued locations
     restore
       + Restore backups
-'
+"
     exit 1
 }
+
+[ $# -ge 1 ] || usage
+
+
+BACKUP_DIR="${HOME}/.dotfiles/backup"
+BACKUP_FILES_DIR="${BACKUP_DIR}/files"
+BACKUP_LIST="${BACKUP_DIR}/list"
 
 
 # Prepare files and directories
@@ -40,6 +45,8 @@ glue() {
     # Get absolute path of arguments
     dotfile=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
     location=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
+
+    echo "${location}"
     
     # Do nothing if location already points to dotfile
     [ -h "${location}" ] && [ "$(realpath -m ${location})" -ef "${dotfile}" ] && return 0
@@ -48,6 +55,9 @@ glue() {
     if [ -e "${location}" ]; then
         rm -rf "${BACKUP_FILES_DIR}/${location}"
         sudo cp -rP --parents "${location}" "${BACKUP_FILES_DIR}"
+
+	# Append location to backup list
+	echo "${location}" >> "${BACKUP_LIST}"
     fi
 
     # Make room for dotfile at location
@@ -55,9 +65,6 @@ glue() {
     
     # Link location to dotfile
     sudo ln -rs "${dotfile}" "${location}"
-
-    # Append new location to backup list
-    echo "${location}" >> "${BACKUP_LIST}"
 }
 
 
@@ -91,21 +98,21 @@ restore() {
 
 # Dispatch
 case "$1" in
-    glue)
-	[ $# -eq 3 ] || usage
-	glue "$1" "$2"
-	;;
-    restore)
+    init)
 	[ $# -eq 1 ] || usage
-	restore
+	init
+	;;
+    activate)
+	[ $# -eq 3 ] || usage
+	glue "$2" "$3"
 	;;
     list)
 	[ $# -eq 1 ] || usage
 	list
 	;;
-    init)
+    restore)
 	[ $# -eq 1 ] || usage
-	init
+	restore
 	;;
     *)
 	usage

@@ -29,8 +29,7 @@
 (setq nlinum-highlight-current-line t)
 (add-hook 'prog-mode-hook 'nlinum-mode)
 (set-face-attribute 'linum nil
-                    :height 80
-                    :background "#161819")
+                    :height 80)
 (set-face-attribute 'nlinum-current-line nil
                     :inherit 'linum
                     :foreground "#ffaa00"
@@ -89,15 +88,7 @@
 (highlight-current-line-on t)
 (highlight-current-line-set-bg-color "#161819")
 
-
 ;; HIGHLIGHT MATCHING PARENTHESES ;;
-(require 'paren)
-(setq show-paren-delay 0)
-(set-face-attribute 'show-paren-match nil
-                    :foreground "black"
-                    :background "#6e6f6f"
-                    :weight 'normal)
-(show-paren-mode 1)
 (require 'highlight-parentheses)
 (add-hook 'prog-mode-hook 'highlight-parentheses-mode)
 (setq hl-paren-delay 0)
@@ -119,6 +110,10 @@
 
 ;; HIGHLIGHT NUMERALS ;;
 (add-hook 'prog-mode-hook 'highlight-numbers-mode)
+
+
+;; HIGHLIGHT TODO ;;
+(add-hook 'prog-mode-hook 'hl-todo-mode)
 
 
 ;; VOLATILE HIGHLIGHTS ;;

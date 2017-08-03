@@ -1,3 +1,9 @@
+# Ignore backups & temps
 backup/*
 *.old
 *.tmp
+
+# Ignore Emacs litter
+\#.*
+\#*#
+*~

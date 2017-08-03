@@ -1,6 +1,8 @@
 acpi
+adapta-gtk-theme
 alsa-utils
 arc-gtk-theme
+audacity
 autoconf
 automake
 bash
@@ -39,10 +41,12 @@ gparted
 grep
 groff
 grub
+gst-plugins-ugly
 gzip
 i3blocks
 inetutils
 iniparser
+inkscape
 iproute2
 iputils
 iw
@@ -68,9 +72,11 @@ mlocate
 nano
 ncdu
 netctl
+noto-fonts
 ntfs-3g
 os-prober
 pacman
+pandoc
 patch
 pciutils
 pcmciautils
@@ -84,10 +90,12 @@ pulseaudio-alsa
 pygmentize
 qt4
 reiserfsprogs
+rhythmbox
 ripgrep
 rofi
 rxvt-unicode
 scrot
+sdcv
 sed
 shadow
 sl
@@ -105,6 +113,7 @@ tree
 ttf-hack
 ttf-roboto
 ttf-ubuntu-font-family
+units
 unzip
 usbutils
 util-linux
@@ -123,5 +132,6 @@ xorg-xhost
 xorg-xinit
 xorg-xprop
 yaourt
+youtube-dl
 zsh
 zsh-syntax-highlighting

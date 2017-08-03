@@ -1,0 +1,11 @@
+# Expand path
+PATH="${HOME}/bin:${PATH}"
+PATH="${HOME}/.config/i3/bin:${PATH}"
+export PATH
+
+# Emacs editor
+export EDITOR='ec'
+
+# Syntax highlighting in less
+export LESSOPEN="|${HOME}/.lessfilter %s"
+export LESS='-R'

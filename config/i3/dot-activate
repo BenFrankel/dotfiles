@@ -1,0 +1,4 @@
+#!/bin/sh
+
+dot-glue activate . "${HOME}/.config/i3"
+find bin -type f -exec dot-glue activate '{}' '/usr/local/{}' \;

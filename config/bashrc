@@ -1,13 +1,7 @@
-#
-# ~/.bashrc
-#
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-PS1='[\u@\h \W]\$ '
+PS1='\[\033[01;32m\]\u\[\033[01;37m\]@\[\033[01;32m\]\h\[\033[00m\]:$(p="\w";((${#p}>35))&&echo "\[\033[00;35m\]/\[\033[00m\]…\[\033[00;35m\]/\W"||echo "\[\033[00;35m\]\w")\[\033[01;37m\]\$ \[\033[00m\]'
 
-source $HOME/.aliases
-
-export PATH="${HOME}/bin:${PATH}"
-export PATH="${HOME}/.config/i3/bin:${PATH}"
+source "${HOME}/.aliases"
+source "${HOME}/.env"

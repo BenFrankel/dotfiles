@@ -8,6 +8,8 @@ alias fgrep='fgrep --color=auto'
 
 alias fix='stty sane;exec zsh;tput reset'
 
+alias define='sdcv'
+
 alias ec='emacsclient -c -t'
 
 alias coin-toss='echo -n "Heads\nTails" | shuf | head -n 1'

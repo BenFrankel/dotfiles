@@ -26,7 +26,7 @@ set $WEB-BROWSER firefox-nightly
 #############
 #  DAEMONS  #
 # Dunst for notifications
-exec --no-startup-id dunst
+exec_always --no-startup-id pkill dunst; dunst
 # Emacs for text editing
 exec --no-startup-id emacs --daemon
 # Urxvtd for terminals
@@ -34,13 +34,9 @@ exec --no-startup-id urxvtd -f -o
 # Xautolock to lock screen after inactivity
 exec --no-startup-id xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep
 # Compton for transparency and transitions
-exec --no-startup-id compton -b
+exec_always --no-startup-id pkill compton; compton -b
 # Syndaemon to prevent keyboard/touchpad interference
 #exec --no-startup-id syndaemon -KRd -i 1 -m 50
-
-# Start up music in the background
-for_window [class="^(Spotify|Rhythmbox)$"] move scratchpad
-#exec --no-startup-id spotify
 
 # Set desktop background
 exec_always --no-startup-id ~/.fehbg
@@ -74,12 +70,12 @@ set $CU-FG  #ffffff
 font pango:FontAwesome, Ubuntu Sans 8
 
 # Gaps around containers
-gaps inner 10
-gaps outer -2
+gaps inner 12
+gaps outer -4
 smart_gaps on
 
 # Borders around containers
-for_window [class="^.*"] border pixel 3
+for_window [class="^.*"] border pixel 2
 smart_borders on
 
 

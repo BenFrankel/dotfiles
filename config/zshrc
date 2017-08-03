@@ -43,14 +43,13 @@ SAVEHIST=4096
 # Beeps should notify
 setopt beep notify
 
-# Emacs key bindings / editor
+# Emacs key bindings
 bindkey -e
-export EDITOR='ec'
 
 # Aliases
 source "${HOME}/.aliases"
 
-# Navigation
+# Directory navigation
 setopt autopushd
 DIRSTACKSIZE=128
 cdUndoKey() { dirs -v | grep -q '^1' && popd -q && zle reset-prompt }
@@ -60,18 +59,9 @@ zle -N cdParentKey
 bindkey '[D' cdUndoKey
 bindkey '[A' cdParentKey
 
-# PATH
-PATH="${HOME}/bin:${PATH}"
-PATH="${HOME}/.config/i3/bin:${PATH}"
-export PATH
-
 # Prompt
 PROMPT='%(?..[%F{1}%B%?%b%f] )%B%F{10}%n%f@%F{10}%m%f%b:%F{14}%(3~;%-1~/…/%1~;%~)%f%B%(!.#.$)%b '
 RPROMPT='%(?..:()'
 
-# Syntax highlighting
-# In zsh
+# Syntax highlighting in zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# In less
-export LESSOPEN="|${HOME}/.lessfilter %s"
-export LESS='-R'

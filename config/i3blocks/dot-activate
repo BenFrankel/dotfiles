@@ -1,0 +1,6 @@
+#!/bin/sh
+
+mkdir -p state
+touch state/date_format state/iface_format state/prev_battery state/time_format
+
+dot-glue activate . "${HOME}/.config/i3blocks"

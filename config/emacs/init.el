@@ -6,20 +6,20 @@
 
 ;;; Code:
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives
-               '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
 
+;; Load init-packages.el
+(load (expand-file-name "init-packages.el" user-emacs-directory))
+
+;; Load settings
 (defvar settings-dir
   (expand-file-name "settings" user-emacs-directory))
 (add-to-list 'load-path settings-dir)
-
 (mapc 'load (directory-files settings-dir t ".*\.el"))
 
+
+;; PACKAGES ;;
+(require 'init-packages)
+(package-initialize)
 
 ;; PERFORMANCE ;;
 (require 'setup-performance)
