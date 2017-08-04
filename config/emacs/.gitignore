@@ -1,11 +1,11 @@
-elpa/*
-backups/*
-auto-save-list/*
-eshell/*
-url/*
-xkcd/*
-games/*
-speed-type/*
+elpa/
+backups/
+auto-save-list/
+eshell/
+url/
+xkcd/
+games/
+speed-type/
 
 .#recentf
 recentf

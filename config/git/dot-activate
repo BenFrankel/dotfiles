@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dot-glue activate . "${HOME}/.config/git"
