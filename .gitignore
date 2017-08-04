@@ -1,5 +1,5 @@
 # Ignore backups & temps
-backup/*
+backup/
 *.old
 *.tmp
 

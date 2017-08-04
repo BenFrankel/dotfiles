@@ -63,8 +63,9 @@ glue() {
     # Make room for dotfile at location
     sudo rm -rf "${location}"
     
-    # Link location to dotfile
+    # Link location to dotfile (preserving owner)
     sudo ln -rs "${dotfile}" "${location}"
+    sudo chown -h --reference="${dotfile}" "${location}"
 }
 
 

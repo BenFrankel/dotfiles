@@ -70,12 +70,13 @@ This will automatically do the following:
 
 - Get the most recent version of this repository
 - **NOT DONE**: Set LightDM as your display manager and greeter
-- **NOT DONE**: Set i3-gaps as your default window manager
+- **NOT DONE**: Set i3-gaps as your default X window manager
 - Set up links in your filesystem to activate the configuration files
-- Put the `dot` script in your `~/bin/` directory
+- Set up links in your `~/bin/` directory to activate the scripts
 - Sync your system's packages with the package list
+    - Remove local packages not found on the list
+    - Run `pacman -Syu`
     - Install missing packages from the list
-    - Remove packages not found on the list
 - Change your default (login) shell to Zsh
 
 The command also saves any files it replaces in `~/.dotfiles/backup/`, and a list of your packages pre-install in `~/.dotfiles/pack/`. Use `dot restore` to restore from backup.

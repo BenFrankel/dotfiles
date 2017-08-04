@@ -55,11 +55,11 @@ set $C-BG   #000000
 set $C-FG   #ffffff
 
 # Focused & inactive
-set $CI-BG  #aa4400
+set $CI-BG  #00a0b4
 set $CI-FG  #ffffff
 
 # Focused & active
-set $CF-BG  #ffaa00
+set $CF-BG  #00a0b4
 set $CF-FG  #000000
 
 # Urgent
@@ -77,48 +77,6 @@ smart_gaps on
 # Borders around containers
 for_window [class="^.*"] border pixel 2
 smart_borders on
-
-
-#####################
-# TITLE BAR SYMBOLS #
-# ----------------- #
-# General window    #
-for_window [class="^.*$"] title_format "   %title"
-# Web browser	    #
-for_window [class="^Firefox$"] title_format "   %title"
-for_window [class="^Google-chrome$"] title_format "   %title"
-# Terminal          #
-for_window [class="^(Gnome-terminal|URxvt)$"] title_format "   %title"
-# Music player      #
-for_window [class="^Spotify$"] title_format "   %title"
-# File manager      #
-for_window [class="^(Nemo|Nautilus|Thunar)$"] title_format "   %title"
-# Torrent client    #
-for_window [class="^Transmission-gtk$"] title_format "   %title"
-# Image editor      #
-for_window [class="^(Gimp|krita)$"] title_format "   %title"
-# Image viewer      #
-for_window [class="^(feh|Eog)$"] title_format "   %title"
-# Document viewer   #
-for_window [class="^(Evince|Okular)$"] title_format "   %title"
-# Text editor       #
-for_window [class="^(Emacs|Gedit)$"] title_format "   %title"
-# Development tool  #
-for_window [class="^jetbrains-.*$"] title_format "   %title"
-# Messaging client  #
-for_window [class="^(discord|Hexchat|Riot)$"] title_format "   %title"
-for_window [class="^skypeforlinux$"] title_format "   %title"
-# Games             #
-for_window [class="^(supertux2|SuperTuxKart|Gnome-(mahjongg|mines|sudoku))$"] title_format "   %title"
-# Calculators       #
-for_window [class="^Gnome-calculator$"] title_format "   %title"
-# System monitor    #
-for_window [class="^Gnome-system-monitor$"] title_format "   %title"
-# Settings          #
-for_window [class="^Lxappearance$"] title_format "   %title"
-# Store             #
-for_window [class="^Gnome-software$"] title_format "   %title"
-#####################
 
 # Workspace names
 set $WORKSPACE-1 "1: etc"
@@ -175,7 +133,55 @@ bar
 }
 
 # Configure rofi
-set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#a0000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-normal \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-urgent \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -color-active \\"#00000000,#ffffffff,#00000000,#00000000,#ffffaa00\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
+set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#a0000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-normal \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-urgent \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-active \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
+
+
+#####################
+#  BLESSED WINDOWS  #
+# ----------------- #
+# General window    #
+for_window [class="^(.*)$"] title_format "   %title"
+# Web browser	    #
+for_window [class="^(Firefox)$"] title_format "   %title"
+for_window [class="^(Google-chrome)$"] title_format "   %title"
+# Terminal          #
+for_window [class="^(Gnome-terminal|URxvt)$"] title_format "   %title"
+# Music player      #
+for_window [class="^(Spotify)$"] title_format "   %title"
+for_window [class="^(Rhythmbox)$"] title_format "  %title"
+# File manager      #
+for_window [class="^(Nemo|Nautilus|Thunar)$"] title_format "   %title"
+# Torrent client    #
+for_window [class="^(Transmission-gtk)$"] title_format "   %title"
+# Image editor      #
+assign [class="^(Gimp|krita)$"] workspace $WORKSPACE-8
+for_window [class="^(Gimp|krita)$"] title_format "   %title"
+# Image viewer      #
+for_window [class="^(feh)$"] floating enable
+for_window [class="^(feh|Eog)$"] title_format "   %title"
+# Document viewer   #
+for_window [class="^(Evince|Okular)$"] title_format "   %title"
+# Text editor       #
+for_window [class="^(Emacs|Gedit)$"] title_format "   %title"
+# Development tool  #
+for_window [class="^(jetbrains-.*)$"] title_format "   %title"
+# Messaging client  #
+assign [class="^(discord|Hexchat|Riot|skypeforlinux)$"] workspace $WORKSPACE-3
+for_window [class="^(discord|Hexchat|Riot)$"] title_format "   %title"
+for_window [class="^(skypeforlinux)$"] title_format "   %title"
+# Games             #
+assign [class="^(supertux2|SuperTuxKart|Gnome-(mahjongg|mines|sudoku))$"] workspace $WORKSPACE-9
+for_window [class="^(supertux2|SuperTuxKart)"] title_format "   %title", floating enable
+for_window [class="^(Gnome-(mahjongg|mines|sudoku))$"] title_format "   %title"
+# Calculators       #
+for_window [class="^(Gnome-calculator)$"] title_format "   %title"
+# System monitor    #
+for_window [class="^(Gnome-system-monitor)$"] title_format "   %title"
+# Settings          #
+for_window [class="^(Lxappearance)$"] title_format "   %title"
+# Store             #
+for_window [class="^(Gnome-software)$"] title_format "   %title"
+#####################
 
 
 ##############

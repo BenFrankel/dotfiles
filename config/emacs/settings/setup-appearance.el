@@ -32,7 +32,7 @@
                     :height 80)
 (set-face-attribute 'nlinum-current-line nil
                     :inherit 'linum
-                    :foreground "#ffaa00"
+                    :foreground "#00a0b4"
                     :weight 'bold)
 
 

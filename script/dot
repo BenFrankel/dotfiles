@@ -211,10 +211,8 @@ case $1 in
 
 	# TODO:
 	#
-	# Download and install font awesome if necessary
 	# Clone and compile fork of i3lock if necessary
 	# Add LightDM service to systemd if necessary
-	# Activate xinitrc
 	#
 	# Configurations:
 	#
