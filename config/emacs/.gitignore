@@ -7,6 +7,7 @@ xkcd/*
 games/*
 speed-type/*
 
+.#recentf
 recentf
 tramp
 .mc-lists.el
