@@ -33,5 +33,5 @@ fi
 
 echo $(date "+$date_format")
 echo $(date "+$date_format")
-echo "#FFFFFF"
+echo "#A4AEB3"
 

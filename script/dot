@@ -269,13 +269,16 @@ case $1 in
         
         save ".tmp"
         diff="$(comm -3 "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/pacman")"
-        diff+="$(comm -3 "${PACK_DIR}/aur.tmp" "${PACK_DIR}/aur")"
+        diff_aur="$(comm -3 "${PACK_DIR}/aur.tmp" "${PACK_DIR}/aur")"
         rm "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/aur.tmp"
 
-        if [ -n "${diff}" ]; then
+        if [ -n "${diff}" ] || [ -n "${diff}" ]; then
             echo
             echo -e "$(tput bold)Local\tMissing$(tput sgr0)"
-            echo "${diff}"
+            echo -n "${diff}"
+            [ -n "${diff}" ] && [ -n "${diff_aur}" ] && echo
+            echo -n "${diff_aur}"
+            echo
         else
             info "Your packages are all synced"
         fi

@@ -1,3 +1,8 @@
+# Fix VTE issue
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+    source /etc/profile.d/vte.sh
+fi
+
 zstyle ':completion:*' completer _complete _ignored _correct _approximate
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' rehash true

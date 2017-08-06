@@ -1,6 +1,6 @@
-alias ls='exa'
-alias ll='exa -al'
-alias la='ls -A'
+alias ls='exa --group-directories-first --sort=Name --reverse --color-scale'
+alias la="ls -a"
+alias ll="ls -al --header --extended --git"
 
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'

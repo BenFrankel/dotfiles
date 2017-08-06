@@ -22,7 +22,7 @@
 (setq doom-molokai-brighter-comments t)
 (load-theme 'doom-molokai t)
 
-  
+
 ;; LINE NUMBERS
 (require 'nlinum)
 (setq nlinum-format "%4d ")
@@ -32,8 +32,8 @@
                     :height 80)
 (set-face-attribute 'nlinum-current-line nil
                     :inherit 'linum
-                    :foreground "#00a0b4"
-                    :weight 'bold)
+                    :weight 'bold
+                    :foreground "#00bcd4")
 
 
 ;; CURSOR ;;
@@ -42,6 +42,7 @@
 (setq blink-cursor-blinks -1)
 (setq blink-cursor-delay 1.5)
 (setq blink-cursor-interval 0.5)
+(set-cursor-color "#00bcd4")
 
 
 ;; POINTER ;;
@@ -84,9 +85,9 @@
 
 ;; HIGHLIGHT CURRENT LINE ;;
 (require 'highlight-current-line)
-(setq highlight-current-line-globally t)
 (highlight-current-line-on t)
-(highlight-current-line-set-bg-color "#161819")
+(highlight-current-line-set-bg-color "#26282c")
+
 
 ;; HIGHLIGHT MATCHING PARENTHESES ;;
 (require 'highlight-parentheses)
@@ -126,10 +127,15 @@
 (add-hook 'css-mode-hook 'rainbow-mode)
 
 
-;; BUFFER BRIGHTNESS VARIATION ;;
-(require 'solaire-mode)
-(add-hook 'after-revert-hook #'turn-on-solaire-mode)
-(add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)
+;; GUI SETTINGS ;;
+(defun my-frame-config (frame)
+  "Custom behaviours for new frames."
+  (with-selected-frame frame
+    (when (display-graphic-p)
+      (set-background-color "#253036")
+      (set-foreground-color "#a4aeb3"))))
+
+(add-hook 'after-make-frame-functions 'my-frame-config)
 
 
 ;;;;;;;;;

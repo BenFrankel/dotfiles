@@ -22,7 +22,7 @@ my $status;
 my $percent;
 my $full_text;
 my $short_text;
-my $color = "#00FF00";
+my $color = "#5AE234";
 my $bat_number = $ENV{BLOCK_INSTANCE} || 0;
 my $urgent = 0;
 my $prev_path = $ENV{HOME} . "/.config/i3blocks/state/prev_battery";
@@ -57,16 +57,16 @@ if ($percent >= 99) {
 	$short_text = "";
 } elsif ($percent >= 60) {
 	$short_text = "";
-	$color = "#AFFF00";
+	$color = "#FCE94F";
 } elsif ($percent >= 40) {
 	$short_text = "";
 	$color = "#FFF600";
 } elsif ($percent >= 15) {
 	$short_text = "";
-	$color = "#FFAF00";
+	$color = "#FFA12F";
 } else { 
 	$short_text = "";
-	$color = "#FF0000";
+	$color = "#FF2236";
 }
 
 if ($status eq 'Discharging') {

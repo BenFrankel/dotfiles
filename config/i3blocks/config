@@ -21,7 +21,7 @@ separator=false
 separator_block_width=12
 markup=none
 interval=30
-color=#262626
+color=#2A353B
 
 [date]
 label=

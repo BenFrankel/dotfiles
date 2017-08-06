@@ -32,13 +32,13 @@ fi
 QUALITY=$(grep $INTERFACE /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
 
 if [[ $QUALITY -ge 80 ]]; then
-    echo "#00FF00"
+    echo "#5AE234"
 elif [[ $QUALITY -ge 60 ]]; then
-    echo "#AFFF00"
+    echo "#FCE94F"
 elif [[ $QUALITY -ge 40 ]]; then
-    echo "#FFAF00"
+    echo "#FFA12F"
 elif [[ $QUALITY -ge 20 ]]; then
-    echo "#FF0000"
+    echo "#FF2236"
 fi
 
 

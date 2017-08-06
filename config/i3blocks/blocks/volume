@@ -17,7 +17,7 @@
 
 #------------------------------------------------------------------------
 
-AUDIO_TEST=/usr/share/sounds/freedesktop/stereo/audio-volume-change.oga
+AUDIO_TEST="${HOME}/.config/i3/resources/volume-change.oga"
 
 # The second parameter overrides the mixer selection
 # For PulseAudio users, use "pulse"
@@ -56,7 +56,7 @@ format() {
   perl_filter='if (/.*\[(\d+)%\] (\[(-?\d+.\d+)dB\] )?\[(on|off)\]/)'
   perl_filter+='{CORE::say $4 eq "off" ? "\x{f026}  OFF" : '
   # If dB was selected, print that instead
-  perl_filter+=$([[ $STEP = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 == 100 ? "" : ($1 >= 10 ? "  $1": ($1 > 0 ? "    $1" : "      $1")))')
+  perl_filter+=$([[ $STEP = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 == 100 ? "" : "  $1")')
   perl_filter+='; exit}'
   perl -ne "$perl_filter"
 }
@@ -73,7 +73,7 @@ esac
 volume | format
 echo
 if [ -n "$(amixer -D $MIXER get $SCONTROL | grep '\[on\]')" ]; then
-  echo "#00FF00"
+  echo "#5AE234"
 else
-  echo "#FF0000"
+  echo "#FF2236"
 fi

@@ -17,20 +17,20 @@ URxvt.urgentOnBell: true
 ! COLORS !
 URxvt.depth: 24
 ! bg
-URxvt.background: rgba:1D00/2000/2C00/FFFF
+URxvt.background: rgba:2500/3000/3600/FFFF
 ! fg
-URxvt.foreground: #DEDEDE
+URxvt.foreground: #A4AEB3
 ! fade
 ! handled by compositor
 ! black
 URxvt.color0:  #2E3438
 URxvt.color8:  #40414D
 ! red
-URxvt.color1:  #FF3030
-URxvt.color9:  #FF5050
+URxvt.color1:  #DD3520
+URxvt.color9:  #FF4C3B
 ! green
 URxvt.color2:  #4EB206
-URxvt.color10: #8AE234
+URxvt.color10: #5AE234
 ! yellow
 URxvt.color3:  #C4A000
 URxvt.color11: #FCE94F
@@ -41,8 +41,8 @@ URxvt.color12: #689CFF
 URxvt.color5:  #FF52A5
 URxvt.color13: #FFAACC
 ! cyan
-URxvt.color6:  #06989A
-URxvt.color14: #34E2E2
+URxvt.color6:  #00BCD4
+URxvt.color14: #4DB6AC
 ! white
-URxvt.color7:  #D3D7CF
-URxvt.color15: #F5F5F2
+URxvt.color7:  #A4AEB3
+URxvt.color15: #FFFFFF

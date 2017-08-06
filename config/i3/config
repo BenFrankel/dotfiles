@@ -1,17 +1,8 @@
-###############
-## i3 CONFIG ##
-###############
+#######################
+# LAUNCHABLE PROGRAMS #
+#######################
 
-# Should you change your keyboard layout some time, delete
-# this file and re-run i3-config-wizard(1).
-
-# Please see http://i3wm.org/docs/userguide.html for a complete reference!
-
-
-############
-# PROGRAMS #
-############
-
+set $COLOR-PICKER gpick
 set $FILE-MANAGER thunar
 set $IMAGE-EDITOR gimp
 set $PAINT krita
@@ -34,9 +25,7 @@ exec --no-startup-id urxvtd -f -o
 # Xautolock to lock screen after inactivity
 exec --no-startup-id xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep
 # Compton for transparency and transitions
-exec_always --no-startup-id pkill compton; compton -b
-# Syndaemon to prevent keyboard/touchpad interference
-#exec --no-startup-id syndaemon -KRd -i 1 -m 50
+exec_always --no-startup-id pgrep compton || compton -b
 
 # Set desktop background
 exec_always --no-startup-id ~/.fehbg
@@ -51,19 +40,19 @@ exec --no-startup-id setxkbmap -option caps:super
 
 # COLORS
 # Unfocused
-set $C-BG   #000000
-set $C-FG   #ffffff
+set $C-BG   #152026
+set $C-FG   #a4aeb3
 
 # Focused & inactive
-set $CI-BG  #00a0b4
-set $CI-FG  #ffffff
+set $CI-BG  #4db6ac
+set $CI-FG  #152026
 
 # Focused & active
-set $CF-BG  #00a0b4
-set $CF-FG  #000000
+set $CF-BG  #00bcd4
+set $CF-FG  #152026
 
 # Urgent
-set $CU-BG  #b01122
+set $CU-BG  #ff3030
 set $CU-FG  #ffffff
 
 # Font for window titles
@@ -72,11 +61,9 @@ font pango:FontAwesome, Ubuntu Sans 8
 # Gaps around containers
 gaps inner 12
 gaps outer -4
-smart_gaps on
 
 # Borders around containers
 for_window [class="^.*"] border pixel 2
-smart_borders on
 
 # Workspace names
 set $WORKSPACE-1 "1: etc"
@@ -133,7 +120,7 @@ bar
 }
 
 # Configure rofi
-set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#a0000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-normal \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-urgent \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -color-active \\"#00000000,#ffffffff,#00000000,#00000000,#ff00a0b4\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
+set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#b0000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-normal \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-urgent \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-active \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
 
 
 #####################
@@ -153,6 +140,10 @@ for_window [class="^(Rhythmbox)$"] title_format "  %title"
 for_window [class="^(Nemo|Nautilus|Thunar)$"] title_format "   %title"
 # Torrent client    #
 for_window [class="^(Transmission-gtk)$"] title_format "   %title"
+# Font / Character  #
+for_window [class="^(Gucharmap|Gtk2fontsel)$"] title_format "   %title", floating enable
+# Color picker      #
+for_window [class="^(Gpick)$"] title_format "   %title", floating enable
 # Image editor      #
 assign [class="^(Gimp|krita)$"] workspace $WORKSPACE-8
 for_window [class="^(Gimp|krita)$"] title_format "   %title"
@@ -411,7 +402,7 @@ set $MODE-SYSTEM "SYSTEM: config - hide - lock - reset - suspend - CLOSE - HIBER
 bindsym $mod+space mode $MODE-SYSTEM
 
 # Application launch mode
-set $MODE-OPEN "OPEN: file - image - paint - shell - text - video - web"
+set $MODE-OPEN "OPEN: color - file - image - paint - shell - text - video - web"
 bindsym $mod+apostrophe mode $MODE-OPEN
 
 
@@ -535,6 +526,10 @@ mode $MODE-SYSTEM
 # Application launch mode
 mode $MODE-OPEN
 {
+        # Color picker
+        bindsym $mod+c exec $COLOR-PICKER
+        bindsym c mode "default"; exec $COLOR-PICKER
+
 	# File browser
 	bindsym $mod+f exec $FILE-MANAGER
 	bindsym f mode "default"; exec $FILE-MANAGER

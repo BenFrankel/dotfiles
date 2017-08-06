@@ -1,7 +1,6 @@
 acpi
 adapta-gtk-theme
 alsa-utils
-arc-gtk-theme
 audacity
 autoconf
 automake
@@ -21,6 +20,7 @@ diffutils
 dunst
 e2fsprogs
 emacs
+enigma
 evince
 fakeroot
 feh
@@ -38,10 +38,13 @@ gimp
 git
 glibc
 gparted
+gpick
 grep
 groff
 grub
 gst-plugins-ugly
+gtk2fontsel
+gucharmap
 gzip
 i3blocks
 inetutils
@@ -98,13 +101,16 @@ scrot
 sdcv
 sed
 shadow
+shotwell
 sl
 s-nail
+soundfont-fluid
 sudo
 sysfsutils
 sysstat
 systemd-sysvcompat
 tar
+teeworlds
 texinfo
 thunar
 transmission-gtk
@@ -120,7 +126,9 @@ vim
 vlc
 which
 wine
+wireshark-gtk
 wpa_supplicant
+xarchiver
 xautolock
 xf86-video-intel
 xf86-video-vesa
