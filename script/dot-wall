@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -eu
+# set -x
+
+usage() {
+    printf "Usage: $0 [image-name]
+
+Description: Dotfile wallpaper manager.
+
+Provide no argument to print the current wallpaper,
+or provide an image name from ~/Pictures/Wallpapers
+to change the wallpaper
+"
+    exit 1
+}
+
+[ $# -le 1 ] || usage
+
+
+WP_PATH="${HOME}/.wallpaper"
+WP_DIR="${HOME}/Pictures/Wallpapers"
+
+
+if [ $# -eq 0 ]; then
+    readlink "${WP_PATH}"
+else
+    ln -sf "${WP_DIR}/$1" "${WP_PATH}"
+fi
+
+exit 0

@@ -44,6 +44,9 @@
 ;; Save external copied text to kill ring even when there's a more recent kill
 (setq save-interprogram-paste-before-kill t)
 
+;; Always follow symlinks to files under version control
+(setq vc-follow-symlinks t)
+
 
 ;; UNDO TREE ;;
 (global-undo-tree-mode)

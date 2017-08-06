@@ -257,7 +257,7 @@ case $1 in
     diff)
         progress "Finding your backup configuration"
         cd "${BACKUP_FILES_DIR}"
-        if [ -z "$(find .)" ]; then
+        if [ -z "$(sudo find .)" ]; then
             info "You have no backup configuration"
         else
             echo
