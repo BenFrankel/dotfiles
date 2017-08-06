@@ -23,7 +23,7 @@ WP_DIR="${HOME}/Pictures/Wallpapers"
 
 
 if [ $# -eq 0 ]; then
-    readlink "${WP_PATH}"
+    basename "$(readlink "${WP_PATH}")"
 else
     ln -sf "${WP_DIR}/$1" "${WP_PATH}"
 fi
