@@ -4,13 +4,22 @@ set -eu
 # set -x
 
 usage() {
-    printf "Usage: $0 [image-name]
+    printf "Usage: $0 [option | image-name]
 
 Description: Dotfile wallpaper manager.
 
-Provide no argument to print the current wallpaper,
-or provide an image name from ~/Pictures/Wallpapers
-to change the wallpaper
+Available commands:
+
+    No args
+      + Print the current wallpaper
+
+    <image-name>
+      + Set the wallpaper to <image-name>
+
+    -h or --help
+      + Show this help
+    -l or --list
+      + List the available wallpapers
 "
     exit 1
 }
@@ -21,11 +30,28 @@ to change the wallpaper
 WP_PATH="${HOME}/.wallpaper"
 WP_DIR="${HOME}/Pictures/Wallpapers"
 
-
 if [ $# -eq 0 ]; then
     basename "$(readlink "${WP_PATH}")"
-else
-    ln -sf "${WP_DIR}/$1" "${WP_PATH}"
+    exit 0
 fi
+
+case $1 in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    -l|--list)
+        ls -A "${WP_DIR}"
+        ;;
+    *)
+        if [ ! -f "${WP_DIR}/$1" ]; then
+            echo "Image could not be found."
+            echo "Use "\`"$0 -l"\`" for a list of options"
+            exit 1
+        else
+            ln -sf "${WP_DIR}/$1" "${WP_PATH}"
+            eval "${HOME}/.fehbg"
+        fi
+esac
 
 exit 0

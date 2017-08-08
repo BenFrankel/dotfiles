@@ -85,7 +85,7 @@ You can also use `dot get` to update to the newest version.
 
 ### Wallpaper
 
-To set your wallpaper, download an image to `~/Pictures/Wallpapers/` and activate it with `dot-wall image-name`. The wallpaper will be displayed when you reload i3 (Mod-space then r).
+To set your wallpaper, move an image to `~/Pictures/Wallpapers/image-name` and activate it with `dot-wall image-name`. The change should take effect immediately.
 
 
 ## Key Bindings

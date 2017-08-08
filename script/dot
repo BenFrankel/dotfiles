@@ -196,7 +196,6 @@ activate() {
 }
 
 
-echo $1
 # Dispatch
 case $1 in
     get)

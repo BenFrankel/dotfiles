@@ -22,6 +22,7 @@ e2fsprogs
 emacs
 enigma
 evince
+expac
 fakeroot
 feh
 file
@@ -32,7 +33,6 @@ fortune-mod
 gawk
 gcc
 gcc-libs
-gedit
 gettext
 gimp
 git
@@ -79,6 +79,7 @@ netctl
 noto-fonts
 ntfs-3g
 os-prober
+pacgraph
 pacman
 pandoc
 patch
@@ -115,7 +116,6 @@ teeworlds
 texinfo
 thunar
 transmission-gtk
-tree
 ttf-hack
 ttf-roboto
 ttf-ubuntu-font-family
@@ -131,6 +131,7 @@ wireshark-gtk
 wpa_supplicant
 xarchiver
 xautolock
+xdotool
 xf86-video-intel
 xf86-video-vesa
 xfsprogs
@@ -138,6 +139,7 @@ xorg-server
 xorg-xev
 xorg-xhost
 xorg-xinit
+xorg-xinput
 xorg-xprop
 yaourt
 youtube-dl

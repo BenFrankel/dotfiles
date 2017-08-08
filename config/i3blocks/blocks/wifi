@@ -23,7 +23,7 @@ INTERFACE="${BLOCK_INSTANCE:-wlan0}"
 
 if [[ -d /sys/class/net/${INTERFACE}/wireless ]]; then
     if [[ "$(cat /sys/class/net/$INTERFACE/operstate)" = 'down' ]]; then
-        echo '#FF0000'
+        echo '#A4AEB3'
         exit 0
     fi
 fi

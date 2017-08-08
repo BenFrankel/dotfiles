@@ -37,7 +37,7 @@ init() {
 }
 
 
-# Make symlink with backup
+# Make hard link to dotfile at location with backup
 glue() {
     # Fail if not given exactly 2 arguments
     [ $# -eq 2 ] || return 1
@@ -48,24 +48,25 @@ glue() {
 
     echo "${location}"
     
-    # Do nothing if location already points to dotfile
-    [ -h "${location}" ] && [ "$(realpath -m ${location})" -ef "${dotfile}" ] && return 0
+    # Do nothing if location is already hard linked with dotfile
+    [ ! -h "${location}" ] && [ "${location}" -ef "${dotfile}" ] && return 0
 
     # Back up an existing file or directory at location
     if [ -e "${location}" ]; then
-        rm -rf "${BACKUP_FILES_DIR}/${location}"
+        sudo rm -rf "${BACKUP_FILES_DIR}/${location}"
         sudo cp -rP --parents "${location}" "${BACKUP_FILES_DIR}"
 
 	# Append location to backup list
 	echo "${location}" >> "${BACKUP_LIST}"
     fi
 
-    # Make room for dotfile at location
-    sudo rm -rf "${location}"
-    
-    # Link location to dotfile (preserving owner)
-    sudo ln -rs "${dotfile}" "${location}"
-    sudo chown -h --reference="${dotfile}" "${location}"
+    if [ -d "${dotfile}" ]; then
+        sudo rm -rf "${location}"
+        sudo ln -rs "${dotfile}" "${location}"
+        sudo chown --reference="${dotfile}" --no-dereference "${location}"
+    else
+        sudo ln -f "${dotfile}" "${location}"
+    fi
 }
 
 

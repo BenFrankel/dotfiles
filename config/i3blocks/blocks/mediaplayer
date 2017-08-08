@@ -108,7 +108,7 @@ sub playerctl {
     my $artist = qx(playerctl $player_arg metadata artist);
     # exit status will be nonzero when playerctl cannot find your player
     if ($? || $artist eq '(null)') {
-        print(" \n \n#FF2236\n");
+        print(" \n \n#A4AEB3\n");
         exit(0);
     }
 
@@ -126,7 +126,7 @@ sub playerctl {
             print("#FCE94F\n");
         }
     } else {
-        print(" \n \n#FFE13F\n");
+        print(" \n \n#FF2236F\n");
     }
 }
 
