@@ -133,7 +133,7 @@ glue() {
     echo "$location"
 
     # Back up an existing file or directory from location if no existing backup
-    if [ -e "$location" ] && ! grep -Fx "$location" "$BACKUP_LIST"; then
+    if [ -e "$location" ] && ! grep -Fxq "$location" "$BACKUP_LIST"; then
         sudo rm -rf "${BACKUP_FILES_DIR}/${location}"
         sudo cp -rP --parents "$location" "$BACKUP_FILES_DIR"
 
