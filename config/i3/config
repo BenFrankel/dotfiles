@@ -22,16 +22,11 @@ exec_always --no-startup-id pkill dunst; dunst
 exec --no-startup-id emacs --daemon
 # Urxvtd for terminals
 exec --no-startup-id urxvtd -f -o
-# Xautolock to lock screen after inactivity
-exec --no-startup-id xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep
 # Compton for transparency and transitions
 exec_always --no-startup-id pgrep compton || compton -b
 
 # Set desktop background
 exec_always --no-startup-id ~/.fehbg
-
-# Use caps lock as additional super key
-exec --no-startup-id setxkbmap -option caps:super
 
 
 ################

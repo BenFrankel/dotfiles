@@ -1,1 +1,5 @@
-exec i3
+# Lock screen after inactivity
+xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
+
+# Use caps lock as additional super key
+setxkbmap -option caps:super

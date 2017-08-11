@@ -8,6 +8,7 @@ bash
 binutils
 bison
 bzip2
+chromium
 cmatrix
 compton
 coreutils
@@ -86,6 +87,7 @@ pandoc
 patch
 pciutils
 pcmciautils
+pepper-flash
 perl
 pkg-config
 playerctl

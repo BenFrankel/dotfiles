@@ -193,10 +193,6 @@ activate() {
         cd "$package"
 	./dot-activate
     done
-    echo
-
-    progress "Activating xinitrc"
-    error "Not yet implemented"
 }
 
 
@@ -215,23 +211,19 @@ case $1 in
 	# TODO:
 	#
 	# Clone and compile fork of i3lock if necessary
-	# Add LightDM service to systemd if necessary
 	#
-	# Configurations:
+	# Configs for:
 	#
-	# LightDM
-	# compton
-	# dunst
-	# emacs
 	# pacman
 	# 
 
-        progress "Setting LightDM as the display manager"
-        error "Not yet implemented"
+        progress "Enabling LightDM (display manager & greeter)"
+        sudo systemctl enable lightdm
         echo
 
-        progress "Setting i3-gaps as the window manager"
-        error "Not yet implemented"
+        iw_dev="$(iw dev | grep -m 1 '^\s*Interface .*$' | sed 's/\s*Interface //')"
+        progress "Enabling netctl-auto@${iw_dev} (automatic wifi connection)"
+        sudo systemctl enable netctl-auto@"$iw_dev"
         echo
         
         progress "Setting Zsh as the default shell"
