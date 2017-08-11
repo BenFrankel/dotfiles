@@ -4,89 +4,110 @@ set -eu
 # set -x
 
 usage() {
-    printf "Usage: "$0" <command> [arguments]
+    printf "Usage: "$0" [option [arguments]] ...
 
 Description: Activate a dotfile symlink safely
 
-Available commands:
+Available options:
 
-    init
+    No arguments
+      + List glued locations        
+
+    -i, --init
       + Initialize files and directories
-    activate <dotfile> <location>
-      + Activate a symlink
-    list
-      + List glued locations
-    restore
+    -r, --restore
       + Restore backups
+
+    -s, --symbolic-link <dotfile> <location>
+      + Activate a symbolic link
+    -l, --link <dotfile> <location>
+      + Activate a hard link
+    -c, --copy <dotfile> <location>
+      + Activate a copy 'link' -- note that the copy must be reglued whenever its dotfile is modified
 "
     exit 1
 }
-
-[ $# -ge 1 ] || usage
-
 
 BACKUP_DIR="${HOME}/.dotfiles/backup"
 BACKUP_FILES_DIR="${BACKUP_DIR}/files"
 BACKUP_LIST="${BACKUP_DIR}/list"
 
+[ $# -eq 0 ] && cat "$BACKUP_LIST" && exit 0
+
+_init=
+_list=
+_restore=
+_sym=
+_sym_dotfile=
+_sym_location=
+_copy=
+_copy_dotfile=
+_copy_location=
+_link=
+_link_dotfile=
+_link_location=
+
+while [ $# -ge 1 ]; do
+    case $1 in
+        -i|--init)
+            _init=1
+            ;;
+        -l|--list)
+            _list=1
+            ;;
+        -r|--restore)
+            _restore=1
+            ;;
+        -s|--symbolic-link)
+            _sym=1
+            _sym_dotfile="$2"
+            _sym_location="$3"
+            shift 2
+            ;;
+        -c|--copy)
+            _copy=1
+            _copy_dotfile="$2"
+            _copy_location="$3"
+            shift 2
+            ;;
+        -l|--link)
+            _link=1
+            _link_dotfile="$2"
+            _link_location="$3"
+            shift 2
+            ;;
+        *)
+            usage
+            ;;
+    esac
+    shift
+done
+
 
 # Prepare files and directories
 init() {
-    mkdir -p "${BACKUP_DIR}" "${BACKUP_FILES_DIR}"
-    touch "${BACKUP_LIST}"
-}
-
-
-# Make hard link to dotfile at location with backup
-glue() {
-    # Fail if not given exactly 2 arguments
-    [ $# -eq 2 ] || return 1
-
-    # Get absolute path of arguments
-    dotfile=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
-    location=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
-
-    echo "${location}"
-    
-    # Do nothing if location is already hard linked with dotfile
-    [ ! -h "${location}" ] && [ "${location}" -ef "${dotfile}" ] && return 0
-
-    # Back up an existing file or directory at location
-    if [ -e "${location}" ]; then
-        sudo rm -rf "${BACKUP_FILES_DIR}/${location}"
-        sudo cp -rP --parents "${location}" "${BACKUP_FILES_DIR}"
-
-	# Append location to backup list
-	echo "${location}" >> "${BACKUP_LIST}"
-    fi
-
-    if [ -d "${dotfile}" ]; then
-        sudo rm -rf "${location}"
-        sudo ln -rs "${dotfile}" "${location}"
-        sudo chown --reference="${dotfile}" --no-dereference "${location}"
-    else
-        sudo ln -f "${dotfile}" "${location}"
-    fi
+    mkdir -p "$BACKUP_DIR" "$BACKUP_FILES_DIR"
+    touch "$BACKUP_LIST"
 }
 
 
 list() {
-    cat "${BACKUP_LIST}"
+    cat "$BACKUP_LIST"
 }
 
 
 # Restore one backup to its previous location
 unglue() {
-    location=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
-    backup="${BACKUP_FILES_DIR}/${location}"
+    local location=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
+    local backup="${BACKUP_FILES_DIR}/${location}"
     
-    sudo cp -P --remove-destination "${backup}" "${location}"
+    sudo cp -P --remove-destination "$backup" "$location"
 }
 
 
 restore() {
     # Unglue all backups
-    for file in "$(cat "${BACKUP_LIST}")"; do
+    for file in "$(cat "$BACKUP_LIST")"; do
 	unglue file
     done
 
@@ -94,30 +115,44 @@ restore() {
     sudo rm -rf "${BACKUP_DIR}/*"
 
     # Clear backup list
-    echo -n > "${BACKUP_LIST}"
+    echo -n > "$BACKUP_LIST"
+}
+
+
+# Make hard link to dotfile at location with backup
+glue() {
+    # Fail if not given exactly 3 arguments
+    [ $# -eq 3 ] || return 1
+
+    sudo mkdir -p "$(dirname "$3")"
+
+    # Get absolute path of arguments
+    local dotfile=$(echo $(cd $(dirname "$2") && pwd -P)/$(basename "$2"))
+    local location=$(echo $(cd $(dirname "$3") && pwd -P)/$(basename "$3"))
+
+    echo "$location"
+
+    # Back up an existing file or directory from location if no existing backup
+    if [ -e "$location" ] && ! grep -Fx "$location" "$BACKUP_LIST"; then
+        sudo rm -rf "${BACKUP_FILES_DIR}/${location}"
+        sudo cp -rP --parents "$location" "$BACKUP_FILES_DIR"
+
+	# Append location to backup list
+	echo "$location" >> "$BACKUP_LIST"
+    fi
+
+    sudo rm -rf "$location"
+    eval sudo $1 "$dotfile" "$location"
+    sudo chown --no-dereference --reference="$dotfile" "$location"
 }
 
 
 # Dispatch
-case "$1" in
-    init)
-	[ $# -eq 1 ] || usage
-	init
-	;;
-    activate)
-	[ $# -eq 3 ] || usage
-	glue "$2" "$3"
-	;;
-    list)
-	[ $# -eq 1 ] || usage
-	list
-	;;
-    restore)
-	[ $# -eq 1 ] || usage
-	restore
-	;;
-    *)
-	usage
-esac
+[ -n "$_init" ] && init
+[ -n "$_list" ] && list
+[ -n "$_restore" ] && restore
+[ -n "$_sym" ] && glue 'ln -srf' $_sym_dotfile $_sym_location
+[ -n "$_link" ] && glue 'cp -lrf --preserve=all' $_link_dotfile $_link_location
+[ -n "$_copy" ] && glue 'cp -rf --preserve=all' $_copy_dotfile $_copy_location
 
 exit 0

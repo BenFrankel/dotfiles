@@ -31,7 +31,7 @@ WP_PATH="${HOME}/.wallpaper"
 WP_DIR="${HOME}/Pictures/Wallpapers"
 
 if [ $# -eq 0 ]; then
-    basename "$(readlink "${WP_PATH}")"
+    basename "$(readlink "$WP_PATH")"
     exit 0
 fi
 
@@ -41,7 +41,7 @@ case $1 in
         exit 0
         ;;
     -l|--list)
-        ls -A "${WP_DIR}"
+        ls -A "$WP_DIR"
         ;;
     *)
         if [ ! -f "${WP_DIR}/$1" ]; then
@@ -49,7 +49,7 @@ case $1 in
             echo "Use "\`"$0 -l"\`" for a list of options"
             exit 1
         else
-            ln -sf "${WP_DIR}/$1" "${WP_PATH}"
+            ln -sf "${WP_DIR}/$1" "$WP_PATH"
             eval "${HOME}/.fehbg"
         fi
 esac

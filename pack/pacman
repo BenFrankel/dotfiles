@@ -40,7 +40,6 @@ glibc
 gparted
 gpick
 grep
-groff
 grub
 gst-plugins-ugly
 gtk2fontsel
@@ -50,11 +49,13 @@ i3blocks
 inetutils
 iniparser
 inkscape
+intel-ucode
 iproute2
 iputils
 irssi
 iw
 jfsutils
+jre8-openjdk
 less
 libcdio
 libdvdcss
@@ -128,6 +129,7 @@ vlc
 which
 wine
 wireshark-gtk
+wpa_actiond
 wpa_supplicant
 xarchiver
 xautolock

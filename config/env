@@ -1,6 +1,5 @@
 # Expand path
 PATH="${HOME}/bin:${PATH}"
-PATH="${HOME}/.config/i3/bin:${PATH}"
 export PATH
 
 # Emacs editor

@@ -198,10 +198,10 @@ set $SOUND-MUTE-TOGGLE exec --no-startup-id volume toggle && [ -n "$(volume | gr
 set $MIC-TOGGLE exec --no-startup-id "amixer -D pulse set Capture toggle && notify-send --urgency=low -t 1 \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo Microphone: ; else echo Microphone: ; fi)\\" \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo \\"Now $(amixer -D pulse get Capture | grep -Eom 1 '\[[[:digit:]]+%\]' | tr -d '[]')\\"; else echo Now off; fi)\\""
 
 # Brightness commands
-set $BRIGHTNESS-INC-MINOR exec --no-startup-id brightness up && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
-set $BRIGHTNESS-DEC-MINOR exec --no-startup-id brightness down &&  notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
-set $BRIGHTNESS-INC-MAJOR exec --no-startup-id brightness up more && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
-set $BRIGHTNESS-DEC-MAJOR exec --no-startup-id brightness down more && notify-send --urgency=low -t 1 "Brightness: " "Now $(brightness)"
+set $BRIGHTNESS-INC-MINOR exec --no-startup-id sudo brightness up && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-DEC-MINOR exec --no-startup-id sudo brightness down &&  notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-INC-MAJOR exec --no-startup-id sudo brightness up more && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-DEC-MAJOR exec --no-startup-id sudo brightness down more && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
 
 # Screenshot commands
 set $SCREENSHOT-FULL exec --no-startup-id screenshot

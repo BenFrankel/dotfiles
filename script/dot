@@ -64,53 +64,56 @@ error() {
 
 # Ask for yes / no confirmation
 prompt() {
+    local choice
     read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0) [Y/n] " choice
     case $choice in
-        [nN][oO]|[nN])
-            return 0
+        [Yy][Ee][SsPp]|[Yy][Ee][Aa][Hh]|[Yy])
+            return 1
             ;;
         *)
-            return 1
+            return 0
+            ;;
     esac
 }
 
 # Load package lists
 load() {
-    [ $# -eq 1 ] && ext="$1" || ext=''
+    [ $# -eq 1 ] && local ext="$1" || local ext=''
     cat "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/aur${ext}"
 }
 
 # Save packages to lists
 save() {
-    [ $# -eq 1 ] && ext="$1" || ext=''
+    [ $# -eq 1 ] && local ext="$1" || local ext=''
     pacman -Qqen | sort > "${PACK_DIR}/pacman${ext}"
     pacman -Qqem | sort > "${PACK_DIR}/aur${ext}"
 }
 
 # Sync with local package lists
 sync() {
-    [ $# -ge 1 ] && ext="$1" || ext=''
-    [ $# -eq 2 ] && old="$2" || old='.old'
+    [ $# -ge 1 ] && local ext="$1" || local ext=''
+    [ $# -eq 2 ] && local old="$2" || local old='.old'
     
-    if [ ! -f "${PACK_DIR}/pacman${ext}" -a ! -f "${PACK_DIR}/aur${ext}" ]; then
+    if [ ! -f "${PACK_DIR}/pacman${ext}" ] && [ ! -f "${PACK_DIR}/aur${ext}" ]; then
         info "No pacman${ext} or aur${ext} in ${PACK_DIR} to sync with"
         return 0
     fi
     
     progress "Backing up installed packages"
-    save "${old}"
+    save "$old"
     echo
 
     progress "Finding local packages to remove"
     packages="$(comm -13 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
-    packages+="$(comm -13 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
-    if [ -n "${packages}" ]; then
+    packages+=" $(comm -13 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
+    if [ "$packages" != ' ' ]; then
         echo
         echo $packages
         echo
-        case $(prompt "Remove packages?") in
+        prompt 'Remove packages?'
+        case $? in
             0)
-                info "No packages removed"
+                info 'No packages removed'
                 ;;
             *)
                 sudo pacman -Rns --noconfirm $packages
@@ -124,18 +127,19 @@ sync() {
     progress "Finding missing packages to install"
     packages="$(comm -23 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
     packages_aur="$(comm -23 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
-    if [ -n "${packages}" -o -n "${packages_aur}" ]; then
+    if [ -n "${packages}${packages_aur}" ]; then
         echo
-        [ -n "${packages}" ] && echo $packages
-        [ -n "${packages_aur}" ] && echo $packages_aur
+        [ -n "$packages" ] && echo $packages
+        [ -n "$packages_aur" ] && echo $packages_aur
         echo
-        case $(prompt "Install packages?") in
+        prompt 'Install packages?'
+        case $? in
             0)
                 info "No packages installed"
                 ;;
             *)
-                [ -n "${packages}" ] && sudo pacman -S --noconfirm $packages
-                [ -n "${packages_aur}" ] && yaourt -S --noconfirm $packages_aur
+                [ -n "$packages" ] && sudo pacman -S --noconfirm $packages
+                [ -n "$packages_aur" ] && yaourt -S --noconfirm $packages_aur
                 ;;
         esac
                 
@@ -150,16 +154,16 @@ sync() {
 get-repo() {
     progress "Getting latest repository"
     if [ ! -d "${DOT_DIR}/.git" ]; then
-        git clone https://github.com/BenFrankel/dotfiles "${DOT_DIR}"
-        mkdir -p "${BACKUP_FILES_DIR}" "${PACK_DIR}"
+        git clone https://github.com/BenFrankel/dotfiles "$DOT_DIR"
+        mkdir -p "$BACKUP_FILES_DIR" "$PACK_DIR"
     else
-        cd "${DOT_DIR}"
+        cd "$DOT_DIR"
         git pull origin master
     fi
 }
 
 push-repo() {
-    cd "${DOT_DIR}"
+    cd "$DOT_DIR"
     git add .
     git commit -m "$1"
     git push origin master
@@ -167,26 +171,26 @@ push-repo() {
 
 # Set up all the necessary glue
 activate() {
-    eval "${DOT_GLUE}" init
+    eval "$DOT_GLUE" --init
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/bin"
-    for path in $(find "${SCRIPT_DIR}" -mindepth 1 -type f); do
-	info "$(basename ${path})"
-	eval "${DOT_GLUE}" activate "${path}" "${HOME}/bin/$(basename ${path})"
+    for path in $(find "$SCRIPT_DIR" -mindepth 1 -type f); do
+	info "$(basename "$path")"
+	eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/bin/$(basename "$path")"
     done
     echo
     
     progress "Setting up links to dotfiles"
-    for path in $(find "${CONFIG_DIR}" -maxdepth 1 -type f); do
-        eval "${DOT_GLUE}" activate "${path}" "${HOME}/.$(basename "${path}")"
+    for path in $(find "$CONFIG_DIR" -maxdepth 1 -type f); do
+        eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/.$(basename "$path")"
     done
     echo
 
     progress "Activating package configurations"
-    for package in $(find "${CONFIG_DIR}" -mindepth 1 -maxdepth 1 -type d); do
-        info "$(basename "${package}")"
-        cd "${package}"
+    for package in $(find "$CONFIG_DIR" -mindepth 1 -maxdepth 1 -type d); do
+        info "$(basename "$package")"
+        cd "$package"
 	./dot-activate
     done
     echo
@@ -231,11 +235,11 @@ case $1 in
         echo
         
         progress "Setting Zsh as the default shell"
-        chsh -s $(which zsh)
+        chsh -s "$(which zsh)"
         ;;
     restore)
         progress "Restoring replaced files"
-        eval "${DOT_GLUE}" restore
+        eval "$DOT_GLUE" --restore
         echo
 
         progress "Restoring packages"
@@ -247,7 +251,7 @@ case $1 in
         ;;
     deactivate)
         progress "Deactivating configuration"
-        eval "${DOT_GLUE}" restore
+        eval "$DOT_GLUE" --restore
         ;;
     save)
         progress "Saving local packages to list"
@@ -255,12 +259,12 @@ case $1 in
         ;;
     diff)
         progress "Finding your backup configuration"
-        cd "${BACKUP_FILES_DIR}"
+        cd "$BACKUP_FILES_DIR"
         if [ -z "$(sudo find .)" ]; then
             info "You have no backup configuration"
         else
             echo
-	    eval "${DOT_GLUE}" list
+	    eval "$DOT_GLUE"
             echo
         fi
         
@@ -271,12 +275,12 @@ case $1 in
         diff_aur="$(comm -3 "${PACK_DIR}/aur.tmp" "${PACK_DIR}/aur")"
         rm "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/aur.tmp"
 
-        if [ -n "${diff}" ] || [ -n "${diff}" ]; then
+        if [ -n "$diff" ] || [ -n "$diff" ]; then
             echo
             echo -e "$(tput bold)Local\tMissing$(tput sgr0)"
-            echo -n "${diff}"
-            [ -n "${diff}" ] && [ -n "${diff_aur}" ] && echo
-            echo -n "${diff_aur}"
+            echo -n "$diff"
+            [ -n "$diff" ] && [ -n "$diff_aur" ] && echo
+            echo -n "$diff_aur"
             echo
         else
             info "Your packages are all synced"

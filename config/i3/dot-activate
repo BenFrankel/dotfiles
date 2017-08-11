@@ -1,4 +1,8 @@
 #!/bin/sh
 
-dot-glue activate . "${HOME}/.config/i3"
-find bin -type f -exec dot-glue activate '{}' '/usr/local/{}' \;
+dot-glue --symbolic-link . "${HOME}/.config/i3"
+for script in $(find bin -type f); do
+    dot-glue --copy "$script" "/usr/local/${script}"
+    sudo chown root:root "/usr/local/${script}"
+    sudo chmod 755 "/usr/local/${script}"
+done
