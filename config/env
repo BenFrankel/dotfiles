@@ -1,10 +1,25 @@
-# Expand path
-PATH="${HOME}/bin:${PATH}"
-export PATH
+# Put user binaries in path
+PATH="${HOME}/.local/bin:${PATH}"
 
-# Emacs editor
-export EDITOR='ec'
+# Put Haskell binaries in path
+PATH="${HOME}/.cabal/bin:${PATH}"
+
+# Put Ruby binaries in path
+PATH="$(ruby -e 'print Gem.user_dir')/bin:${PATH}"
+
+# Download torrents to ~/tmp
+export TRANSMISSION_HOME="${HOME}/tmp"
+
+# Vim editor
+export EDITOR='vim'
 
 # Syntax highlighting in less
-export LESSOPEN="|${HOME}/.lessfilter %s"
-export LESS='-R'
+# TODO: Disabled because pygments is slow
+# export LESSOPEN="|${HOME}/.lessfilter %s"
+# export LESS='-R'
+
+# Pyenv
+export PYENV_ROOT="${HOME}/.pyenv"
+
+# Final exports
+export PATH

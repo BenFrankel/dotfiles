@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -eu
+# set -x
+
+
+STATE_PATH="${HOME}/.config/i3/state/lock_state"
+
+state="$(cat "${STATE_PATH}")"
+
+# Restore sound and keyboard layout
+[ "${state:0:1}" = "1" ] && volume on
+[ "${state:1:1}" = "1" ] && keyboard il
+
+# Update i3blocks
+sleep 0.2
+pkill -SIGRTMIN+10 i3blocks
+
+exit 0

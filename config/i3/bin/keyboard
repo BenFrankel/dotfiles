@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eu
+# set -x
+
+
+if [ "$#" -eq 0 ]; then
+    setxkbmap -query | grep -E 'layout:\s+[^\s]+' | awk '{ print $2; }'
+else
+    if [ "$1" = "toggle" ]; then
+        if (setxkbmap -query | grep -Eq 'layout:\s+us'); then
+            setxkbmap il
+        else
+            setxkbmap us
+        fi
+    elif [ "$1" = "us" ]; then
+        setxkbmap us
+    elif [ "$1" = "il" ]; then
+        setxkbmap il
+    fi
+
+    xmodmap ~/.Xmodmap
+fi
+
+exit 0

@@ -9,7 +9,7 @@ set $PAINT krita
 set $TERMINAL urxvtc
 set $TEXT-EDITOR emacsclient -c
 set $VIDEO-PLAYER vlc
-set $WEB-BROWSER firefox-nightly
+set $WEB-BROWSER firefox
 
 
 #############
@@ -19,6 +19,7 @@ set $WEB-BROWSER firefox-nightly
 # Dunst for notifications
 exec_always --no-startup-id pkill dunst; dunst
 # Emacs for text editing
+exec --no-startup-id rm ~/.emacs.d/backups/.emacs.desktop.lock
 exec --no-startup-id emacs --daemon
 # Urxvtd for terminals
 exec --no-startup-id urxvtd -f -o
@@ -54,8 +55,8 @@ set $CU-FG  #ffffff
 font pango:FontAwesome, Ubuntu Sans 8
 
 # Gaps around containers
-gaps inner 12
-gaps outer -4
+gaps inner 4
+gaps outer -2
 
 # Borders around containers
 for_window [class="^.*"] border pixel 2
@@ -115,7 +116,7 @@ bar
 }
 
 # Configure rofi
-set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#b0000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-normal \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-urgent \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -color-active \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00a0b4\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort  -show
+set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu Mono 26\\" -padding 500 -bw 0 -separator-style none -color-window \\"#b0000000,#d9d9d9ff,#00000000,#00000000,#ff00b4a0\\" -color-normal \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00b4a0\\" -color-urgent \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00b4a0\\" -color-active \\"#00000000,#d9d9d9ff,#00000000,#00000000,#ff00b4a0\\" -hide-scrollbar -no-fullscreen -eh 2 -display-window  -display-run  -display-drun  -matching regex -levenshtein-sort -show
 
 
 #####################
@@ -125,7 +126,7 @@ set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu M
 for_window [class="^(.*)$"] title_format "   %title"
 # Web browser	    #
 for_window [class="^(Firefox)$"] title_format "   %title"
-for_window [class="^(Google-chrome)$"] title_format "   %title"
+for_window [class="^(Google-chrome|Chromium)$"] title_format "   %title"
 # Terminal          #
 for_window [class="^(Gnome-terminal|URxvt)$"] title_format "   %title"
 # Music player      #
@@ -146,9 +147,9 @@ for_window [class="^(Gimp|krita)$"] title_format "   %title"
 for_window [class="^(feh)$"] floating enable
 for_window [class="^(feh|Eog)$"] title_format "   %title"
 # Document viewer   #
-for_window [class="^(Evince|Okular)$"] title_format "   %title"
+for_window [class="^(Evince|okular)$"] title_format "   %title"
 # Text editor       #
-for_window [class="^(Emacs|Gedit)$"] title_format "   %title"
+for_window [class="^(Emacs|Gedit|libreoffice-writer)$"] title_format "   %title"
 # Development tool  #
 for_window [class="^(jetbrains-.*)$"] title_format "   %title"
 # Messaging client  #
@@ -160,7 +161,7 @@ assign [class="^(supertux2|SuperTuxKart|Gnome-(mahjongg|mines|sudoku))$"] worksp
 for_window [class="^(supertux2|SuperTuxKart)"] title_format "   %title", floating enable
 for_window [class="^(Gnome-(mahjongg|mines|sudoku))$"] title_format "   %title"
 # Calculators       #
-for_window [class="^(Gnome-calculator)$"] title_format "   %title"
+for_window [class="^(Gnome-calculator|Galculator|libreoffice-math)$"] title_format "   %title", floating enable
 # System monitor    #
 for_window [class="^(Gnome-system-monitor)$"] title_format "   %title"
 # Settings          #
@@ -178,25 +179,29 @@ for_window [class="^(Gnome-software)$"] title_format "   %title"
 for_window [class="^feh$"] floating enable
 floating_maximum_size 1860 x 1020
 
+# Open popups as floating
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+
 # Workspace-specific applications
 assign [class="^(discord|Hexchat)$"] workspace $WORKSPACE-3
 
 
 # Sound volume commands
-set $SOUND-VOLUME-INC-MINOR exec --no-startup-id volume up && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
-set $SOUND-VOLUME-DEC-MINOR exec --no-startup-id volume down && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
-set $SOUND-VOLUME-INC-MAJOR exec --no-startup-id volume up more && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
-set $SOUND-VOLUME-DEC-MAJOR exec --no-startup-id volume down more && notify-send --urgency=low -t 1 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
-set $SOUND-MUTE-TOGGLE exec --no-startup-id volume toggle && [ -n "$(volume | grep 'off')" ] && notify-send --urgency=low -t 1 'Volume: ' 'Now off' || notify-send --urgency=low -t 1 'Volume: ' "Now $(volume)%"
+set $SOUND-VOLUME-INC-MINOR exec --no-startup-id volume up && notify-send --urgency=low -t 750 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-DEC-MINOR exec --no-startup-id volume down && notify-send --urgency=low -t 750 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-INC-MAJOR exec --no-startup-id volume up more && notify-send --urgency=low -t 750 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-VOLUME-DEC-MAJOR exec --no-startup-id volume down more && notify-send --urgency=low -t 750 "Volume: " "Now $(volume)%" && paplay "${HOME}/.config/i3/resources/volume-change.oga"
+set $SOUND-MUTE-TOGGLE exec --no-startup-id volume toggle && [ -n "$(volume | grep 'off')" ] && notify-send --urgency=low -t 750 'Volume: ' 'Now off' || notify-send --urgency=low -t 750 'Volume: ' "Now $(volume)%"
 
 # Microphone commands
-set $MIC-TOGGLE exec --no-startup-id "amixer -D pulse set Capture toggle && notify-send --urgency=low -t 1 \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo Microphone: ; else echo Microphone: ; fi)\\" \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo \\"Now $(amixer -D pulse get Capture | grep -Eom 1 '\[[[:digit:]]+%\]' | tr -d '[]')\\"; else echo Now off; fi)\\""
+set $MIC-TOGGLE exec --no-startup-id "amixer -D pulse set Capture toggle && notify-send --urgency=low -t 750 \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo Microphone: ; else echo Microphone: ; fi)\\" \\"$(if [ -n \\"$(amixer -D pulse get Capture | grep '\[on\]')\\" ]; then echo \\"Now $(amixer -D pulse get Capture | grep -Eom 1 '\[[[:digit:]]+%\]' | tr -d '[]')\\"; else echo Now off; fi)\\""
 
 # Brightness commands
-set $BRIGHTNESS-INC-MINOR exec --no-startup-id sudo brightness up && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
-set $BRIGHTNESS-DEC-MINOR exec --no-startup-id sudo brightness down &&  notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
-set $BRIGHTNESS-INC-MAJOR exec --no-startup-id sudo brightness up more && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
-set $BRIGHTNESS-DEC-MAJOR exec --no-startup-id sudo brightness down more && notify-send --urgency=low -t 1 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-INC-MINOR exec --no-startup-id sudo brightness up && notify-send --urgency=low -t 750 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-DEC-MINOR exec --no-startup-id sudo brightness down &&  notify-send --urgency=low -t 750 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-INC-MAJOR exec --no-startup-id sudo brightness up more && notify-send --urgency=low -t 750 "Brightness: " "Now $(sudo brightness)"
+set $BRIGHTNESS-DEC-MAJOR exec --no-startup-id sudo brightness down more && notify-send --urgency=low -t 750 "Brightness: " "Now $(sudo brightness)"
 
 # Screenshot commands
 set $SCREENSHOT-FULL exec --no-startup-id screenshot
@@ -249,15 +254,11 @@ bindsym --release $mod+Shift+Print $SCREENSHOT-SELECT-SHARE
 ###################
 
 
-# Debugging:
-#bindsym $mod+x exec --no-startup-id echo "$(env)" > ~/.i3-debug
-
-
 # Non-conflicting default keybindings for backwards compatibility:
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Shift+j move left
 bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
@@ -311,6 +312,9 @@ bindsym $mod+bracketleft focus parent
 
 # Focus child
 bindsym $mod+bracketright focus child
+
+# Focus urgent window
+bindsym $mod+x [urgent=latest] focus
 
 # Change layout (tabbed, split)
 # I don't like stacking, so it doesn't get a binding
@@ -375,13 +379,14 @@ bindsym $mod+Shift+0 move container to workspace $WORKSPACE-10
 bindsym $mod+z workspace back_and_forth
 
 # Pause / play music
-bindsym $mod+t exec --no-startup-id playerctl play-pause && pkill -SIGRTMIN+10 i3blocks
+bindsym $mod+Shift+t exec --no-startup-id playerctl play-pause && pkill -SIGRTMIN+10 i3blocks
 
-# Next song
+# Next / prev song
+bindsym $mod+t exec --no-startup-id playerctl previous && sleep 0.02 && pkill -SIGRTMIN+10 i3blocks && sleep 0.06 && pkill -SIGRTMIN+10 i3blocks
 bindsym $mod+y exec --no-startup-id playerctl next && sleep 0.02 && pkill -SIGRTMIN+10 i3blocks && sleep 0.06 && pkill -SIGRTMIN+10 i3blocks
 
 # Change keyboard layout
-bindsym $mod+backslash exec --no-startup-id (setxkbmap -query | grep -Eq 'layout:\s+us') && setxkbmap il || setxkbmap us
+bindsym $mod+backslash exec --no-startup-id keyboard toggle
 
 
 ###########
@@ -393,12 +398,16 @@ set $MODE-RESIZE "RESIZE"
 bindsym $mod+r mode $MODE-RESIZE
 
 # System control mode
-set $MODE-SYSTEM "SYSTEM: config - hide - lock - reset - suspend - CLOSE - HIBERNATE - LOGOUT - REBOOT - SHUTDOWN"
+set $MODE-SYSTEM "SYSTEM: autolock - config - hide - lock - reset - suspend - CLOSE - HIBERNATE - LOGOUT - REBOOT - SHUTDOWN"
 bindsym $mod+space mode $MODE-SYSTEM
 
 # Application launch mode
 set $MODE-OPEN "OPEN: color - file - image - paint - shell - text - video - web"
 bindsym $mod+apostrophe mode $MODE-OPEN
+
+# Workspace switch mode
+set $MODE-WORKSPACE "WORKSPACE: alphanumeric"
+bindsym $mod+g mode $MODE-WORKSPACE
 
 
 #########################
@@ -461,6 +470,9 @@ mode $MODE-RESIZE
 # System control mode
 mode $MODE-SYSTEM
 {
+        # Toggle auto lock
+        bindsym a mode "default"; exec --no-startup-id pkill xautolock || xautolock -time 5 -locker "lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
+
 	# Reload i3 configuration
 	bindsym c mode "default"; reload
 
@@ -585,3 +597,108 @@ mode $MODE-OPEN
 	bindsym --release Print $SCREENSHOT-FULL
 	bindsym --release Shift+Print $SCREENSHOT-SELECT
 }
+
+# Minor workspace mode
+mode $MODE-WORKSPACE
+{
+        # Minor workspaces
+        bindsym 1 workspace "1"; mode "default"
+        bindsym Shift+1 move workspace "1"; mode "default"
+        bindsym 2 workspace "2"; mode "default"
+        bindsym Shift+2 move workspace "2"; mode "default"
+        bindsym 3 workspace "3"; mode "default"
+        bindsym Shift+3 move workspace "3"; mode "default"
+        bindsym 4 workspace "4"; mode "default"
+        bindsym Shift+4 move workspace "4"; mode "default"
+        bindsym 5 workspace "5"; mode "default"
+        bindsym Shift+5 move workspace "5"; mode "default"
+        bindsym 6 workspace "6"; mode "default"
+        bindsym Shift+6 move workspace "6"; mode "default"
+        bindsym 7 workspace "7"; mode "default"
+        bindsym Shift+7 move workspace "7"; mode "default"
+        bindsym 8 workspace "8"; mode "default"
+        bindsym Shift+8 move workspace "8"; mode "default"
+        bindsym 9 workspace "9"; mode "default"
+        bindsym Shift+9 move workspace "9"; mode "default"
+        bindsym 0 workspace "0"; mode "default"
+        bindsym Shift+0 move workspace "0"; mode "default"
+        bindsym a workspace "A"; mode "default"
+        bindsym Shift+a move workspace "A"; mode "default"
+        bindsym b workspace "B"; mode "default"
+        bindsym Shift+b move workspace "B"; mode "default"
+        bindsym c workspace "C"; mode "default"
+        bindsym Shift+c move workspace "C"; mode "default"
+        bindsym d workspace "D"; mode "default"
+        bindsym Shift+d move workspace "D"; mode "default"
+        bindsym e workspace "E"; mode "default"
+        bindsym Shift+e move workspace "E"; mode "default"
+        bindsym f workspace "F"; mode "default"
+        bindsym Shift+f move workspace "F"; mode "default"
+        bindsym g workspace "G"; mode "default"
+        bindsym Shift+g move workspace "G"; mode "default"
+        bindsym h workspace "H"; mode "default"
+        bindsym Shift+h move workspace "H"; mode "default"
+        bindsym i workspace "I"; mode "default"
+        bindsym Shift+i move workspace "I"; mode "default"
+        bindsym j workspace "J"; mode "default"
+        bindsym Shift+j move workspace "J"; mode "default"
+        bindsym k workspace "K"; mode "default"
+        bindsym Shift+k move workspace "K"; mode "default"
+        bindsym l workspace "L"; mode "default"
+        bindsym Shift+l move workspace "L"; mode "default"
+        bindsym m workspace "M"; mode "default"
+        bindsym Shift+m move workspace "M"; mode "default"
+        bindsym n workspace "N"; mode "default"
+        bindsym Shift+n move workspace "N"; mode "default"
+        bindsym o workspace "O"; mode "default"
+        bindsym Shift+o move workspace "O"; mode "default"
+        bindsym p workspace "P"; mode "default"
+        bindsym Shift+p move workspace "P"; mode "default"
+        bindsym q workspace "Q"; mode "default"
+        bindsym Shift+q move workspace "Q"; mode "default"
+        bindsym r workspace "R"; mode "default"
+        bindsym Shift+r move workspace "R"; mode "default"
+        bindsym s workspace "S"; mode "default"
+        bindsym Shift+s move workspace "S"; mode "default"
+        bindsym t workspace "T"; mode "default"
+        bindsym Shift+t move workspace "T"; mode "default"
+        bindsym u workspace "U"; mode "default"
+        bindsym Shift+u move workspace "U"; mode "default"
+        bindsym v workspace "V"; mode "default"
+        bindsym Shift+v move workspace "V"; mode "default"
+        bindsym w workspace "W"; mode "default"
+        bindsym Shift+w move workspace "W"; mode "default"
+        bindsym x workspace "X"; mode "default"
+        bindsym Shift+x move workspace "X"; mode "default"
+        bindsym y workspace "Y"; mode "default"
+        bindsym Shift+y move workspace "Y"; mode "default"
+        bindsym z workspace "Z"; mode "default"
+
+	# Exit mode with Enter or Escape or space
+	# or use mode command again to toggle out
+        bindsym Return mode "default"
+        bindsym $mod+Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+Escape mode "default"
+	bindsym space mode "default"
+	bindsym $mod+space mode "default"
+        bindsym $mod+h mode "default"
+	
+        # Due to i3 config limitations, the following must be copied into every mode
+        # in order to achieve global key binding behavior:
+	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+	bindsym XF86AudioMicMute $MIC-TOGGLE
+	bindsym $mod+F4 $MIC-TOGGLE
+	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+	bindsym --release Print $SCREENSHOT-FULL
+	bindsym --release Shift+Print $SCREENSHOT-SELECT
+}
+

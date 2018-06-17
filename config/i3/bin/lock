@@ -4,48 +4,25 @@ set -eu
 # set -x
 
 
+STATE_PATH="${HOME}/.config/i3/state/lock_state"
+
 # Make sure i3lock is not running already
 [ -z "$(pgrep i3lock)" ] || pkill i3lock
 
-BG="/tmp/lock-screen.png"
-LOCK_ICON="${HOME}/.config/i3/resources/lock.png"
-
-# Create lock screen:
-# Take screenshot
-scrot "${BG}" --quality 1
-
-# Obscure screenshot
-convert "${BG}" -scale 8.33333% -posterize 16 -brightness-contrast -10 -scale 1200% -paint 3 "${BG}"
-
-# Overlay lock icon
-if [ -f "${LOCK_ICON}" ]; then
-    convert "${BG}" "${LOCK_ICON}" -gravity center -composite -matte "${BG}"
-fi
-
-HAD_MUSIC=$([ -n "$(playerctl -l 2>&1 | grep spotify)" -a -n "$(playerctl --player=spotify status | grep Playing)" ] && echo 1 || echo 0)
 HAD_SOUND=$([ -n "$(volume | grep 'off')" ] && echo 0 || echo 1)
-WAS_IL_KBMAP=$([ -n "$(setxkbmap -query | grep 'layout:\s+il')" ] && echo 1 || echo 0)
+WAS_IL_KBMAP=$([ "$(keyboard)" = "il" ] && echo 1 || echo 0)
 
-# Pause sound/music, set to US layout
-[ $HAD_MUSIC -ne 0 ] && playerctl --player=spotify pause
+# Pause sound/music, change to US layout
 [ $HAD_SOUND -ne 0 ] && volume off
-[ $WAS_IL_KBMAP -ne 0 ] && setxkbmap us
+keyboard us
+
+for player in $(playerctl -l 2>/dev/null); do
+    if [ -n "$(playerctl --player=${player} status | grep Playing)" ]; then
+        playerctl --player=$player pause
+    fi
+done
+
+echo "${HAD_SOUND}${WAS_IL_KBMAP}" > "${STATE_PATH}"
 
 # Lock screen
-i3lock -ni "${BG}"
-
-# Clean up temp background file
-rm -f "${BG}"
-
-# Unpause music/music, restore keyboard layout
-[ $HAD_MUSIC -ne 0 ] && playerctl --player=spotify play
-[ $HAD_SOUND -ne 0 ] && volume on
-[ $WAS_IL_KBMAP -ne 0 ] && setxkbmap il
-
-# Update i3blocks
-sleep 0.2
-pkill -SIGRTMIN+10 i3blocks
-
-
-exit 0
-
+i3lock -c '#152026' -o '#ffffff' -w '#d36f6a' -l '#8a8fd3' -e

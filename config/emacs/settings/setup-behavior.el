@@ -1,18 +1,9 @@
-;;; package --- Summary
-;;;    Behavioral emacs configuration
-
-;;; Commentary:
-;;;    No commentary
-
-;;; Code:
-
-
 ;; Scrolling
 (setq scroll-step 1)
 (setq scroll-conservatively 10000)
 (setq auto-window-vscroll nil)
 
-;; Make buffer names unique even if the files have the same names
+;; Make buffer names unique even if open files have the same names
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
@@ -25,20 +16,34 @@
       `((".*" ,(concat user-emacs-directory "saves") t)))
 
 ;; Write customizations to custom.el and not init.el
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (concat user-emacs-directory "custom.el"))
 
 ;; Starting directory ~
 (setq default-directory "~/")
 
+;; Initial buffer
+(setq initial-buffer-choice "~/docs/org/todo/todo.org")
+
+;; Remember open buffers
+(use-package desktop
+  :defer 2
+  :config
+  (setq desktop-dirname (concat user-emacs-directory "backups")
+        desktop-path (list desktop-dirname)
+        desktop-save t
+        desktop-load-locked-desktop nil
+        desktop-restore-frames nil))
+(desktop-save-mode 1)
+
 ;; Save cursor place in buffers
 (require 'saveplace)
-(setq-default save-place t)
+(save-place-mode 1)
 (setq save-place-file (concat user-emacs-directory "places"))
 
 ;; Yank with mouse middle click at cursor, not at pointer
 (setq mouse-yank-at-point t)
 
-;; Delete a letter is typed while a region is highlighted
+;; Delete highlighted region when a character is entered
 (delete-selection-mode 1)
 
 ;; Save external copied text to kill ring even when there's a more recent kill
@@ -58,28 +63,27 @@
 
 ;; INDENTATION ;;
 ;; Set default style to k&r with offset 4
-(setq-default c-default-style "k&r"
-	      c-basic-offset 4)
+(require 'cc-mode)
+(setq c-default-style "k&r"
+      c-basic-offset 4)
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (c-set-offset 'inline-open '0)
 	    (c-set-offset 'inextern-lang 0)))
  
 ;; Don't indent with tabs
-(setq-default indent-tabs-mode nil)
+(setq indent-tabs-mode nil)
 
 
 ;; RUST ;;
 (add-hook 'rust-mode-hook #'racer-mode)
-(add-hook 'rust-mode-hook 'cargo-ominor-mode)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 
 
 ;; PARADOX ;;
 (require 'paradox)
 (paradox-enable)
-;; Connect to github
-(setq paradox-github-token "4e103cf7fca604c4d834fc629558db7a5863d012")
 
 ;; Don't ask to install packages
 (setq paradox-execute-asynchronously t)

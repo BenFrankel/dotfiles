@@ -13,6 +13,8 @@ URxvt.font: xft:Ubuntu Mono:pixelsize=14
 
 ! MISC !
 URxvt.urgentOnBell: true
+URxvt.inputMethod: ibus
+URxvt.preeditType: OverTheSpot
 
 ! COLORS !
 URxvt.depth: 24

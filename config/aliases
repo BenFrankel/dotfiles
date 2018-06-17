@@ -1,19 +1,59 @@
 alias ls='exa --group-directories-first --sort=Name --reverse --color-scale'
-alias la="ls -a"
-alias ll="ls -al --header --extended --git"
-alias tree="ls --tree"
+alias lss='ls --sort=size'
+alias la='ls -a'
+alias las='la --sort=size'
+alias ll='ls -al --header --extended --git --group --inode'
+alias lls='ll --sort=size'
+
+alias tree='ls --tree'
 
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
-alias fix='stty sane;exec zsh;tput reset'
+alias view='vim -R'
 
-alias define='sdcv'
+alias fix='stty sane;exec -l zsh;tput reset'
+
+# System information
+alias cpuhog="ps -eo args --sort %cpu | tail -n 1 | sed 's/\s.*$//'"
+
+# Network information
+probe() {
+    sudo nmap -T4 -F -O -sV -sS "$1" | grep -E 'Nmap scan report for|$'
+}
+alias iplan='ip addr show wlp3s0 | awk '\''/inet / {print $2}'\'
+alias lslan='sudo nmap -T4 -sn $(iplan) | grep '\''Nmap scan report'\'' | sed '\''s/Nmap scan report for //g'\'' | nl -w 1 | grep -E $'\''\t[^ ]+ |$'\'
+alias lllan='probe "$(iplan)"'
+
+define() {
+    sdcv --color "$@" | grep -E '   [1-9]+\.|^'
+}
 
 alias ec='emacsclient -c -t'
+alias edit="$EDITOR"
 
-alias coin-toss='echo -n "Heads\nTails" | shuf | head -n 1'
+detach() {
+    (eval "$*" &) &>/dev/null
+    disown &>/dev/null
+    return 0
+}
+
+alias open='detach xdg-open'
+alias mimetype='xdg-mime query filetype'
+to-open() {
+    if mimetype "$*" &>/dev/null; then
+        xdg-mime query default "$(mimetype "$*")"
+    else
+        xdg-mime query default "$*"
+    fi
+}
+
+alias rewifi='sudo systemctl restart netctl-auto@wlp3s0'
+alias randmac='sudo ip link set wlp3s0 down;sudo ip link set wlp3s0 address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set wlp3s0 up'
+alias swifi='sudo netctl-auto switch-to'
+
+alias coinflip='echo -n Heads\\nTails | shuf | head -n 1'
 
 alias wisdom='fortune -a | cowsay -f turkey'
 alias dadjoke='curl -sS https://icanhazdadjoke.com | cowsay -f stegosaurus'

@@ -1,4 +1,1 @@
-# Ignore Emacs litter
-\#.*
-\#*#
-*~
+.#*

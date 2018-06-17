@@ -59,7 +59,7 @@ interval=60
 full_text=
 
 [mediaplayer]
-instance=rhythmbox
+instance=spotify
 signal=10
 
 [separator]

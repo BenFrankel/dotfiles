@@ -1,12 +1,3 @@
-;;; package --- Summary
-;;;    Emacs key bindings
-
-;;; Commentary:
-;;;    No commentary
-
-;;; Code:
-
-
 ;; DUPLICATE ;;
 ;; M-c = duplicate
 (global-set-key (kbd "M-c") 'duplicate-thing)

@@ -8,6 +8,8 @@
 
 
 (require 'helm)
+(require 'helm-locate)
+(require 'helm-command)
 
 
 ;;;;;;;;;;;;;;
@@ -15,7 +17,9 @@
 ;;;;;;;;;;;;;;
 
 (helm-mode 1)
-(setq-default helm-M-x-fuzzy-match t)
+(setq helm-M-x-fuzzy-match t)
+(setq helm-locate-project-list `("~/dev/repos/"))
+(setq helm-locate-fuzzy-match t)
 
 
 ;;;;;;;;;;;;;;;;
@@ -26,7 +30,7 @@
 (helm-autoresize-mode 1)
 (setq helm-autoresize-max-height 30)
 (setq helm-autoresize-min-height 30)
-(setq helm-split-window-in-side-p t)
+(setq helm-split-window-inside-p t)
 
 
 ;;;;;;;;;;

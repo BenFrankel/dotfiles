@@ -14,9 +14,9 @@ fi
 # manni
 # perldoc
 # rrt
+# monokai
 # paraiso-dark
 # native
-# fruity
 # lovelace
 #
 #
@@ -38,7 +38,7 @@ case "$1" in
         if [ "Z${LEXER}" != "Ztext" ]; then
             pygmentize -f 256 -O style=$STYLE -l $LEXER $1
         else
-            pygmentize -f 256 -O style=$STYLE -g $1
+            cat $1
         fi
 esac
 
