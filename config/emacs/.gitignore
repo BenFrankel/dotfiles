@@ -6,9 +6,14 @@ url/
 xkcd/
 games/
 speed-type/
+irony/
 
-.#recentf
+.#*
+\#*
 recentf
 tramp
 .mc-lists.el
+places
 projectile-bookmarks.eld
+projectile.cache
+.emacs.desktop
