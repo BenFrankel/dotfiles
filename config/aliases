@@ -11,7 +11,9 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
-alias view='vim -R'
+alias cat='bat'
+alias view='bat'
+alias less='bat'
 
 alias fix='stty sane;exec -l zsh;tput reset'
 

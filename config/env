@@ -7,6 +7,9 @@ PATH="${HOME}/.cabal/bin:${PATH}"
 # Put Ruby binaries in path
 PATH="$(ruby -e 'print Gem.user_dir')/bin:${PATH}"
 
+# Put Rust binaries in path
+PATH="${HOME}/.cargo/bin:${PATH}"
+
 # Download torrents to ~/tmp
 export TRANSMISSION_HOME="${HOME}/tmp"
 

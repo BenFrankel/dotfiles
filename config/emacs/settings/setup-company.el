@@ -1,9 +1,10 @@
 (require 'rust-mode)
 (require 'company-c-headers)
+(require 'company-web-html)
 
 (use-package company
   :bind (:map rust-mode-map
-	 ("TAB" . company-indent-or-complete-common))
+        ("TAB" . company-indent-or-complete-common))
   
   :config
   

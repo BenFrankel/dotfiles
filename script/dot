@@ -174,10 +174,10 @@ activate() {
     eval "$DOT_GLUE" --init
 
     progress "Setting up links to scripts"
-    mkdir -p "${HOME}/bin"
+    mkdir -p "${HOME}/.local/bin"
     for path in $(find "$SCRIPT_DIR" -mindepth 1 -type f); do
 	info "$(basename "$path")"
-	eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/bin/$(basename "$path")"
+	eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
     done
     echo
     

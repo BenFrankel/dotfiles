@@ -1,7 +1,13 @@
-[url "https://aur.archlinux.org/"]
-	insteadOf = aur://
 [user]
-	email = ben.frankel7@gmail.com
 	name = Ben Frankel
+	email = ben.frankel7@gmail.com
+    username = benfrankel
+[core]
+    editor = vim
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    excludesfile = ~/.config/git/ignore
 [credential]
 	helper = cache --timeout=14400
+
+[url "https://aur.archlinux.org/"]
+	insteadOf = aur://
