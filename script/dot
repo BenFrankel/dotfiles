@@ -167,8 +167,8 @@ activate() {
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/.local/bin"
     for path in $(find "$script_dir" -mindepth 1 -type f); do
-	info "$(basename "$path")"
-	eval "$dot_glue" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
+        info "$(basename "$path")"
+        eval "$dot_glue" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
     done
     echo
     
@@ -178,11 +178,18 @@ activate() {
     done
     echo
 
+    progress "Setting up links to assets"
+    for dir in $(find "$assets_dir" -mindepth 1 -maxdepth 1 -type d); do
+        info "$(basename $dir)"
+        cd "$dir"
+        ./dot-activate
+    done
+
     progress "Activating package configurations"
     for package in $(find "$config_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "$package")"
         cd "$package"
-	./dot-activate
+        ./dot-activate
     done
 }
 
