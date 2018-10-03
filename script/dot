@@ -39,13 +39,13 @@ Administrative:
 [ $# -eq 1 -o "$1" == "push" ] || usage
 
 
-DOT_DIR="${HOME}/.dotfiles"
-CONFIG_DIR="${DOT_DIR}/config"
-SCRIPT_DIR="${DOT_DIR}/script"
-BACKUP_DIR="${DOT_DIR}/backup"
-BACKUP_FILES_DIR="${BACKUP_DIR}/files"
-PACK_DIR="${DOT_DIR}/pack"
-DOT_GLUE="${SCRIPT_DIR}/dot-glue"
+dot_dir="${HOME}/.dotfiles"
+config_dir="${dot_dir}/config"
+script_dir="${dot_dir}/script"
+backup_dir="${dot_dir}/backup"
+BACKUP_FILES_DIR="${backup_dir}/files"
+pack_dir="${dot_dir}/pack"
+dot_glue="${script_dir}/dot-glue"
 
 
 # Print progress
@@ -68,10 +68,10 @@ prompt() {
     read -r -p "$(tput bold)$(tput setaf 6)--$(tput sgr0) $(tput bold)$1$(tput sgr0) [Y/n] " choice
     case $choice in
         [Yy][Ee][SsPp]|[Yy][Ee][Aa][Hh]|[Yy])
-            return 1
+            return 0
             ;;
         *)
-            return 0
+            return 1
             ;;
     esac
 }
@@ -79,14 +79,14 @@ prompt() {
 # Load package lists
 load() {
     [ $# -eq 1 ] && local ext="$1" || local ext=''
-    cat "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/aur${ext}"
+    cat "${pack_dir}/pacman${ext}" "${pack_dir}/aur${ext}"
 }
 
 # Save packages to lists
 save() {
     [ $# -eq 1 ] && local ext="$1" || local ext=''
-    pacman -Qqen | sort > "${PACK_DIR}/pacman${ext}"
-    pacman -Qqem | sort > "${PACK_DIR}/aur${ext}"
+    pacman -Qqen | sort > "${pack_dir}/pacman${ext}"
+    pacman -Qqem | sort > "${pack_dir}/aur${ext}"
 }
 
 # Sync with local package lists
@@ -94,8 +94,8 @@ sync() {
     [ $# -ge 1 ] && local ext="$1" || local ext=''
     [ $# -eq 2 ] && local old="$2" || local old='.old'
     
-    if [ ! -f "${PACK_DIR}/pacman${ext}" ] && [ ! -f "${PACK_DIR}/aur${ext}" ]; then
-        info "No pacman${ext} or aur${ext} in ${PACK_DIR} to sync with"
+    if [ ! -f "${pack_dir}/pacman${ext}" ] && [ ! -f "${pack_dir}/aur${ext}" ]; then
+        info "No pacman${ext} or aur${ext} in ${pack_dir} to sync with"
         return 0
     fi
     
@@ -104,16 +104,16 @@ sync() {
     echo
 
     progress "Finding local packages to remove"
-    packages="$(comm -13 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
-    packages+=" $(comm -13 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
+    packages="$(comm -13 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
+    packages+=" $(comm -13 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ "$packages" != ' ' ]; then
         echo
         echo $packages
         echo
         if prompt 'Remove packages?'; then
-            info 'No packages removed'
-        else
             sudo pacman -Rns --noconfirm $packages
+        else
+            info 'No packages removed'
         fi
     else
         info "No packages need to be removed"
@@ -121,18 +121,18 @@ sync() {
     echo
 
     progress "Finding missing packages to install"
-    packages="$(comm -23 "${PACK_DIR}/pacman${ext}" "${PACK_DIR}/pacman${old}")"
-    packages_aur="$(comm -23 "${PACK_DIR}/aur${ext}" "${PACK_DIR}/aur${old}")"
+    packages="$(comm -23 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
+    packages_aur="$(comm -23 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ -n "${packages}${packages_aur}" ]; then
         echo
         [ -n "$packages" ] && echo $packages
         [ -n "$packages_aur" ] && echo $packages_aur
         echo
         if prompt 'Install packages?'; then
-            info "No packages installed"
-        else
             [ -n "$packages" ] && sudo pacman -S --noconfirm $packages
             [ -n "$packages_aur" ] && yaourt -S --noconfirm $packages_aur
+        else
+            info "No packages installed"
         fi
     else
         info "No packages need to be installed"
@@ -144,17 +144,17 @@ sync() {
 # Get latest version of repository
 get-repo() {
     progress "Getting latest repository"
-    if [ ! -d "${DOT_DIR}/.git" ]; then
-        git clone https://github.com/BenFrankel/dotfiles "$DOT_DIR"
-        mkdir -p "$BACKUP_FILES_DIR" "$PACK_DIR"
+    if [ ! -d "${dot_dir}/.git" ]; then
+        git clone https://github.com/BenFrankel/dotfiles "$dot_dir"
+        mkdir -p "$BACKUP_FILES_DIR" "$pack_dir"
     else
-        cd "$DOT_DIR"
+        cd "$dot_dir"
         git pull origin master
     fi
 }
 
 push-repo() {
-    cd "$DOT_DIR"
+    cd "$dot_dir"
     git add .
     git commit -m "$1"
     git push origin master
@@ -162,24 +162,24 @@ push-repo() {
 
 # Set up all the necessary glue
 activate() {
-    eval "$DOT_GLUE" --init
+    eval "$dot_glue" --init
 
     progress "Setting up links to scripts"
     mkdir -p "${HOME}/.local/bin"
-    for path in $(find "$SCRIPT_DIR" -mindepth 1 -type f); do
+    for path in $(find "$script_dir" -mindepth 1 -type f); do
 	info "$(basename "$path")"
-	eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
+	eval "$dot_glue" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
     done
     echo
     
     progress "Setting up links to dotfiles"
-    for path in $(find "$CONFIG_DIR" -maxdepth 1 -type f); do
-        eval "$DOT_GLUE" --symbolic-link "$path" "${HOME}/.$(basename "$path")"
+    for path in $(find "$config_dir" -maxdepth 1 -type f); do
+        eval "$dot_glue" --symbolic-link "$path" "${HOME}/.$(basename "$path")"
     done
     echo
 
     progress "Activating package configurations"
-    for package in $(find "$CONFIG_DIR" -mindepth 1 -maxdepth 1 -type d); do
+    for package in $(find "$config_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "$package")"
         cd "$package"
 	./dot-activate
@@ -193,7 +193,9 @@ case $1 in
         get-repo
         echo
         
-        activate
+        if prompt 'Activate configuration?'; then
+            activate
+        fi
         echo
         
         sync
@@ -208,38 +210,46 @@ case $1 in
 	# pacman
 	# 
 
-        progress "Enabling LightDM (display manager & greeter)"
-        sudo systemctl enable lightdm
+        if prompt 'Enable LightDM (display manager & greeter)?'; then
+            sudo systemctl enable lightdm
+        fi
         echo
 
         iw_dev="$(iw dev | grep -m 1 '^\s*Interface .*$' | sed 's/\s*Interface //')"
-        progress "Enabling netctl-auto@${iw_dev} (automatic wifi connection)"
-        sudo systemctl enable netctl-auto@"$iw_dev"
+        if prompt "Enable netctl-auto@${iw_dev} (automatic wifi connection)?"; then
+            sudo systemctl enable netctl-auto@"$iw_dev"
+        fi
         echo
         
-        progress "Setting Zsh as the default shell"
-        chsh -s "$(which zsh)"
+        if prompt 'Set Zsh as your default shell?'; then
+            chsh -s "$(which zsh)"
+        fi
         ;;
+
     restore)
         progress "Restoring replaced files"
-        eval "$DOT_GLUE" --restore
+        eval "$dot_glue" --restore
         echo
 
         progress "Restoring packages"
         sync '.old' '.tmp'
         ;;
+
     activate)
         progress "Activating configuration"
         activate
         ;;
+
     deactivate)
         progress "Deactivating configuration"
-        eval "$DOT_GLUE" --restore
+        eval "$dot_glue" --restore
         ;;
+
     save)
         progress "Saving local packages to list"
         save
         ;;
+
     diff)
         progress "Finding your backup configuration"
         cd "$BACKUP_FILES_DIR"
@@ -247,16 +257,16 @@ case $1 in
             info "You have no backup configuration"
         else
             echo
-	    eval "$DOT_GLUE"
+            eval "$dot_glue"
             echo
         fi
         
         progress "Comparing your packages to the list"
         
-        save ".tmp"
-        diff="$(comm -3 "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/pacman")"
-        diff_aur="$(comm -3 "${PACK_DIR}/aur.tmp" "${PACK_DIR}/aur")"
-        rm "${PACK_DIR}/pacman.tmp" "${PACK_DIR}/aur.tmp"
+        save '.tmp'
+        diff="$(comm -3 "${pack_dir}/pacman.tmp" "${pack_dir}/pacman")"
+        diff_aur="$(comm -3 "${pack_dir}/aur.tmp" "${pack_dir}/aur")"
+        rm "${pack_dir}/pacman.tmp" "${pack_dir}/aur.tmp"
 
         if [ -n "$diff" ] || [ -n "$diff" ]; then
             echo
@@ -270,19 +280,23 @@ case $1 in
         fi
         echo
         ;;
+
     sync)
         sync
         ;;
+
     push)
-        progress "Saving installed packages"
-        save
+        if prompt 'Save installed packages?'; then
+            save
+        fi
         echo
         
-        progress "Pushing to repository"
+        progress 'Pushing repository'
         push-repo "${@:2}"
         ;;
+
     *)
-	usage
+        usage
 esac
 
 exit 0
