@@ -1,0 +1,5 @@
+#!/bin/sh
+
+dot-glue --symbolic-link user-dirs.dirs "${HOME}/.config/user-dirs.dirs"
+dot-glue --symbolic-link user-dirs.locale "${HOME}/.config/user-dirs.locale"
+dot-glue --symbolic-link mimeapps.list "${HOME}/.config/mimeapps.list"
