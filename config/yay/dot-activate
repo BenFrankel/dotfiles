@@ -1,0 +1,3 @@
+#!/bin/sh
+
+dot-glue --symbolic-link config.json "${HOME}/.config/yay/config.json"

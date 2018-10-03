@@ -21,7 +21,7 @@ This repository is based on the following packages:
 
 - **Operating System** - [Arch Linux](https://archlinux.org)
 - **Display Manager** - [LightDM](https://freedesktop.org/wiki/Software/LightDM)
-    - **Greeter** - [LightDM GTK+ Greeter](https://launchpad.net/lightdm-gtk-greeter)
+    - **Greeter** - [LightDM Webkit Greeter](https://github.com/Antergos/web-greeter)
 - **Window Manager** - [i3-gaps](https://github.com/Airblader/i3)
 - **Info Bar** - [i3bar](https://i3wm.org/i3bar) with [i3blocks](https://vivien.github.io/i3blocks)
 - **Screen Locker** - Script using a fork of [i3lock]()
@@ -38,11 +38,12 @@ This repository is based on the following packages:
 - **Text Editor** - [Emacs](https://gnu.org/software/emacs)
 - **IDEs**
     - **Python** - [Pycharm Community Edition](https://jetbrains.com/pycharm)
-- **Web Browser** - [Firefox Nightly](https://mozilla.org/en-US/firefox/channel/desktop)
+- **Web Browser** - [Firefox](https://www.mozilla.org/en-US/firefox/)
 - **File Manager** - [Thunar](https://git.xfce.org/xfe/thunar)
 - **Multimedia Player** - [VLC](https://videolan.org/vlc)
 - **Image Editor** - [GIMP](https://gimp.org)
 - **Drawing** - [Krita](https://krita.org)
+- **Vector Editor** - [Inkscape](https://inkscape.org/en/)
 - **Partition Manager** - [GParted](https://gparted.org)
 
 Plus anything else I have installed.
@@ -56,6 +57,7 @@ Plus anything else I have installed.
 - Arch Linux
 - Internet connection
 - [git](https://git-scm.com)
+- [yay](https://aur.archlinux.org/packages/yay/)
 
 
 ### Download
@@ -85,7 +87,7 @@ You can also use `dot get` to update to the newest version.
 
 ### Wallpaper
 
-To set your wallpaper, move an image to `~/Pictures/Wallpapers/image-name` and activate it with `dot-wall image-name`. The change should take effect immediately.
+To set your wallpaper, move an image to `~/data/image/screens/` and activate it with `dot-wall image-name`. The change should take effect immediately.
 
 
 ## Key Bindings
