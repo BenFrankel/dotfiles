@@ -1,0 +1,8 @@
+#!/bin/sh
+
+dot-glue --link 30-anton.conf /etc/fonts/conf.avail/30-anton.conf
+sudo ln -sf /etc/fonts/conf.avail/30-anton.conf /etc/fonts/conf.d/30-anton.conf
+dot-glue --link 30-caladea.conf /etc/fonts/conf.avail/30-caladea.conf
+sudo ln -sf /etc/fonts/conf.avail/30-caladea.conf /etc/fonts/conf.d/30-caladea.conf
+
+sudo chown -R root:root /etc/fonts/conf.avail
