@@ -19,7 +19,7 @@
 echo ''
 echo ''
 
-INTERFACE="${BLOCK_INSTANCE:-wlan0}"
+INTERFACE="${BLOCK_INSTANCE:-$(iw dev | grep -m 1 '^\s*Interface .*$' | sed 's/\s*Interface //')}"
 
 if [[ -d /sys/class/net/${INTERFACE}/wireless ]]; then
     if [[ "$(cat /sys/class/net/$INTERFACE/operstate)" = 'down' ]]; then

@@ -45,12 +45,12 @@ case $1 in
         ;;
     *)
         if [ ! -f "${WP_DIR}/$1" ]; then
-            echo "Image could not be found."
-            echo "Use "\`"$0 -l"\`" for a list of options"
+            echo 'Image could not be found.'
+            echo 'Use -l for a list of options'
             exit 1
         else
             ln -srf "${WP_DIR}/$1" "$WP_PATH"
-            eval "${HOME}/.fehbg"
+            feh --bg-fill "${HOME}/.wallpaper"
         fi
 esac
 

@@ -21,7 +21,7 @@ alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
 # Allow feh to open SVGs
-alias feh='feh --magick-timeout 1'
+alias feh='feh --conversion-timeout 1'
 
 # Show hidden files with fd
 alias fd='fd -HI'
@@ -49,7 +49,8 @@ alias cpuhog="ps -eo args --sort %cpu | tail -n 1 | sed 's/\s.*$//'"
 probe() {
     sudo nmap -T4 -F -O -sV -sS "$1" | grep -E 'Nmap scan report for|$'
 }
-alias iplan='ip addr show wlp5s0 | awk '\''/inet / {print $2}'\'
+alias iwdev='iw dev | grep -m 1 '\''^\s*Interface .*$'\'' | sed '\''s/\s*Interface //'\'
+alias iplan='ip addr show $(iwdev) | awk '\''/inet / {print $2}'\'
 alias lslan='sudo nmap -T4 -sn $(iplan) | grep '\''Nmap scan report'\'' | sed '\''s/Nmap scan report for //g'\'' | nl -w 1 | grep -E $'\''\t[^ ]+ |$'\'
 alias lllan='probe "$(iplan)"'
 
@@ -76,8 +77,8 @@ to-open() {
     fi
 }
 
-alias rewifi='sudo systemctl restart netctl-auto@wlp5s0'
-alias randmac='sudo ip link set wlp5s0 down;sudo ip link set wlp5s0 address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set wlp5s0 up'
+alias rewifi='sudo systemctl restart netctl-auto@$(iwdev)'
+alias randmac='sudo ip link set $(iwdev) down;sudo ip link set $(iwdev) address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set $(iwdev) up'
 alias swifi='sudo netctl-auto switch-to'
 
 alias coinflip='echo -n Heads\\nTails | shuf | head -n 1'
