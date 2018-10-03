@@ -153,6 +153,34 @@ get-repo() {
     fi
 }
 
+# Create user directories
+create-user-dirs() {
+    progress "Creating user directories"
+
+    mkdir -p "${HOME}/build"
+
+    mkdir -p "${HOME}/data/video"
+    mkdir -p "${HOME}/data/music"
+    mkdir -p "${HOME}/data/image/walls"
+    mkdir -p "${HOME}/data/image/screens"
+    mkdir -p "${HOME}/data/audio"
+
+    mkdir -p "${HOME}/dev/repos"
+
+    mkdir -p "${HOME}/docs/self"
+    mkdir -p "${HOME}/docs/forms"
+    mkdir -p "${HOME}/docs/books"
+    mkdir -p "${HOME}/docs/org"
+
+    mkdir -p "${HOME}/misc"
+
+    mkdir -p "${HOME}/sandbox"
+
+    mkdir -p "${HOME}/tmp"
+
+    mkdir -p "${HOME}/work"
+} 
+
 push-repo() {
     cd "$dot_dir"
     git add .
@@ -198,6 +226,9 @@ activate() {
 case $1 in
     get)
         get-repo
+        echo
+
+        create-user-dirs
         echo
         
         if prompt 'Activate configuration?'; then

@@ -27,11 +27,11 @@ Available commands:
 [ $# -le 1 ] || usage
 
 
-WP_PATH="${HOME}/.wallpaper"
-WP_DIR="${HOME}/data/image/walls"
+wp_path="${HOME}/.wallpaper"
+wp_dir="${HOME}/data/image/walls"
 
 if [ $# -eq 0 ]; then
-    basename "$(readlink "$WP_PATH")"
+    basename "$(readlink "$wp_path")"
     exit 0
 fi
 
@@ -41,15 +41,15 @@ case $1 in
         exit 0
         ;;
     -l|--list)
-        ls -A "$WP_DIR"
+        ls -A "$wp_dir"
         ;;
     *)
-        if [ ! -f "${WP_DIR}/$1" ]; then
+        if [ ! -f "${wp_dir}/$1" ]; then
             echo 'Image could not be found.'
             echo 'Use -l for a list of options'
             exit 1
         else
-            ln -srf "${WP_DIR}/$1" "$WP_PATH"
+            ln -srf "${wp_dir}/$1" "$wp_path"
             feh --bg-fill "${HOME}/.wallpaper"
         fi
 esac

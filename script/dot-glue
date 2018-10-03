@@ -28,11 +28,11 @@ Available options:
     exit 1
 }
 
-BACKUP_DIR="${HOME}/.dotfiles/backup"
-BACKUP_FILES_DIR="${BACKUP_DIR}/files"
-BACKUP_LIST="${BACKUP_DIR}/list"
+backup_dir="${HOME}/.dotfiles/backup"
+backup_files_dir="${backup_dir}/files"
+backup_list="${backup_dir}/list"
 
-[ $# -eq 0 ] && cat "$BACKUP_LIST" && exit 0
+[ $# -eq 0 ] && cat "$backup_list" && exit 0
 
 _init=
 _list=
@@ -86,20 +86,20 @@ done
 
 # Prepare files and directories
 init() {
-    mkdir -p "$BACKUP_DIR" "$BACKUP_FILES_DIR"
-    touch "$BACKUP_LIST"
+    mkdir -p "$backup_dir" "$backup_files_dir"
+    touch "$backup_list"
 }
 
 
 list() {
-    cat "$BACKUP_LIST"
+    cat "$backup_list"
 }
 
 
 # Restore one backup to its previous location
 unglue() {
     local location=$(echo $(cd $(dirname "$1") && pwd -P)/$(basename "$1"))
-    local backup="${BACKUP_FILES_DIR}/${location}"
+    local backup="${backup_files_dir}/${location}"
     
     sudo cp -P --remove-destination "$backup" "$location"
 }
@@ -107,15 +107,15 @@ unglue() {
 
 restore() {
     # Unglue all backups
-    for file in "$(cat "$BACKUP_LIST")"; do
+    for file in "$(cat "$backup_list")"; do
 	unglue file
     done
 
     # Remove backups
-    sudo rm -rf "${BACKUP_DIR}/*"
+    sudo rm -rf "${backup_dir}/*"
 
     # Clear backup list
-    echo -n > "$BACKUP_LIST"
+    echo -n > "$backup_list"
 }
 
 
@@ -133,12 +133,12 @@ glue() {
     echo "$location"
 
     # Back up an existing file or directory from location if no existing backup
-    if [ -e "$location" ] && ! grep -Fxq "$location" "$BACKUP_LIST"; then
-        sudo rm -rf "${BACKUP_FILES_DIR}/${location}"
-        sudo cp -rP --parents "$location" "$BACKUP_FILES_DIR"
+    if [ -e "$location" ] && ! grep -Fxq "$location" "$backup_list"; then
+        sudo rm -rf "${backup_files_dir}/${location}"
+        sudo cp -rP --parents "$location" "$backup_files_dir"
 
 	# Append location to backup list
-	echo "$location" >> "$BACKUP_LIST"
+	echo "$location" >> "$backup_list"
     fi
 
     sudo rm -rf "$location"
