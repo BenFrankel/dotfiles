@@ -110,15 +110,11 @@ sync() {
         echo
         echo $packages
         echo
-        prompt 'Remove packages?'
-        case $? in
-            0)
-                info 'No packages removed'
-                ;;
-            *)
-                sudo pacman -Rns --noconfirm $packages
-                ;;
-        esac
+        if prompt 'Remove packages?'; then
+            info 'No packages removed'
+        else
+            sudo pacman -Rns --noconfirm $packages
+        fi
     else
         info "No packages need to be removed"
     fi
@@ -132,17 +128,12 @@ sync() {
         [ -n "$packages" ] && echo $packages
         [ -n "$packages_aur" ] && echo $packages_aur
         echo
-        prompt 'Install packages?'
-        case $? in
-            0)
-                info "No packages installed"
-                ;;
-            *)
-                [ -n "$packages" ] && sudo pacman -S --noconfirm $packages
-                [ -n "$packages_aur" ] && yaourt -S --noconfirm $packages_aur
-                ;;
-        esac
-                
+        if prompt 'Install packages?'; then
+            info "No packages installed"
+        else
+            [ -n "$packages" ] && sudo pacman -S --noconfirm $packages
+            [ -n "$packages_aur" ] && yaourt -S --noconfirm $packages_aur
+        fi
     else
         info "No packages need to be installed"
     fi

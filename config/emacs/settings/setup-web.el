@@ -1,12 +1,12 @@
 (use-package web-mode
-  :mode (("\\.html?\\'")
-	 ("\\.phtml\\'")
-	 ("\\.tpl\\.php\\'")
-	 ("\\.[agj]sp\\'")
-	 ("\\.as[cp]x\\'")
-	 ("\\.erb\\'")
-	 ("\\.mustache\\'")
-	 ("\\.djhtml\\'"))
+  :mode (("\\.html?\\'" . web-mode)
+	 ("\\.phtml\\'" . web-mode)
+	 ("\\.tpl\\.php\\'" . web-mode)
+	 ("\\.[agj]sp\\'" . web-mode)
+	 ("\\.as[cp]x\\'" . web-mode)
+	 ("\\.erb\\'" . web-mode)
+	 ("\\.mustache\\'" . web-mode)
+	 ("\\.djhtml\\'" . web-mode))
   
   :config
 

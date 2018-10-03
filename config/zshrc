@@ -78,18 +78,18 @@ export UPDATE_ZSH_DAYS=14
 COMPLETION_WAITING_DOTS='false'
 
 # oh-my-zsh: Plugins
-plugins=(git z you-should-use)
+plugins=(git you-should-use)
 # Consider:
 #
 # gitignore
 # git-extras
 # git-prompt
 # taskwarrior
+# z
 #
 
-# Plugin: z
-_Z_CMD='j'
-_Z_DATA="${ZSH_CACHE_DIR}/.z"
+# Set up fasd
+eval "$(fasd --init auto)"
 
 # Plugin: you-should-use
 export YSU_MODE=ALL

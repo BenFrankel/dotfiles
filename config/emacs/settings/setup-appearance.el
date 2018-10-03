@@ -82,9 +82,10 @@
 
 
 ;; HIGHLIGHT CURRENT LINE ;;
-(require 'highlight-current-line)
-(highlight-current-line-on t)
-(highlight-current-line-set-bg-color "#26282c")
+;; This package came from EmacsWiki
+;; (require 'highlight-current-line)
+;; (highlight-current-line-on t)
+;; (highlight-current-line-set-bg-color "#26282c")
 
 
 ;; HIGHLIGHT MATCHING PARENTHESES ;;

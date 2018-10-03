@@ -16,10 +16,9 @@ export TRANSMISSION_HOME="${HOME}/tmp"
 # Vim editor
 export EDITOR='vim'
 
-# Syntax highlighting in less
-# TODO: Disabled because pygments is slow
-# export LESSOPEN="|${HOME}/.lessfilter %s"
-# export LESS='-R'
+# Fasd config
+export _FASD_DATA="${HOME}/.fasd"
+export _FASD_FUZZY=2
 
 # Pyenv
 export PYENV_ROOT="${HOME}/.pyenv"

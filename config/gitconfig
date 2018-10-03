@@ -6,8 +6,15 @@
     editor = vim
     whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
     excludesfile = ~/.config/git/ignore
+[pager]
+    diff = diff-so-fancy | less --tabs=1,5 -RFX
+    show = diff-so-fancy | less --tabs=1,5 -RFX
 [credential]
 	helper = cache --timeout=14400
 
 [url "https://aur.archlinux.org/"]
 	insteadOf = aur://
+[url "https://github.com/"]
+    insteadOf = hub://
+[url "https://gitlab.com/"]
+    insteadOf = lab://

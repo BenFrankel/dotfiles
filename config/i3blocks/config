@@ -38,7 +38,7 @@ interval=1
 full_text=
 
 [wifi]
-instance=wlp3s0
+instance=wlp5s0
 interval=2
 
 [separator]

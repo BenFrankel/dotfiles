@@ -1,20 +1,45 @@
+# Drop-in replacements
 alias ls='exa --group-directories-first --sort=Name --reverse --color-scale'
+alias view='bat'
+alias less='bat'
+alias wc='tokei'
+
+# Better names
+alias help='tldr'
+
+# Directory listing abbreviations
 alias lss='ls --sort=size'
 alias la='ls -a'
 alias las='la --sort=size'
 alias ll='ls -al --header --extended --git --group --inode'
 alias lls='ll --sort=size'
-
 alias tree='ls --tree'
 
+# Add color to grep
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 
-alias cat='bat'
-alias view='bat'
-alias less='bat'
+# Allow feh to open SVGs
+alias feh='feh --magick-timeout 1'
 
+# Show hidden files with fd
+alias fd='fd -HI'
+
+# Fuzzy jump
+j() {
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 +s +m)" && cd "${dir}" || return 1
+}
+
+# Fuzzy edit
+v() {
+    [ $# -gt 0  ] && fasd -f -e "${EDITOR}" "$*" && return
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 +s +m)" && "${EDITOR}" "${file}" || return 1
+}
+
+# Reset terminal
 alias fix='stty sane;exec -l zsh;tput reset'
 
 # System information
@@ -24,7 +49,7 @@ alias cpuhog="ps -eo args --sort %cpu | tail -n 1 | sed 's/\s.*$//'"
 probe() {
     sudo nmap -T4 -F -O -sV -sS "$1" | grep -E 'Nmap scan report for|$'
 }
-alias iplan='ip addr show wlp3s0 | awk '\''/inet / {print $2}'\'
+alias iplan='ip addr show wlp5s0 | awk '\''/inet / {print $2}'\'
 alias lslan='sudo nmap -T4 -sn $(iplan) | grep '\''Nmap scan report'\'' | sed '\''s/Nmap scan report for //g'\'' | nl -w 1 | grep -E $'\''\t[^ ]+ |$'\'
 alias lllan='probe "$(iplan)"'
 
@@ -51,8 +76,8 @@ to-open() {
     fi
 }
 
-alias rewifi='sudo systemctl restart netctl-auto@wlp3s0'
-alias randmac='sudo ip link set wlp3s0 down;sudo ip link set wlp3s0 address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set wlp3s0 up'
+alias rewifi='sudo systemctl restart netctl-auto@wlp5s0'
+alias randmac='sudo ip link set wlp5s0 down;sudo ip link set wlp5s0 address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set wlp5s0 up'
 alias swifi='sudo netctl-auto switch-to'
 
 alias coinflip='echo -n Heads\\nTails | shuf | head -n 1'

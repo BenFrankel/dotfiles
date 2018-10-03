@@ -72,7 +72,7 @@
 	    (c-set-offset 'inextern-lang 0)))
  
 ;; Don't indent with tabs
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 
 
 ;; RUST ;;
