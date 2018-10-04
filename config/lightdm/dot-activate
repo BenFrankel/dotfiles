@@ -1,11 +1,13 @@
 #!/bin/sh
 
 # Link configs
-dot-glue --link lightdm-gtk-greeter.conf /etc/lightdm/lightdm.conf
+dot-glue --link lightdm.conf /etc/lightdm/lightdm.conf
 dot-glue --link lightdm-gtk-greeter.conf /etc/lightdm/lightdm-gtk-greeter.conf
-dot-glue --link lightdm-gtk-greeter.conf /etc/lightdm/lightdm-webkit2-greeter.conf
+dot-glue --link lightdm-webkit2-greeter.conf /etc/lightdm/lightdm-webkit2-greeter.conf
 sudo chown root:root -R /etc/lightdm
 
 # Install Aether theme
-git clone https://github.com/NoiSek/Aether "${HOME}/build"
-sudo cp -R "${HOME}/build/Aether" /usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether
+if [ ! -d /usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether ]; then
+    sudo mkdir -p /usr/share/lightdm-webkit/themes
+    sudo git clone https://github.com/NoiSek/Aether "/usr/share/lightdm-webkit/themes/lightdm-webkit-theme-aether"
+fi

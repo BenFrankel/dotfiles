@@ -107,7 +107,7 @@ sync() {
         echo
         progress "Buliding yay"
         mkdir -p "${HOME}/build"
-        git clone https://aur.archlinux.org/yay.git
+        git clone https://aur.archlinux.org/yay.git "${HOME}/build/yay"
         cd "${HOME}/build/yay" && makepkg -si
     fi
 
