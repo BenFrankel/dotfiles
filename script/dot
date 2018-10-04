@@ -43,8 +43,9 @@ dot_dir="${HOME}/.dotfiles"
 config_dir="${dot_dir}/config"
 script_dir="${dot_dir}/script"
 backup_dir="${dot_dir}/backup"
-BACKUP_FILES_DIR="${backup_dir}/files"
+backup_files_dir="${backup_dir}/files"
 pack_dir="${dot_dir}/pack"
+assets_dir="${dot_dir}/assets"
 dot_glue="${script_dir}/dot-glue"
 
 
@@ -146,7 +147,7 @@ get-repo() {
     progress "Getting latest repository"
     if [ ! -d "${dot_dir}/.git" ]; then
         git clone https://github.com/BenFrankel/dotfiles "$dot_dir"
-        mkdir -p "$BACKUP_FILES_DIR" "$pack_dir"
+        mkdir -p "$backup_files_dir" "$pack_dir"
     else
         cd "$dot_dir"
         git pull origin master
@@ -239,15 +240,6 @@ case $1 in
         sync
         echo
 
-	# TODO:
-	#
-	# Clone and compile fork of i3lock if necessary
-	#
-	# Configs for:
-	#
-	# pacman
-	# 
-
         if prompt 'Enable LightDM (display manager & greeter)?'; then
             sudo systemctl enable lightdm
         fi
@@ -290,7 +282,7 @@ case $1 in
 
     diff)
         progress "Finding your backup configuration"
-        cd "$BACKUP_FILES_DIR"
+        cd "$backup_files_dir"
         if [ -z "$(sudo find .)" ]; then
             info "You have no backup configuration"
         else
