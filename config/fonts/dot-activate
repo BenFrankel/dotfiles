@@ -1,8 +1,18 @@
 #!/bin/sh
 
+# Warn about missing fonts
+if ! fc-list | grep 'Raleway-Regular\.ttf'; then
+    echo Missing font: Raleway
+fi
+if ! fc-list | grep 'Anton-Regular\.ttf'; then
+    echo Missing font: Anton
+fi
+
+# Set up font fallback config
 dot-glue --link 30-anton.conf /etc/fonts/conf.avail/30-anton.conf
 sudo ln -sf /etc/fonts/conf.avail/30-anton.conf /etc/fonts/conf.d/30-anton.conf
 dot-glue --link 30-caladea.conf /etc/fonts/conf.avail/30-caladea.conf
 sudo ln -sf /etc/fonts/conf.avail/30-caladea.conf /etc/fonts/conf.d/30-caladea.conf
 
+# Make sure files are owned by root
 sudo chown -R root:root /etc/fonts/conf.avail

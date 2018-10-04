@@ -103,6 +103,13 @@ sync() {
     save "$old"
     echo
 
+    if ! which yay; then
+        progress "Buliding yay"
+        mkdir -p "${HOME}/build"
+        git clone https://aur.archlinux.org/yay.git
+        cd "${HOME}/build/yay" && makepkg -si
+    fi
+
     progress "Finding local packages to remove"
     packages="$(comm -13 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
     packages+=" $(comm -13 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
