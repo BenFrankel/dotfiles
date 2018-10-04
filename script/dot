@@ -102,20 +102,20 @@ sync() {
     
     progress "Backing up installed packages"
     save "$old"
-    echo
 
     if ! which yay; then
+        echo
         progress "Buliding yay"
         mkdir -p "${HOME}/build"
         git clone https://aur.archlinux.org/yay.git
         cd "${HOME}/build/yay" && makepkg -si
     fi
 
+    echo
     progress "Finding local packages to remove"
     packages="$(comm -13 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
     packages+=" $(comm -13 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ "$packages" != ' ' ]; then
-        echo
         echo $packages
         echo
         if prompt 'Remove packages?'; then
@@ -126,15 +126,21 @@ sync() {
     else
         info "No packages need to be removed"
     fi
-    echo
 
+    echo
     progress "Finding missing packages to install"
     packages="$(comm -23 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
     packages_aur="$(comm -23 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ -n "${packages}${packages_aur}" ]; then
+        [ -n "$packages" ] && echo $packages
+        [ -n "$packages_aur" ] && echo $packages_aur
         echo
-        [ -n "$packages" ] && sudo pacman -S $packages
-        [ -n "$packages_aur" ] && yay -S $packages_aur
+        if prompt 'Install packages?'; then
+            [ -n "$packages" ] && sudo pacman -S --noconfirm $packages
+            [ -n "$packages_aur" ] && yay -S --noconfirm $packages_aur
+        else
+            info 'No packages installed'
+        fi
     else
         info "No packages need to be installed"
     fi
@@ -180,6 +186,8 @@ create-user-dirs() {
     mkdir -p "${HOME}/tmp"
 
     mkdir -p "${HOME}/work"
+    
+    info Done
 } 
 
 push-repo() {
@@ -199,14 +207,14 @@ activate() {
         info "$(basename "$path")"
         eval "$dot_glue" --symbolic-link "$path" "${HOME}/.local/bin/$(basename "$path")"
     done
-    echo
     
+    echo
     progress "Setting up links to dotfiles"
     for path in $(find "$config_dir" -maxdepth 1 -type f); do
         eval "$dot_glue" --symbolic-link "$path" "${HOME}/.$(basename "$path")"
     done
-    echo
 
+    echo
     progress "Setting up links to assets"
     for dir in $(find "$assets_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename $dir)"
@@ -214,6 +222,7 @@ activate() {
         ./dot-activate
     done
 
+    echo
     progress "Activating package configurations"
     for package in $(find "$config_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "$package")"
@@ -259,8 +268,8 @@ case $1 in
     restore)
         progress "Restoring replaced files"
         eval "$dot_glue" --restore
-        echo
 
+        echo
         progress "Restoring packages"
         sync '.old' '.tmp'
         ;;
@@ -288,9 +297,9 @@ case $1 in
         else
             echo
             eval "$dot_glue"
-            echo
         fi
         
+        echo
         progress "Comparing your packages to the list"
         
         save '.tmp'
@@ -319,8 +328,8 @@ case $1 in
         if prompt 'Save installed packages?'; then
             save
         fi
-        echo
         
+        echo
         progress 'Pushing repository'
         push-repo "${@:2}"
         ;;

@@ -55,9 +55,8 @@ Plus anything else I have installed.
 ### Prerequisites
 
 - Arch Linux
-- Internet connection
+- An Internet connection
 - [git](https://git-scm.com)
-- [yay](https://aur.archlinux.org/packages/yay/)
 
 
 ### Download
