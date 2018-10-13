@@ -17,63 +17,63 @@
 
 #------------------------------------------------------------------------
 
-AUDIO_TEST="${HOME}/.config/i3/resources/volume-change.oga"
+audio_test="${HOME}/.config/i3/resources/volume-change.oga"
 
 # The second parameter overrides the mixer selection
 # For PulseAudio users, use "pulse"
 # For Jack/Jack2 users, use "jackplug"
 # For ALSA users, you may use "default" for your primary card
 # or you may use hw:# where # is the number of the card desired
-MIXER="default"
-[ -n "$(lsmod | grep pulse)" ] && MIXER="pulse"
-[ -n "$(lsmod | grep jack)" ] && MIXER="jackplug"
-MIXER="${2:-$MIXER}"
+mixer="default"
+[ -n "$(lsmod | grep pulse)" ] && mixer="pulse"
+[ -n "$(lsmod | grep jack)" ] && mixer="jackplug"
+mixer="${2:-$mixer}"
 
 # The instance option sets the control to report and configure
 # This defaults to the first control of your selected mixer
 # For a list of the available, use `amixer -D $Your_Mixer scontrols`
-SCONTROL="${BLOCK_INSTANCE:-$(amixer -D $MIXER scontrols |
-                  sed -n "s/Simple mixer control '\([A-Za-z ]*\)',0/\1/p" |
-                  head -n1
-                )}"
+scontrol="${BLOCK_INSTANCE:-$(amixer -D $mixer scontrols |
+    sed -n "s/Simple mixer control '\([A-Za-z ]*\)',0/\1/p" |
+    head -n1
+)}"
 
 # The first parameter sets the step to change the volume by (and units to display)
 # This may be in in % or dB (eg. 5% or 3dB)
-STEP="${1:-5%}"
+step="${1:-5%}"
 
 #------------------------------------------------------------------------
 
-capability() { # Return "Capture" if the device is a capture device
-  amixer -D $MIXER get $SCONTROL |
-    sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
+# Return "Capture" if the device is a capture device
+capability() { 
+    amixer -D $mixer get $scontrol | sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
 }
 
 volume() {
-  amixer -D $MIXER get $SCONTROL $(capability)
+    amixer -D $mixer get $scontrol $(capability)
 }
 
 format() {
-  perl_filter='if (/.*\[(\d+)%\] (\[(-?\d+.\d+)dB\] )?\[(on|off)\]/)'
-  perl_filter+='{CORE::say $4 eq "off" ? "\x{f026}  OFF" : '
-  # If dB was selected, print that instead
-  perl_filter+=$([[ $STEP = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 == 100 ? "" : "  $1")')
-  perl_filter+='; exit}'
-  perl -ne "$perl_filter"
+    perl_filter='if (/.*\[(\d+)%\] (\[(-?\d+.\d+)dB\] )?\[(on|off)\]/)'
+    perl_filter+='{CORE::say $4 eq "off" ? "\x{f026}  OFF" : '
+    # If dB was selected, print that instead
+    perl_filter+=$([[ $step = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 == 100 ? "" : "  $1")')
+    perl_filter+='; exit}'
+    perl -ne "$perl_filter"
 }
 
 #------------------------------------------------------------------------
 
 case $BLOCK_BUTTON in
-  1) paplay $AUDIO_TEST ;; # left click, play sound
-  3) amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
-  4) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute && paplay "${AUDIO_TEST}" ;; # scroll up, increase
-  5) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute && paplay "${AUDIO_TEST}" ;; # scroll down, decrease
+    1) paplay $audio_test ;; # left click, play sound
+    3) amixer -q -D $mixer sset $scontrol $(capability) toggle ;;  # right click, mute/unmute
+    4) amixer -q -D $mixer sset $scontrol $(capability) ${step}+ unmute && paplay "${audio_test}" ;; # scroll up, increase
+    5) amixer -q -D $mixer sset $scontrol $(capability) ${step}- unmute && paplay "${audio_test}" ;; # scroll down, decrease
 esac
 
 volume | format
 echo
-if [ -n "$(amixer -D $MIXER get $SCONTROL | grep '\[on\]')" ]; then
-  echo "#5AE234"
+if [ -n "$(amixer -D $mixer get $scontrol | grep '\[on\]')" ]; then
+    echo "#5AE234"
 else
-  echo "#FF2236"
+    echo "#FF2236"
 fi

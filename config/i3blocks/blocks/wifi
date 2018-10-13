@@ -19,25 +19,25 @@
 echo ''
 echo ''
 
-INTERFACE="${BLOCK_INSTANCE:-$(iw dev | grep -m 1 '^\s*Interface .*$' | sed 's/\s*Interface //')}"
+interface="${BLOCK_INSTANCE:-$(iw dev | grep -m 1 '^\s*Interface .*$' | sed 's/\s*Interface //')}"
 
-if [[ -d /sys/class/net/${INTERFACE}/wireless ]]; then
-    if [[ "$(cat /sys/class/net/$INTERFACE/operstate)" = 'down' ]]; then
+if [[ -d /sys/class/net/${interface}/wireless ]]; then
+    if [[ "$(cat /sys/class/net/${interface}/operstate)" = 'down' ]]; then
         echo '#A4AEB3'
         exit 0
     fi
 fi
 
 
-QUALITY=$(grep $INTERFACE /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
+quality=$(grep $interface /proc/net/wireless | awk '{ print int($3 * 100 / 70) }')
 
-if [[ $QUALITY -ge 80 ]]; then
+if [[ $quality -ge 80 ]]; then
     echo "#5AE234"
-elif [[ $QUALITY -ge 60 ]]; then
+elif [[ $quality -ge 60 ]]; then
     echo "#FCE94F"
-elif [[ $QUALITY -ge 40 ]]; then
+elif [[ $quality -ge 40 ]]; then
     echo "#FFA12F"
-elif [[ $QUALITY -ge 20 ]]; then
+elif [[ $quality -ge 20 ]]; then
     echo "#FF2236"
 fi
 

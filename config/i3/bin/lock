@@ -4,7 +4,8 @@ set -eu
 # set -x
 
 
-state_path="${HOME}/.config/i3/state/lock_state"
+state_path="${HOME}/.config/i3/state/lock"
+mkdir -p "$(dirname "${state_path}")"
 
 # Make sure i3lock is not running already
 [ -z "$(pgrep i3lock)" ] || pkill i3lock

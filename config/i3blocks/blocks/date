@@ -1,23 +1,24 @@
 #!/usr/bin/env bash
 
 
-FORMAT_PATH="${HOME}/.config/i3blocks/state/date_format"
+format_path="${HOME}/.config/i3blocks/state/date_format"
+mkdir -p "$(dirname "${format_path}")"
 
-format="$(cat "${FORMAT_PATH}")"
+format="$(cat "${format_path}")"
 if [ "${BLOCK_BUTTON}" = "1" ]; then
     if [ "${format:0:1}" == "1" ]; then
 	format=0${format:1:1}
     else
 	format=1${format:1:1}
     fi
-    echo $format | tee "${FORMAT_PATH}" &> /dev/null
+    echo $format | tee "${format_path}" &> /dev/null
 elif [ "${BLOCK_BUTTON}" = "3" ]; then
     if [ "${format:1:1}" == "1" ]; then
 	format=${format:0:1}0
     else
 	format=${format:0:1}1
     fi
-    echo $format | tee "${FORMAT_PATH}" &> /dev/null
+    echo $format | tee "${format_path}" &> /dev/null
 fi
 
 

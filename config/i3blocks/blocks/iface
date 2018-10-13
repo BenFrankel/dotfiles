@@ -17,13 +17,14 @@
 
 #------------------------------------------------------------------------
 
-FORMAT_PATH="${HOME}/.config/i3blocks/state/iface_format"
+format_path="${HOME}/.config/i3blocks/state/iface_format"
+mkdir -p "$(dirname "${format_path}")"
 
 # Use the provided interface, otherwise the device used for the default route.
 if [[ -n $BLOCK_INSTANCE ]]; then
-  IF=$BLOCK_INSTANCE
+    IF=$BLOCK_INSTANCE
 else
-  IF=$(ip route | awk '/^default/ { print $5 ; exit }')
+    IF=$(ip route | awk '/^default/ { print $5 ; exit }')
 fi
 
 #------------------------------------------------------------------------
@@ -35,37 +36,37 @@ fi
 #------------------------------------------------------------------------
 
 if [[ "$(cat /sys/class/net/$IF/operstate)" = 'down' ]]; then
-  echo down # full text
-  echo down # short text
-  exit
+    echo down # full text
+    echo down # short text
+    exit
 fi
 
 case $1 in
-  -4)
-    AF=inet ;;
-  -6)
-    AF=inet6 ;;
-  *)
-    AF=inet6? ;;
+    -4)
+        AF=inet ;;
+    -6)
+        AF=inet6 ;;
+    *)
+        AF=inet6? ;;
 esac
 
 # if no interface is found, use the first device with a global scope
-IPADDR=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+ipaddr=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
 
-format="$(cat "${FORMAT_PATH}")"
+format="$(cat "${format_path}")"
 case $BLOCK_BUTTON in
-  1) format=$((1 - format)); echo $format > "${FORMAT_PATH}" ;;
-  3) echo -n "$IPADDR" | xclip -q -selection c ;;
+    1) format=$((1 - format)); echo $format > "${format_path}" ;;
+    3) echo -n "$ipaddr" | xclip -q -selection c ;;
 esac
 
 #------------------------------------------------------------------------
 
 if [ "${format}" = "1" ]; then
-  echo " $IPADDR" # full text
-  echo "$IPADDR" # short text
+    echo " $ipaddr" # full text
+    echo "$ipaddr" # short text
 else
-  echo " "
-  echo " "
+    echo " "
+    echo " "
 fi
 
 echo "A4AEB3"
