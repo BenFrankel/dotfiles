@@ -141,6 +141,7 @@ libtool
 licenses
 lightdm
 lightdm-gtk-greeter
+light-locker
 linux
 lld
 lldb

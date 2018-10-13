@@ -21,10 +21,10 @@ This repository is based on the following packages:
 
 - **Operating System** - [Arch Linux](https://archlinux.org)
 - **Display Manager** - [LightDM](https://freedesktop.org/wiki/Software/LightDM)
-    - **Greeter** - [LightDM Webkit Greeter](https://github.com/Antergos/web-greeter)
+    - **Greeter** - [LightDM GTK+ Greeter](https://launchpad.net/lightdm-gtk-greeter)
 - **Window Manager** - [i3-gaps](https://github.com/Airblader/i3)
 - **Info Bar** - [i3bar](https://i3wm.org/i3bar) with [i3blocks](https://vivien.github.io/i3blocks)
-- **Screen Locker** - Script using a fork of [i3lock]()
+- **Screen Locker** - [light-locker](https://github.com/the-cavalry/light-locker)
     - **Inactivity Locker** - [xautolock](https://freecode.com/projects/xautolock)
 - **Compositor** - [Compton](https://github.com/chjj/compton)
 - **Notification Daemon** - [Dunst](https://dunst-project.org)

@@ -4,16 +4,16 @@ set -eu
 # set -x
 
 
-STATE_PATH="${HOME}/.config/i3/state/lock_state"
+state_path="${HOME}/.config/i3/state/lock_state"
 
 # Make sure i3lock is not running already
 [ -z "$(pgrep i3lock)" ] || pkill i3lock
 
-HAD_SOUND=$([ -n "$(volume | grep 'off')" ] && echo 0 || echo 1)
-WAS_IL_KBMAP=$([ "$(keyboard)" = "il" ] && echo 1 || echo 0)
+had_sound=$([ -n "$(volume | grep 'off')" ] && echo 0 || echo 1)
+was_il_kbmap=$([ "$(keyboard)" = "il" ] && echo 1 || echo 0)
 
 # Pause sound/music, change to US layout
-[ $HAD_SOUND -ne 0 ] && volume off
+[ $had_sound -ne 0 ] && volume off
 keyboard us
 
 for player in $(playerctl -l 2>/dev/null); do
@@ -22,7 +22,8 @@ for player in $(playerctl -l 2>/dev/null); do
     fi
 done
 
-echo "${HAD_SOUND}${WAS_IL_KBMAP}" > "${STATE_PATH}"
+echo "${had_sound}${was_il_kbmap}" > "${state_path}"
 
 # Lock screen
-i3lock -c '#152026' -o '#ffffff' -w '#d36f6a' -l '#8a8fd3' -e
+# i3lock -c '#152026' -o '#ffffff' -w '#d36f6a' -l '#8a8fd3' -e
+light-locker-command -l
