@@ -12,24 +12,6 @@ set $VIDEO-PLAYER vlc
 set $WEB-BROWSER firefox
 
 
-#############
-## STARTUP ##
-#############
-#  DAEMONS  #
-# Dunst for notifications
-exec_always --no-startup-id pkill dunst; dunst
-# Emacs for text editing
-exec --no-startup-id rm ~/.emacs.d/backups/.emacs.desktop.lock
-exec --no-startup-id emacs --daemon
-# Urxvtd for terminals
-exec --no-startup-id urxvtd -f -o
-# Compton for transparency and transitions
-exec_always --no-startup-id pgrep compton || compton -b
-
-# Set desktop background
-exec_always --no-startup-id ~/.fehbg
-
-
 ################
 ## APPEARANCE ##
 ################

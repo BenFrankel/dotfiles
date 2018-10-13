@@ -141,7 +141,6 @@ libtool
 licenses
 lightdm
 lightdm-gtk-greeter
-lightdm-webkit2-greeter
 linux
 lld
 lldb

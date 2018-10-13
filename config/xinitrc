@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Set stuff up
+source "${HOME}/.xsession" &
+
+# Why is this necessary?
+xrdb "${HOME}/.Xresources" &
+
+# Start i3
+exec i3

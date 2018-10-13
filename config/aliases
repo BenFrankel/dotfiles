@@ -78,7 +78,7 @@ to-open() {
 }
 
 alias rewifi='sudo systemctl restart netctl-auto@$(iwdev)'
-alias randmac='sudo ip link set $(iwdev) down;sudo ip link set $(iwdev) address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/random | sed '\''s/://'\'')";sudo ip link set $(iwdev) up'
+alias randmac='sudo ip link set $(iwdev) down;sudo ip link set $(iwdev) address "$(hexdump -n6 -e '\''/1 ":%02X"'\'' /dev/urandom | sed '\''s/://'\'')";sudo ip link set $(iwdev) up'
 alias swifi='sudo netctl-auto switch-to'
 
 alias coinflip='echo -n Heads\\nTails | shuf | head -n 1'

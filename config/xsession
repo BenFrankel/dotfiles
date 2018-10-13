@@ -1,16 +1,31 @@
 #!/bin/sh
 
+# Use caps lock as additional super key
+setxkbmap -option caps:super &
+
+# Apply other key mappings
+xmodmap "${HOME}/.Xmodmap" &
+
+# Set keyboard repeat rate
+xset r rate 300 25 &
+
 # Lock screen after inactivity
 xautolock -time 5 -locker "${HOME}/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
 
-# Use caps lock as additional super key
-setxkbmap -option caps:super
+# Notification daemon
+dunst &
 
-# Apply other key mappings
-xmodmap "${HOME}/.Xmodmap"
+# Text editor daemon
+emacs --daemon &
 
-# Set keyboard repeat rate
-xset r rate 300 25
+# Terminal daemon
+urxvtd -f -o &
+
+# Compositor
+compton -b &
+
+# Desktop background
+"${HOME}"/.fehbg &
 
 # Have Java antialias its fonts & use GTK theme
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel -Dswing.crossplatformlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
@@ -19,4 +34,3 @@ export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.s
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
-
