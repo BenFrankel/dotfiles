@@ -58,43 +58,43 @@ set $WORKSPACE-10 "10: tmp"
 # Window colors          BORDER      BACKGROUND  TEXT        INDICATOR    CHILD-BORDER
 client.focused           $CF-BG      $CF-BG      $CF-FG      $CF-BG       $CF-BG
 client.focused_inactive  $CI-BG      $CI-BG      $CI-FG      $CI-BG       $C-BG
-client.unfocused 	 $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
-client.urgent		 $CU-BG      $CU-BG      $CU-FG      $CU-BG       $CU-BG
-client.placeholder	 $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+client.unfocused      $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+client.urgent         $CU-BG      $CU-BG      $CU-FG      $CU-BG       $CU-BG
+client.placeholder     $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
 
-client.background 	 $C-BG     
+client.background      $C-BG
 
 # Start i3bar to display a workspace bar
 bar
 {
-	colors {
-	       background          $C-BG     
-	       focused_background  $C-BG     
-	       
-	       statusline          $C-BG    
-	       focused_statusline  $CF-BG    
-	       
-	       separator           $C-BG    
-	       focused_separator   $CF-BG    
+    colors {
+        background          $C-BG
+        focused_background  $C-BG
 
-	       # CLASS             BORDER       BG           TEXT
-	       focused_workspace   $CF-BG       $CF-BG       $CF-FG  
-	       active_workspace    $CF-BG       $CF-BG       $CF-FG  
-	       inactive_workspace  $C-BG        $C-BG        $C-FG  
-	       urgent_workspace    $CU-BG       $CU-BG       $CU-FG  
-	       binding_mode        $CU-BG       $CU-BG       $CU-FG  
-	}
-	
-	font pango:FontAwesome, Ubuntu Mono 11
+        statusline          $C-BG
+        focused_statusline  $CF-BG
 
-	position bottom
-	workspace_buttons yes
-	strip_workspace_numbers yes
-	binding_mode_indicator yes
+        separator           $C-BG
+        focused_separator   $CF-BG
 
-        status_command i3blocks
-        tray_output none
-	separator_symbol " "
+#       CLASS               BORDER       BG           TEXT
+        focused_workspace   $CF-BG       $CF-BG       $CF-FG
+        active_workspace    $CF-BG       $CF-BG       $CF-FG
+        inactive_workspace  $C-BG        $C-BG        $C-FG
+        urgent_workspace    $CU-BG       $CU-BG       $CU-FG
+        binding_mode        $CU-BG       $CU-BG       $CU-FG
+    }
+
+    font pango:FontAwesome, Ubuntu Mono 11
+
+    position bottom
+    workspace_buttons yes
+    strip_workspace_numbers yes
+    binding_mode_indicator yes
+
+    status_command i3blocks
+    tray_output none
+    separator_symbol " "
 }
 
 # Configure rofi
@@ -106,7 +106,7 @@ set $ROFI rofi -modi \\"window,run,drun\\" -width 100 -lines 3 -font \\"Ubuntu M
 # ----------------- #
 # General window    #
 for_window [class="^(.*)$"] title_format "   %title"
-# Web browser	    #
+# Web browser        #
 for_window [class="^(Firefox)$"] title_format "   %title"
 for_window [class="^(Google-chrome|Chromium)$"] title_format "   %title"
 # Terminal          #
@@ -197,8 +197,8 @@ set $SCREENSHOT-SELECT-SHARE exec --no-startup-id screenshot select upload
 ##################
 
 # Unused $mod ergonomic bindings
-# - Mid row: gh
-# - Bot row: xbn
+# - Mid row: h
+# - Bot row: xb
 #
 # Miscellaneous unused keys:
 # - Right Ctrl
@@ -261,6 +261,9 @@ bindsym $mod+BackSpace kill
 
 # Launch terminal
 bindsym $mod+Return exec $TERMINAL
+
+# Open notes
+bindsym $mod+n exec "$TEXT-EDITOR docs/org/notes/notes.org"
 
 # Rofi exec
 bindsym $mod+slash exec --no-startup-id "$ROFI run"
@@ -399,288 +402,288 @@ bindsym $mod+g mode $MODE-WORKSPACE
 # Window resizing mode
 mode $MODE-RESIZE
 {
-	# Resize with directional keys
-        bindsym j resize shrink width 10 px or 4 ppt
-        bindsym k resize grow height 10 px or 4 ppt
-        bindsym l resize shrink height 10 px or 4 ppt
-        bindsym semicolon resize grow width 10 px or 4 ppt
-	
-        bindsym Left resize shrink width 10 px or 4 ppt
-        bindsym Down resize grow height 10 px or 4 ppt
-        bindsym Up resize shrink height 10 px or 4 ppt
-        bindsym Right resize grow width 10 px or 4 ppt
+# Resize with directional keys
+    bindsym j resize shrink width 10 px or 4 ppt
+    bindsym k resize grow height 10 px or 4 ppt
+    bindsym l resize shrink height 10 px or 4 ppt
+    bindsym semicolon resize grow width 10 px or 4 ppt
 
-	# Use shift to resize faster
-	bindsym $mod+j resize shrink width 50 px or 20 ppt
-	bindsym $mod+k resize grow height 50 px or 20 ppt
-	bindsym $mod+l resize shrink height 50 px or 20 ppt
-	bindsym $mod+semicolon resize grow width 50 px or 20 ppt
+    bindsym Left resize shrink width 10 px or 4 ppt
+    bindsym Down resize grow height 10 px or 4 ppt
+    bindsym Up resize shrink height 10 px or 4 ppt
+    bindsym Right resize grow width 10 px or 4 ppt
 
-	bindsym $mod+Left resize shrink width 50 px or 20 ppt
-	bindsym $mod+Down resize grow height 50 px or 20 ppt
-	bindsym $mod+Up resize shrink height 50 px or 20 ppt
-	bindsym $mod+Right resize grow width 50 px or 20 ppt
+# Use shift to resize faster
+    bindsym $mod+j resize shrink width 50 px or 20 ppt
+    bindsym $mod+k resize grow height 50 px or 20 ppt
+    bindsym $mod+l resize shrink height 50 px or 20 ppt
+    bindsym $mod+semicolon resize grow width 50 px or 20 ppt
 
-	# Exit mode with Enter or Escape or space
-	# or use mode command again to toggle out
-        bindsym Return mode "default"
-        bindsym $mod+Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+Escape mode "default"
-	bindsym space mode "default"
-	bindsym $mod+space mode "default"
-        bindsym $mod+r mode "default"
-	
-        # Due to i3 config limitations, the following must be copied into every mode
-        # in order to achieve global key binding behavior:
-	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
-	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
-	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
-	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
-	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
-	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
-	bindsym XF86AudioMicMute $MIC-TOGGLE
-	bindsym $mod+F4 $MIC-TOGGLE
-	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
-	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
-	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
-	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
-	bindsym --release Print $SCREENSHOT-FULL
-	bindsym --release Shift+Print $SCREENSHOT-SELECT
+    bindsym $mod+Left resize shrink width 50 px or 20 ppt
+    bindsym $mod+Down resize grow height 50 px or 20 ppt
+    bindsym $mod+Up resize shrink height 50 px or 20 ppt
+    bindsym $mod+Right resize grow width 50 px or 20 ppt
+
+# Exit mode with Enter or Escape or space
+# or use mode command again to toggle out
+    bindsym Return mode "default"
+    bindsym $mod+Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+Escape mode "default"
+    bindsym space mode "default"
+    bindsym $mod+space mode "default"
+    bindsym $mod+r mode "default"
+
+# Due to i3 config limitations, the following must be copied into every mode
+# in order to achieve global key binding behavior:
+    bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+    bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+    bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+    bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+    bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+    bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+    bindsym XF86AudioMicMute $MIC-TOGGLE
+    bindsym $mod+F4 $MIC-TOGGLE
+    bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+    bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+    bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+    bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+    bindsym --release Print $SCREENSHOT-FULL
+    bindsym --release Shift+Print $SCREENSHOT-SELECT
 }
 
 # System control mode
 mode $MODE-SYSTEM
 {
-        # Toggle auto lock
-        bindsym a mode "default"; exec --no-startup-id pkill xautolock || xautolock -time 5 -locker "lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
+# Toggle auto lock
+    bindsym a mode "default"; exec --no-startup-id pkill xautolock || xautolock -time 5 -locker "lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
 
-	# Reload i3 configuration
-	bindsym c mode "default"; reload
+# Reload i3 configuration
+    bindsym c mode "default"; reload
 
-	# Close i3
-	bindsym Shift+c mode "default"; exec --no-startup-id speak Closing i3.; exit
+# Close i3
+    bindsym Shift+c mode "default"; exec --no-startup-id speak Closing i3.; exit
 
-	# Hide screen
-	bindsym h mode "default"; exec --no-startup-id xbacklight -set 0
+# Hide screen
+    bindsym h mode "default"; exec --no-startup-id xbacklight -set 0
 
-	# Hibernate
-	bindsym Shift+h mode "default"; exec --no-startup-id speak Highbur nating.; exec --no-startup-id systemctl hibernate
+# Hibernate
+    bindsym Shift+h mode "default"; exec --no-startup-id speak Highbur nating.; exec --no-startup-id systemctl hibernate
 
-	# Lock
-	bindsym l mode "default"; exec --no-startup-id lock
+# Lock
+    bindsym l mode "default"; exec --no-startup-id lock
 
-	# Log out
-	bindsym Shift+l mode "default"; exec --no-startup-id speak Logging out.; exit
+# Log out
+    bindsym Shift+l mode "default"; exec --no-startup-id speak Logging out.; exit
 
-	# Restart i3
-	bindsym r mode "default"; restart
+# Restart i3
+    bindsym r mode "default"; restart
 
-	# Reboot
-	bindsym Shift+r mode "default"; exec --no-startup-id speak Rebooting.; exec --no-startup-id systemctl reboot
+# Reboot
+    bindsym Shift+r mode "default"; exec --no-startup-id speak Rebooting.; exec --no-startup-id systemctl reboot
 
-	# Suspend
-	bindsym s mode "default"; exec --no-startup-id systemctl suspend
+# Suspend
+    bindsym s mode "default"; exec --no-startup-id systemctl suspend
 
-	# Shutdown
-	bindsym Shift+s mode "default"; exec --no-startup-id speak Shutting down.; exec --no-startup-id systemctl poweroff
+# Shutdown
+    bindsym Shift+s mode "default"; exec --no-startup-id speak Shutting down.; exec --no-startup-id systemctl poweroff
 
-	# Exit mode with Enter or Escape or space
-	# or use mode command again to toggle out
-        bindsym Return mode "default"
-        bindsym $mod+Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+Escape mode "default"
-	bindsym space mode "default"
-	bindsym $mod+space mode "default"
-	
-        # Due to i3 config limitations, the following must be copied into every mode
-        # in order to achieve global key binding behavior:
-	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
-	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
-	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
-	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
-	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
-	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
-	bindsym XF86AudioMicMute $MIC-TOGGLE
-	bindsym $mod+F4 $MIC-TOGGLE
-	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
-	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
-	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
-	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
-	bindsym --release Print $SCREENSHOT-FULL
-	bindsym --release Shift+Print $SCREENSHOT-SELECT
+# Exit mode with Enter or Escape or space
+# or use mode command again to toggle out
+    bindsym Return mode "default"
+    bindsym $mod+Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+Escape mode "default"
+    bindsym space mode "default"
+    bindsym $mod+space mode "default"
+
+# Due to i3 config limitations, the following must be copied into every mode
+# in order to achieve global key binding behavior:
+    bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+    bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+    bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+    bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+    bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+    bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+    bindsym XF86AudioMicMute $MIC-TOGGLE
+    bindsym $mod+F4 $MIC-TOGGLE
+    bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+    bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+    bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+    bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+    bindsym --release Print $SCREENSHOT-FULL
+    bindsym --release Shift+Print $SCREENSHOT-SELECT
 }
 
 # Application launch mode
 mode $MODE-OPEN
 {
-        # Color picker
-        bindsym $mod+c exec $COLOR-PICKER
-        bindsym c mode "default"; exec $COLOR-PICKER
+# Color picker
+    bindsym $mod+c exec $COLOR-PICKER
+    bindsym c mode "default"; exec $COLOR-PICKER
 
-	# File browser
-	bindsym $mod+f exec $FILE-MANAGER
-	bindsym f mode "default"; exec $FILE-MANAGER
+# File browser
+    bindsym $mod+f exec $FILE-MANAGER
+    bindsym f mode "default"; exec $FILE-MANAGER
 
-	# Image manipulator
-	bindsym $mod+i exec $IMAGE-EDITOR
-	bindsym i mode "default"; exec $IMAGE-EDITOR
+# Image manipulator
+    bindsym $mod+i exec $IMAGE-EDITOR
+    bindsym i mode "default"; exec $IMAGE-EDITOR
 
-        # Paint
-        bindsym $mod+p exec $PAINT
-        bindsym p mode "default"; exec $PAINT
+# Paint
+    bindsym $mod+p exec $PAINT
+    bindsym p mode "default"; exec $PAINT
 
-	# Shell
-	bindsym $mod+s exec $TERMINAL
-	bindsym s mode "default"; exec $TERMINAL
+# Shell
+    bindsym $mod+s exec $TERMINAL
+    bindsym s mode "default"; exec $TERMINAL
 
-	# Text editor
-	bindsym $mod+t exec $TEXT-EDITOR
-	bindsym t mode "default"; exec $TEXT-EDITOR
+# Text editor
+    bindsym $mod+t exec $TEXT-EDITOR
+    bindsym t mode "default"; exec $TEXT-EDITOR
 
-	# Video player
-	bindsym $mod+v exec $VIDEO-PLAYER
-	bindsym v mode "default"; exec $VIDEO-PLAYER
+# Video player
+    bindsym $mod+v exec $VIDEO-PLAYER
+    bindsym v mode "default"; exec $VIDEO-PLAYER
 
-	# Web browser
-	bindsym $mod+w exec $WEB-BROWSER
-	bindsym w mode "default"; exec $WEB-BROWSER
+# Web browser
+    bindsym $mod+w exec $WEB-BROWSER
+    bindsym w mode "default"; exec $WEB-BROWSER
 
-	# For convenience, kill focused window
-	bindsym $mod+BackSpace kill
-	bindsym BackSpace kill
-	bindsym $mod+q kill
+# For convenience, kill focused window
+    bindsym $mod+BackSpace kill
+    bindsym BackSpace kill
+    bindsym $mod+q kill
 
-	# Exit mode with Enter or Escape or space
-	# or use mode command again to toggle out
-        bindsym Return mode "default"
-        bindsym $mod+Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+Escape mode "default"
-	bindsym space mode "default"
-	bindsym $mod+space mode "default"
-        bindsym $mod+apostrophe mode "default"
-	
-        # Due to i3 config limitations, the following must be copied into every mode
-        # in order to achieve global key binding behavior:
-	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
-	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
-	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
-	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
-	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
-	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
-	bindsym XF86AudioMicMute $MIC-TOGGLE
-	bindsym $mod+F4 $MIC-TOGGLE
-	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
-	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
-	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
-	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
-	bindsym --release Print $SCREENSHOT-FULL
-	bindsym --release Shift+Print $SCREENSHOT-SELECT
+# Exit mode with Enter or Escape or space
+# or use mode command again to toggle out
+    bindsym Return mode "default"
+    bindsym $mod+Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+Escape mode "default"
+    bindsym space mode "default"
+    bindsym $mod+space mode "default"
+    bindsym $mod+apostrophe mode "default"
+
+# Due to i3 config limitations, the following must be copied into every mode
+# in order to achieve global key binding behavior:
+    bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+    bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+    bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+    bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+    bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+    bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+    bindsym XF86AudioMicMute $MIC-TOGGLE
+    bindsym $mod+F4 $MIC-TOGGLE
+    bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+    bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+    bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+    bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+    bindsym --release Print $SCREENSHOT-FULL
+    bindsym --release Shift+Print $SCREENSHOT-SELECT
 }
 
 # Minor workspace mode
 mode $MODE-WORKSPACE
 {
-        # Minor workspaces
-        bindsym 1 workspace "1"; mode "default"
-        bindsym Shift+1 move workspace "1"; mode "default"
-        bindsym 2 workspace "2"; mode "default"
-        bindsym Shift+2 move workspace "2"; mode "default"
-        bindsym 3 workspace "3"; mode "default"
-        bindsym Shift+3 move workspace "3"; mode "default"
-        bindsym 4 workspace "4"; mode "default"
-        bindsym Shift+4 move workspace "4"; mode "default"
-        bindsym 5 workspace "5"; mode "default"
-        bindsym Shift+5 move workspace "5"; mode "default"
-        bindsym 6 workspace "6"; mode "default"
-        bindsym Shift+6 move workspace "6"; mode "default"
-        bindsym 7 workspace "7"; mode "default"
-        bindsym Shift+7 move workspace "7"; mode "default"
-        bindsym 8 workspace "8"; mode "default"
-        bindsym Shift+8 move workspace "8"; mode "default"
-        bindsym 9 workspace "9"; mode "default"
-        bindsym Shift+9 move workspace "9"; mode "default"
-        bindsym 0 workspace "0"; mode "default"
-        bindsym Shift+0 move workspace "0"; mode "default"
-        bindsym a workspace "A"; mode "default"
-        bindsym Shift+a move workspace "A"; mode "default"
-        bindsym b workspace "B"; mode "default"
-        bindsym Shift+b move workspace "B"; mode "default"
-        bindsym c workspace "C"; mode "default"
-        bindsym Shift+c move workspace "C"; mode "default"
-        bindsym d workspace "D"; mode "default"
-        bindsym Shift+d move workspace "D"; mode "default"
-        bindsym e workspace "E"; mode "default"
-        bindsym Shift+e move workspace "E"; mode "default"
-        bindsym f workspace "F"; mode "default"
-        bindsym Shift+f move workspace "F"; mode "default"
-        bindsym g workspace "G"; mode "default"
-        bindsym Shift+g move workspace "G"; mode "default"
-        bindsym h workspace "H"; mode "default"
-        bindsym Shift+h move workspace "H"; mode "default"
-        bindsym i workspace "I"; mode "default"
-        bindsym Shift+i move workspace "I"; mode "default"
-        bindsym j workspace "J"; mode "default"
-        bindsym Shift+j move workspace "J"; mode "default"
-        bindsym k workspace "K"; mode "default"
-        bindsym Shift+k move workspace "K"; mode "default"
-        bindsym l workspace "L"; mode "default"
-        bindsym Shift+l move workspace "L"; mode "default"
-        bindsym m workspace "M"; mode "default"
-        bindsym Shift+m move workspace "M"; mode "default"
-        bindsym n workspace "N"; mode "default"
-        bindsym Shift+n move workspace "N"; mode "default"
-        bindsym o workspace "O"; mode "default"
-        bindsym Shift+o move workspace "O"; mode "default"
-        bindsym p workspace "P"; mode "default"
-        bindsym Shift+p move workspace "P"; mode "default"
-        bindsym q workspace "Q"; mode "default"
-        bindsym Shift+q move workspace "Q"; mode "default"
-        bindsym r workspace "R"; mode "default"
-        bindsym Shift+r move workspace "R"; mode "default"
-        bindsym s workspace "S"; mode "default"
-        bindsym Shift+s move workspace "S"; mode "default"
-        bindsym t workspace "T"; mode "default"
-        bindsym Shift+t move workspace "T"; mode "default"
-        bindsym u workspace "U"; mode "default"
-        bindsym Shift+u move workspace "U"; mode "default"
-        bindsym v workspace "V"; mode "default"
-        bindsym Shift+v move workspace "V"; mode "default"
-        bindsym w workspace "W"; mode "default"
-        bindsym Shift+w move workspace "W"; mode "default"
-        bindsym x workspace "X"; mode "default"
-        bindsym Shift+x move workspace "X"; mode "default"
-        bindsym y workspace "Y"; mode "default"
-        bindsym Shift+y move workspace "Y"; mode "default"
-        bindsym z workspace "Z"; mode "default"
+# Minor workspaces
+    bindsym 1 workspace "1"; mode "default"
+    bindsym Shift+1 move workspace "1"; mode "default"
+    bindsym 2 workspace "2"; mode "default"
+    bindsym Shift+2 move workspace "2"; mode "default"
+    bindsym 3 workspace "3"; mode "default"
+    bindsym Shift+3 move workspace "3"; mode "default"
+    bindsym 4 workspace "4"; mode "default"
+    bindsym Shift+4 move workspace "4"; mode "default"
+    bindsym 5 workspace "5"; mode "default"
+    bindsym Shift+5 move workspace "5"; mode "default"
+    bindsym 6 workspace "6"; mode "default"
+    bindsym Shift+6 move workspace "6"; mode "default"
+    bindsym 7 workspace "7"; mode "default"
+    bindsym Shift+7 move workspace "7"; mode "default"
+    bindsym 8 workspace "8"; mode "default"
+    bindsym Shift+8 move workspace "8"; mode "default"
+    bindsym 9 workspace "9"; mode "default"
+    bindsym Shift+9 move workspace "9"; mode "default"
+    bindsym 0 workspace "0"; mode "default"
+    bindsym Shift+0 move workspace "0"; mode "default"
+    bindsym a workspace "A"; mode "default"
+    bindsym Shift+a move workspace "A"; mode "default"
+    bindsym b workspace "B"; mode "default"
+    bindsym Shift+b move workspace "B"; mode "default"
+    bindsym c workspace "C"; mode "default"
+    bindsym Shift+c move workspace "C"; mode "default"
+    bindsym d workspace "D"; mode "default"
+    bindsym Shift+d move workspace "D"; mode "default"
+    bindsym e workspace "E"; mode "default"
+    bindsym Shift+e move workspace "E"; mode "default"
+    bindsym f workspace "F"; mode "default"
+    bindsym Shift+f move workspace "F"; mode "default"
+    bindsym g workspace "G"; mode "default"
+    bindsym Shift+g move workspace "G"; mode "default"
+    bindsym h workspace "H"; mode "default"
+    bindsym Shift+h move workspace "H"; mode "default"
+    bindsym i workspace "I"; mode "default"
+    bindsym Shift+i move workspace "I"; mode "default"
+    bindsym j workspace "J"; mode "default"
+    bindsym Shift+j move workspace "J"; mode "default"
+    bindsym k workspace "K"; mode "default"
+    bindsym Shift+k move workspace "K"; mode "default"
+    bindsym l workspace "L"; mode "default"
+    bindsym Shift+l move workspace "L"; mode "default"
+    bindsym m workspace "M"; mode "default"
+    bindsym Shift+m move workspace "M"; mode "default"
+    bindsym n workspace "N"; mode "default"
+    bindsym Shift+n move workspace "N"; mode "default"
+    bindsym o workspace "O"; mode "default"
+    bindsym Shift+o move workspace "O"; mode "default"
+    bindsym p workspace "P"; mode "default"
+    bindsym Shift+p move workspace "P"; mode "default"
+    bindsym q workspace "Q"; mode "default"
+    bindsym Shift+q move workspace "Q"; mode "default"
+    bindsym r workspace "R"; mode "default"
+    bindsym Shift+r move workspace "R"; mode "default"
+    bindsym s workspace "S"; mode "default"
+    bindsym Shift+s move workspace "S"; mode "default"
+    bindsym t workspace "T"; mode "default"
+    bindsym Shift+t move workspace "T"; mode "default"
+    bindsym u workspace "U"; mode "default"
+    bindsym Shift+u move workspace "U"; mode "default"
+    bindsym v workspace "V"; mode "default"
+    bindsym Shift+v move workspace "V"; mode "default"
+    bindsym w workspace "W"; mode "default"
+    bindsym Shift+w move workspace "W"; mode "default"
+    bindsym x workspace "X"; mode "default"
+    bindsym Shift+x move workspace "X"; mode "default"
+    bindsym y workspace "Y"; mode "default"
+    bindsym Shift+y move workspace "Y"; mode "default"
+    bindsym z workspace "Z"; mode "default"
 
-	# Exit mode with Enter or Escape or space
-	# or use mode command again to toggle out
-        bindsym Return mode "default"
-        bindsym $mod+Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+Escape mode "default"
-	bindsym space mode "default"
-	bindsym $mod+space mode "default"
-        bindsym $mod+h mode "default"
-	
-        # Due to i3 config limitations, the following must be copied into every mode
-        # in order to achieve global key binding behavior:
-	bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
-	bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
-	bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
-	bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
-	bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
-	bindsym $mod+F1 $SOUND-MUTE-TOGGLE
-	bindsym XF86AudioMicMute $MIC-TOGGLE
-	bindsym $mod+F4 $MIC-TOGGLE
-	bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
-	bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
-	bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
-	bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
-	bindsym --release Print $SCREENSHOT-FULL
-	bindsym --release Shift+Print $SCREENSHOT-SELECT
+# Exit mode with Enter or Escape or space
+# or use mode command again to toggle out
+    bindsym Return mode "default"
+    bindsym $mod+Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+Escape mode "default"
+    bindsym space mode "default"
+    bindsym $mod+space mode "default"
+    bindsym $mod+h mode "default"
+
+# Due to i3 config limitations, the following must be copied into every mode
+# in order to achieve global key binding behavior:
+    bindsym XF86AudioRaiseVolume $SOUND-VOLUME-INC-MINOR
+    bindsym XF86AudioLowerVolume $SOUND-VOLUME-DEC-MINOR
+    bindsym $mod+F3 $SOUND-VOLUME-INC-MAJOR
+    bindsym $mod+F2 $SOUND-VOLUME-DEC-MAJOR
+    bindsym XF86AudioMute $SOUND-MUTE-TOGGLE
+    bindsym $mod+F1 $SOUND-MUTE-TOGGLE
+    bindsym XF86AudioMicMute $MIC-TOGGLE
+    bindsym $mod+F4 $MIC-TOGGLE
+    bindsym XF86MonBrightnessUp $BRIGHTNESS-INC-MINOR
+    bindsym XF86MonBrightnessDown $BRIGHTNESS-DEC-MINOR
+    bindsym $mod+F6 $BRIGHTNESS-INC-MAJOR
+    bindsym $mod+F5 $BRIGHTNESS-DEC-MAJOR
+    bindsym --release Print $SCREENSHOT-FULL
+    bindsym --release Shift+Print $SCREENSHOT-SELECT
 }
 
