@@ -100,19 +100,20 @@ sync() {
         return 0
     fi
     
-    progress "Backing up installed packages"
+    progress 'Backing up installed packages'
     save "$old"
 
-    if ! which yay; then
+    if ! which yay 2>&1 >/dev/null; then
         echo
-        progress "Buliding yay"
+        progress 'Building yay'
         mkdir -p "${HOME}/build"
+        rm -rf "${HOME}/build/yay"
         git clone https://aur.archlinux.org/yay.git "${HOME}/build/yay"
         cd "${HOME}/build/yay" && makepkg -si
     fi
 
     echo
-    progress "Finding local packages to remove"
+    progress 'Finding local packages to remove'
     packages="$(comm -13 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
     packages+=" $(comm -13 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ "$packages" != ' ' ]; then
@@ -124,11 +125,11 @@ sync() {
             info 'No packages removed'
         fi
     else
-        info "No packages need to be removed"
+        info 'No packages need to be removed'
     fi
 
     echo
-    progress "Finding missing packages to install"
+    progress 'Finding missing packages to install'
     packages="$(comm -23 "${pack_dir}/pacman${ext}" "${pack_dir}/pacman${old}")"
     packages_aur="$(comm -23 "${pack_dir}/aur${ext}" "${pack_dir}/aur${old}")"
     if [ -n "${packages}${packages_aur}" ]; then
@@ -142,7 +143,7 @@ sync() {
             info 'No packages installed'
         fi
     else
-        info "No packages need to be installed"
+        info 'No packages need to be installed'
     fi
     
     return 0
@@ -150,7 +151,7 @@ sync() {
 
 # Get latest version of repository
 get-repo() {
-    progress "Getting latest repository"
+    progress 'Getting latest repository'
     if [ ! -d "${dot_dir}/.git" ]; then
         git clone https://github.com/BenFrankel/dotfiles "$dot_dir"
         mkdir -p "$backup_files_dir" "$pack_dir"
@@ -162,7 +163,7 @@ get-repo() {
 
 # Create user directories
 create-user-dirs() {
-    progress "Creating user directories"
+    progress 'Creating user directories'
 
     mkdir -p "${HOME}/build"
 
@@ -201,7 +202,7 @@ push-repo() {
 activate() {
     eval "$dot_glue" --init
 
-    progress "Setting up links to scripts"
+    progress 'Setting up links to scripts'
     mkdir -p "${HOME}/.local/bin"
     for path in $(find "$script_dir" -mindepth 1 -type f); do
         info "$(basename "$path")"
@@ -209,13 +210,16 @@ activate() {
     done
     
     echo
-    progress "Setting up links to dotfiles"
+    progress 'Setting up links to dotfiles'
     for path in $(find "$config_dir" -maxdepth 1 -type f); do
         eval "$dot_glue" --symbolic-link "$path" "${HOME}/.$(basename "$path")"
     done
 
+    # Update PATH and other environment variables
+    source "${HOME}/.env"
+
     echo
-    progress "Setting up links to assets"
+    progress 'Setting up links to assets'
     for dir in $(find "$assets_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename $dir)"
         cd "$dir"
@@ -223,7 +227,7 @@ activate() {
     done
 
     echo
-    progress "Activating package configurations"
+    progress 'Activating package configurations'
     for package in $(find "$config_dir" -mindepth 1 -maxdepth 1 -type d); do
         info "$(basename "$package")"
         cd "$package"
@@ -266,41 +270,41 @@ case $1 in
         ;;
 
     restore)
-        progress "Restoring replaced files"
+        progress 'Restoring replaced files'
         eval "$dot_glue" --restore
 
         echo
-        progress "Restoring packages"
+        progress 'Restoring packages'
         sync '.old' '.tmp'
         ;;
 
     activate)
-        progress "Activating configuration"
+        progress 'Activating configuration'
         activate
         ;;
 
     deactivate)
-        progress "Deactivating configuration"
+        progress 'Deactivating configuration'
         eval "$dot_glue" --restore
         ;;
 
     save)
-        progress "Saving local packages to list"
+        progress 'Saving local packages to list'
         save
         ;;
 
     diff)
-        progress "Finding your backup configuration"
+        progress 'Finding your backup configuration'
         cd "$backup_files_dir"
         if [ -z "$(sudo find .)" ]; then
-            info "You have no backup configuration"
+            info 'You have no backup configuration'
         else
             echo
             eval "$dot_glue"
         fi
         
         echo
-        progress "Comparing your packages to the list"
+        progress 'Comparing your packages to the list'
         
         save '.tmp'
         diff="$(comm -3 "${pack_dir}/pacman.tmp" "${pack_dir}/pacman")"
@@ -315,7 +319,7 @@ case $1 in
             echo -n "$diff_aur"
             echo
         else
-            info "Your packages are all synced"
+            info 'Your packages are already synced'
         fi
         echo
         ;;

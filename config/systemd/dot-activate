@@ -1,0 +1,4 @@
+#!/bin/sh
+
+dot-glue --copy system.conf /etc/systemd/system.conf
+sudo chown -R root:root /etc/systemd

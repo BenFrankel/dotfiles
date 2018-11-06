@@ -44,25 +44,25 @@ gaps outer -2
 for_window [class="^.*"] border pixel 2
 
 # Workspace names
-set $WORKSPACE-1 "1: etc"
-set $WORKSPACE-2 "2: web"
-set $WORKSPACE-3 "3: msg"
-set $WORKSPACE-4 "4: pad"
-set $WORKSPACE-5 "5: dev"
-set $WORKSPACE-6 "6: uni"
-set $WORKSPACE-7 "7: try"
-set $WORKSPACE-8 "8: art"
-set $WORKSPACE-9 "9: cup"
+set $WORKSPACE-1   "1: etc"
+set $WORKSPACE-2   "2: web"
+set $WORKSPACE-3   "3: msg"
+set $WORKSPACE-4   "4: pad"
+set $WORKSPACE-5   "5: dev"
+set $WORKSPACE-6   "6: uni"
+set $WORKSPACE-7   "7: try"
+set $WORKSPACE-8   "8: art"
+set $WORKSPACE-9   "9: cup"
 set $WORKSPACE-10 "10: tmp"
 
 # Window colors          BORDER      BACKGROUND  TEXT        INDICATOR    CHILD-BORDER
 client.focused           $CF-BG      $CF-BG      $CF-FG      $CF-BG       $CF-BG
 client.focused_inactive  $CI-BG      $CI-BG      $CI-FG      $CI-BG       $C-BG
-client.unfocused      $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
-client.urgent         $CU-BG      $CU-BG      $CU-FG      $CU-BG       $CU-BG
-client.placeholder     $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+client.unfocused         $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
+client.urgent            $CU-BG      $CU-BG      $CU-FG      $CU-BG       $CU-BG
+client.placeholder       $C-BG       $C-BG       $C-FG       $C-BG        $C-BG
 
-client.background      $C-BG
+client.background        $C-BG
 
 # Start i3bar to display a workspace bar
 bar
@@ -161,9 +161,11 @@ for_window [class="^(Gnome-software)$"] title_format "   %title"
 for_window [class="^feh$"] floating enable
 floating_maximum_size 1860 x 1020
 
-# Open popups as floating
+# Open popups as floating, no focus
 for_window [window_role="pop-up"] floating enable
+no_focus [window_role="pop-up"]
 for_window [window_role="task_dialog"] floating enable
+no_focus [window_role="task_dialog"]
 
 # Workspace-specific applications
 assign [class="^(discord|Hexchat)$"] workspace $WORKSPACE-3

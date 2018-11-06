@@ -1,3 +1,4 @@
 #!/bin/sh
 
-dot-glue --link pacman.conf /etc/pacman.conf
+dot-glue --copy pacman.conf /etc/pacman.conf
+sudo chown -R root:root /etc
