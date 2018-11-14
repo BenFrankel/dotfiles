@@ -265,7 +265,7 @@ bindsym $mod+BackSpace kill
 bindsym $mod+Return exec $TERMINAL
 
 # Open notes
-bindsym $mod+n exec "$TEXT-EDITOR docs/org/notes/notes.org"
+bindsym $mod+n exec "$TEXT-EDITOR docs/org/notes/$(date +%s).org"
 
 # Rofi exec
 bindsym $mod+slash exec --no-startup-id "$ROFI run"
