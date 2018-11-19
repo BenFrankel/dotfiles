@@ -20,6 +20,11 @@ export EDITOR='vim'
 export _FASD_DATA="${HOME}/.fasd"
 export _FASD_FUZZY=2
 
+# Fzf config
+export FZF_DEFAULT_COMMAND="fd . ${HOME}"
+export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+export FZF_ALT_C_COMMAND="fd -t d . ${HOME}"
+
 # Pyenv
 export PYENV_ROOT="${HOME}/.pyenv"
 
