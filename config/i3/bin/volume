@@ -6,7 +6,7 @@ set -eu
 
 VOLUME="$(amixer -D pulse get Master | grep -Eom 1 '\[[[:digit:]]+%\]' | tr -d '[%]')"
 MIN_VOLUME=0
-MAX_VOLUME=100
+MAX_VOLUME=500
 
 USAGE='Usage: volume [on | off | toggle | set {} | (up|down) [more | {}]]'
 
@@ -14,60 +14,62 @@ USAGE='Usage: volume [on | off | toggle | set {} | (up|down) [more | {}]]'
 if [ $# -ge 1 ]; then
     case $1 in
         on)
-            amixer -qD pulse set Master unmute
-            ;;
-        off)
-            amixer -qD pulse set Master mute
-            ;;
-        toggle)
-            amixer -qD pulse set Master toggle
-            ;;
-        set)
-	    if [ $# -ne 2 ]; then
-		echo $USAGE
-		exit 1
-	    fi
-	    
-	    VOLUME=$2
-	    VOLUME=$((VOLUME>MAX_VOLUME?MAX_VOLUME:VOLUME))
-	    VOLUME=$((VOLUME<MIN_VOLUME?MIN_VOLUME:VOLUME))
-            
             amixer -qD pulse set Master unmute $VOLUME%
             ;;
-	up|down)
-	    DELTA_VOLUME=1
+        off)
+            amixer -qD pulse set Master mute $VOLUME%
+            ;;
+        toggle)
+            amixer -qD pulse set Master toggle $VOLUME%
+            ;;
+        set)
+            if [ $# -ne 2 ]; then
+                echo $USAGE
+                exit 1
+            fi
+
+            VOLUME=$2
+            VOLUME=$((VOLUME>MAX_VOLUME?MAX_VOLUME:VOLUME))
+            VOLUME=$((VOLUME<MIN_VOLUME?MIN_VOLUME:VOLUME))
+
+            amixer -qD pulse set Master unmute
+            pactl set-sink-volume 0 $VOLUME%
+            ;;
+        up|down)
+            DELTA_VOLUME=1
             if [ $# -ge 3 ]; then
                 echo $USAGE
                 exit 1
-	    elif [ $# -eq 2 ]; then
-		if [ "$2" = "more" ]; then
-		    DELTA_VOLUME=5
-		else
-		    DELTA_VOLUME=$2
-		fi
-	    fi
-	    
-	    case $1 in
+            elif [ $# -eq 2 ]; then
+                if [ "$2" = "more" ]; then
+                    DELTA_VOLUME=5
+                else
+                    DELTA_VOLUME=$2
+                fi
+            fi
+
+            case $1 in
                 up)
-		    VOLUME=$((VOLUME + DELTA_VOLUME))
-		    VOLUME=$((VOLUME>MAX_VOLUME?MAX_VOLUME:VOLUME))
+                    VOLUME=$((VOLUME + DELTA_VOLUME))
+                    VOLUME=$((VOLUME>MAX_VOLUME?MAX_VOLUME:VOLUME))
                     ;;
                 down)
-		    VOLUME=$((VOLUME - DELTA_VOLUME))
-		    VOLUME=$((VOLUME<MIN_VOLUME?MIN_VOLUME:VOLUME))
+                    VOLUME=$((VOLUME - DELTA_VOLUME))
+                    VOLUME=$((VOLUME<MIN_VOLUME?MIN_VOLUME:VOLUME))
                     ;;
                 *)
-		    echo $USAGE
-		    exit 1
+                    echo $USAGE
+                    exit 1
             esac
 
-            amixer -qD pulse set Master unmute $VOLUME%
+            pactl set-sink-volume 0 $VOLUME%
+            amixer -qD pulse set Master unmute
             ;;
         *)
             echo $USAGE
             exit 1
     esac
-    
+
     pkill -SIGRTMIN+10 i3blocks
 else
     if [ -n "$(amixer -D pulse get Master | grep '\[off\]')" ]; then

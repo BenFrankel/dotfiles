@@ -56,7 +56,7 @@ format() {
     perl_filter='if (/.*\[(\d+)%\] (\[(-?\d+.\d+)dB\] )?\[(on|off)\]/)'
     perl_filter+='{CORE::say $4 eq "off" ? "\x{f026}  OFF" : '
     # If dB was selected, print that instead
-    perl_filter+=$([[ $step = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 == 100 ? "" : "  $1")')
+    perl_filter+=$([[ $step = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 >= 100 ? "" : "  $1")')
     perl_filter+='; exit}'
     perl -ne "$perl_filter"
 }
