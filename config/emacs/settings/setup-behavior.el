@@ -70,6 +70,8 @@
 	  (lambda()
 	    (c-set-offset 'inline-open '0)
 	    (c-set-offset 'inextern-lang 0)))
+
+(setq-default tab-width 4)
  
 ;; Don't indent with tabs
 (setq-default indent-tabs-mode nil)

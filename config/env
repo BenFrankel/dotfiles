@@ -10,6 +10,10 @@ PATH="$(ruby -e 'print Gem.user_dir')/bin:${PATH}"
 # Put Rust binaries in path
 PATH="${HOME}/.cargo/bin:${PATH}"
 
+# Put Go binaries in path
+export GOPATH="${HOME}/build/go"
+PATH="${GOPATH}/bin:${PATH}"
+
 # Download torrents to ~/tmp
 export TRANSMISSION_HOME="${HOME}/tmp"
 

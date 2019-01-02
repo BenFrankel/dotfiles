@@ -10,6 +10,5 @@
                (loop for i from ?A to ?Z collect i)
                (loop for i from ?0 to ?9 collect i))))
 
-
 (provide 'setup-ace)
 ;;; setup-ace.el ends here
