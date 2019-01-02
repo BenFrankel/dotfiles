@@ -67,7 +67,9 @@ detach() {
     return 0
 }
 
-alias open='detach xdg-open'
+open() {
+    xdg-open "$@" &; disown
+}
 alias mimetype='xdg-mime query filetype'
 to-open() {
     if mimetype "$*" &>/dev/null; then
