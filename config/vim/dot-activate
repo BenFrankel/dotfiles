@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -d "${HOME}/.vim_runtime" ]; then
+    cd "${HOME}/.vim_runtime"
+    git pull
+else
+    git clone --depth=1 https://github.com/amix/vimrc.git "${HOME}/.vim_runtime"
+fi

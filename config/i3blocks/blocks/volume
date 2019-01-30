@@ -37,9 +37,8 @@ scontrol="${BLOCK_INSTANCE:-$(amixer -D $mixer scontrols |
     head -n1
 )}"
 
-# The first parameter sets the step to change the volume by (and units to display)
-# This may be in in % or dB (eg. 5% or 3dB)
-step="${1:-5%}"
+# The first parameter sets the step to change the volume by (in %)
+step=5
 
 #------------------------------------------------------------------------
 
@@ -48,15 +47,14 @@ capability() {
     amixer -D $mixer get $scontrol | sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
 }
 
-volume() {
+get_volume() {
     amixer -D $mixer get $scontrol $(capability)
 }
 
 format() {
     perl_filter='if (/.*\[(\d+)%\] (\[(-?\d+.\d+)dB\] )?\[(on|off)\]/)'
     perl_filter+='{CORE::say $4 eq "off" ? "\x{f026}  OFF" : '
-    # If dB was selected, print that instead
-    perl_filter+=$([[ $step = *dB ]] && echo '($3 >= 10 ? " $3dB" : ($3 > 0 ? "   $3dB" : "     $3dB")' || echo '($1 >= 100 ? "  $1" : "  $1")')
+    perl_filter+=$(echo '($1 >= 100 ? "  $1" : "  $1")')
     perl_filter+='; exit}'
     perl -ne "$perl_filter"
 }
@@ -65,12 +63,12 @@ format() {
 
 case $BLOCK_BUTTON in
     1) paplay $audio_test ;; # left click, play sound
-    3) amixer -q -D $mixer sset $scontrol $(capability) toggle ;;  # right click, mute/unmute
-    4) amixer -q -D $mixer sset $scontrol $(capability) ${step}+ unmute && paplay "${audio_test}" ;; # scroll up, increase
-    5) amixer -q -D $mixer sset $scontrol $(capability) ${step}- unmute && paplay "${audio_test}" ;; # scroll down, decrease
+    3) volume toggle ;;  # right click, mute/unmute
+    4) volume up ${step} && paplay "${audio_test}" ;; # scroll up, increase
+    5) volume down ${step} && paplay "${audio_test}" ;; # scroll down, decrease
 esac
 
-volume | format
+get_volume | format
 echo
 if [ -n "$(amixer -D $mixer get $scontrol | grep '\[on\]')" ]; then
     echo "#5AE234"

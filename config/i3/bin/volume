@@ -10,6 +10,7 @@ MAX_VOLUME=500
 
 USAGE='Usage: volume [on | off | toggle | set {} | (up|down) [more | {}]]'
 
+SINK="$(pactl list sinks | grep 'Sink #' | cut -c 7-)"
 
 if [ $# -ge 1 ]; then
     case $1 in
@@ -33,7 +34,7 @@ if [ $# -ge 1 ]; then
             VOLUME=$((VOLUME<MIN_VOLUME?MIN_VOLUME:VOLUME))
 
             amixer -qD pulse set Master unmute
-            pactl set-sink-volume 0 $VOLUME%
+            pactl set-sink-volume $SINK $VOLUME%
             ;;
         up|down)
             DELTA_VOLUME=1
@@ -62,7 +63,7 @@ if [ $# -ge 1 ]; then
                     exit 1
             esac
 
-            pactl set-sink-volume 0 $VOLUME%
+            pactl set-sink-volume $SINK $VOLUME%
             amixer -qD pulse set Master unmute
             ;;
         *)
