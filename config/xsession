@@ -9,6 +9,9 @@ xmodmap "${HOME}/.Xmodmap" &
 # Set keyboard repeat rate
 xset r rate 300 25 &
 
+# Screen locker daemon
+light-locker &
+
 # Lock screen after inactivity
 xautolock -time 5 -locker "${HOME}/.config/i3/bin/lock" -notify 30 -notifier "notify-send 'Autolock' 'In 30 seconds'" -killtime 2 -killer "systemctl suspend" -secure -detectsleep &
 
