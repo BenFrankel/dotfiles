@@ -14,6 +14,14 @@ PATH="${HOME}/.cargo/bin:${PATH}"
 export GOPATH="${HOME}/build/go"
 PATH="${GOPATH}/bin:${PATH}"
 
+# Put Vulkan SDK binaries in path
+# export VULKAN_SDK="${HOME}/build/vulkan/x86_64"
+# PATH=""${VULKAN_SDK}/bin:$PATH""
+
+# Vulkan stuff
+# export LD_LIBRARY_PATH="${VULKAN_SDK}/lib:${LD_LIBRARY_PATH}"
+# export VK_LAYER_PATH="${VULKAN_SDK}/etc/vulkan/explicit_layer.d"
+
 # Download torrents to ~/tmp
 export TRANSMISSION_HOME="${HOME}/tmp"
 
