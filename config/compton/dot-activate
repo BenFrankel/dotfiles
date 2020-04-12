@@ -1,3 +1,0 @@
-#!/bin/sh
-
-dot-glue --symbolic-link compton.conf "${HOME}/.config/compton.conf"

@@ -26,7 +26,7 @@ This repository is based on the following packages:
 - **Info Bar** - [i3bar](https://i3wm.org/i3bar) with [i3blocks](https://vivien.github.io/i3blocks)
 - **Screen Locker** - [light-locker](https://github.com/the-cavalry/light-locker)
     - **Inactivity Locker** - [xautolock](https://freecode.com/projects/xautolock)
-- **Compositor** - [Compton](https://github.com/chjj/compton)
+- **Compositor** - [Picom](https://github.com/yshui/picom)
 - **Notification Daemon** - [Dunst](https://dunst-project.org)
 - **Application Launcher** - [Rofi](https://davedavenport.github.io/rofi)
 

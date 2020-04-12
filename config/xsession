@@ -25,7 +25,7 @@ emacs --daemon &
 urxvtd -f -o &
 
 # Compositor
-compton -b &
+picom -b &
 
 # Desktop background
 "${HOME}"/.fehbg &
