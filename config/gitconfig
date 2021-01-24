@@ -11,6 +11,8 @@
     show = diff-so-fancy | less --tabs=1,5 -RFX
 [credential]
     helper = cache --timeout=14400
+[pull]
+    rebase = true
 
 [url "https://aur.archlinux.org/"]
     insteadOf = aur://
