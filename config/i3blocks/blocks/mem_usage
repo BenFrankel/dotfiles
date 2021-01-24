@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+###############
+# Debug flags #
+###############
+
+set -eu
+#set -x
+
+
+#############
+# Constants #
+#############
+
+readonly USAGE="Usage: $0 [-w <warning>] [-c <critical>]"
+
+readonly PRECISION=1
+
+readonly DEFAULT_WARNING=50
+readonly DEFAULT_CRITICAL=80
+
+readonly COLOR_DEFAULT='#5AE234'
+readonly COLOR_WARNING='#FFE13F'
+readonly COLOR_CRITICAL='#FF2236'
+
+
+#############
+# Functions #
+#############
+
+main() {
+    local warning="${DEFAULT_WARNING}"
+    local critical="${DEFAULT_CRITICAL}"
+    # TODO: Parse and validate args
+    readonly warning
+    readonly critical
+
+    local -r mem_total="$(free -w | grep '^Mem:' | awk '{print $2}')"
+    local -r mem_available="$(free -w | grep '^Mem:' | awk '{print $8}')"
+    local -r mem_unavailable="$(( mem_total - mem_available ))"
+    local -r mem_usage="$(dc -e "${PRECISION} k ${mem_unavailable} 100 * ${mem_total} / p")"
+
+    echo "${mem_usage}%"
+    echo
+    if (( "$(echo "${mem_usage} < ${warning}" | bc)" )); then
+        echo "${COLOR_DEFAULT}"
+    elif (( "$(echo "${mem_usage} < ${critical}" | bc)" )); then
+        echo "${COLOR_WARNING}"
+    else
+        echo "${COLOR_CRITICAL}"
+    fi
+    
+    exit 0
+}
+
+
+########
+# Body #
+########
+
+main "$@"
