@@ -81,7 +81,7 @@ export UPDATE_ZSH_DAYS=14
 COMPLETION_WAITING_DOTS='false'
 
 # oh-my-zsh: Plugins
-plugins=(git you-should-use)
+plugins=(git)
 # Consider:
 #
 # gitignore
@@ -93,9 +93,6 @@ plugins=(git you-should-use)
 
 # Set up fasd
 eval "$(fasd --init auto)"
-
-# Plugin: you-should-use
-export YSU_MODE=ALL
 
 # oh-my-zsh: Setup
 source $ZSH/oh-my-zsh.sh
